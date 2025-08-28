@@ -2,8 +2,8 @@
 
 A Flutter app for managing qBittorrent remotely.
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev/)
-[![Dart](https://img.shields.io/badge/Dart-3.0+-blue.svg)](https://dart.dev/)
+[![Flutter](https://img.shields.io/badge/Flutter-3.35+-blue.svg)](https://flutter.dev/)
+[![Dart](https://img.shields.io/badge/Dart-3.9+-blue.svg)](https://dart.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey.svg)](https://flutter.dev/)
 
@@ -225,10 +225,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Last Updated**: December 2024  
-**Version**: 1.0.2  
-**Flutter Version**: 3.0+  
-**Dart Version**: 3.0+
+**Last Updated**: August 2025  
+**Version**: 1.1.0  
+**Flutter Version**: 3.35+  
+**Dart Version**: 3.9+
 
 ---
 
