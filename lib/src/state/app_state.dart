@@ -9,6 +9,8 @@ import '../models/transfer_info.dart';
 import '../models/torrent_details.dart';
 import '../models/torrent_add_options.dart';
 import '../utils/error_handler.dart';
+import '../theme/theme_manager.dart';
+import '../theme/theme_variants.dart';
 
 // Callback type for real-time updates
 typedef TorrentDetailsUpdateCallback =
@@ -38,9 +40,9 @@ class AppState extends ChangeNotifier {
   String? _qbittorrentVersion;
 
   // App settings
-  bool _isDarkMode = false;
   bool _pollingEnabled = true;
   int _pollingInterval = 4;
+  AppThemeVariant _currentTheme = AppThemeVariant.light;
 
   // Loading states
   final Set<String> _loadingTorrentHashes = {};
@@ -63,9 +65,9 @@ class AppState extends ChangeNotifier {
   Map<String, int> get filterCounts => _filterCounts;
   Map<String, int> get categoryCounts => _categoryCounts;
   List<String> get allCategories => _allCategories;
-  bool get isDarkMode => _isDarkMode;
   bool get pollingEnabled => _pollingEnabled;
   int get pollingInterval => _pollingInterval;
+  AppThemeVariant get currentTheme => _currentTheme;
   String? get serverName {
     if (_serverName != null && _serverName!.isNotEmpty) {
       return _serverName;
@@ -370,14 +372,38 @@ class AppState extends ChangeNotifier {
   // Load app settings from preferences
   Future<void> _loadSettings() async {
     try {
-      _isDarkMode = await Prefs.loadDarkMode();
       _activeFilter = await Prefs.loadStatusFilter();
       _activeSort = await Prefs.loadSortField();
       _sortDirection = await Prefs.loadSortDirection();
       _pollingEnabled = await Prefs.loadPollingEnabled();
       _pollingInterval = await Prefs.loadPollingInterval();
+
+      // Load theme with migration support
+      _currentTheme = await _loadThemeWithMigration();
     } catch (e) {
       print('Error loading settings: $e');
+    }
+  }
+
+  /// Load theme with migration from old dark mode setting
+  Future<AppThemeVariant> _loadThemeWithMigration() async {
+    try {
+      // First try to load the current theme
+      final currentTheme = await ThemeManager.getCurrentTheme();
+
+      // Check if user had dark mode enabled in previous version
+      final wasDarkMode = await Prefs.loadDarkMode();
+
+      // If they had dark mode enabled and are still on default theme, migrate to dark theme
+      if (wasDarkMode && currentTheme.name == 'light') {
+        await ThemeManager.setTheme(AppThemeVariant.dark);
+        return AppThemeVariant.dark;
+      }
+
+      return currentTheme;
+    } catch (e) {
+      print('Error loading theme with migration: $e');
+      return AppThemeVariant.light;
     }
   }
 
@@ -407,8 +433,9 @@ class AppState extends ChangeNotifier {
     refreshNow();
   }
 
-  void setDarkMode(bool isDarkMode) {
-    _isDarkMode = isDarkMode;
+  Future<void> setTheme(AppThemeVariant theme) async {
+    _currentTheme = theme;
+    await ThemeManager.setTheme(theme);
     notifyListeners();
   }
 

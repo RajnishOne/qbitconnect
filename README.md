@@ -1,4 +1,4 @@
-# QBitConnect
+# qBitConnect
 
 A Flutter app for managing qBittorrent remotely.
 

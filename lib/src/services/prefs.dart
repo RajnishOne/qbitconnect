@@ -8,7 +8,6 @@ class Prefs {
   static const String _keyCustomHeaders = 'custom_headers_text';
   static const String _keyPassword = 'password';
   static const String _keySavePassword = 'save_password';
-  static const String _keyDarkMode = 'dark_mode';
   static const String _keyStatusFilter = 'status_filter';
   static const String _keyPollingEnabled = 'polling_enabled';
   static const String _keyPollingInterval = 'polling_interval';
@@ -71,15 +70,11 @@ class Prefs {
     await _secure.delete(key: _keyPassword);
   }
 
-  // Dark mode settings
-  static Future<void> saveDarkMode(bool isDarkMode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyDarkMode, isDarkMode);
-  }
-
+  // Dark mode settings (deprecated - kept for migration)
+  @deprecated
   static Future<bool> loadDarkMode() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keyDarkMode) ?? false;
+    return prefs.getBool('dark_mode') ?? false;
   }
 
   // Status filter settings

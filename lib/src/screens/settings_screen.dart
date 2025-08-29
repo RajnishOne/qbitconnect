@@ -6,6 +6,7 @@ import '../services/prefs.dart';
 import '../services/firebase_service.dart';
 import '../utils/app_info.dart';
 import 'package:network_ninja/network_ninja.dart';
+import 'theme_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -15,7 +16,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _isDarkMode = false;
   String _statusFilter = 'all';
   bool _pollingEnabled = true;
   int _pollingInterval = 4;
@@ -34,38 +34,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadSettings() async {
-    final darkMode = await Prefs.loadDarkMode();
     final statusFilter = await Prefs.loadStatusFilter();
     final pollingEnabled = await Prefs.loadPollingEnabled();
     final pollingInterval = await Prefs.loadPollingInterval();
 
     if (mounted) {
       setState(() {
-        _isDarkMode = darkMode;
         _statusFilter = statusFilter;
         _pollingEnabled = pollingEnabled;
         _pollingInterval = pollingInterval;
         _isLoading = false;
       });
-    }
-  }
-
-  Future<void> _toggleDarkMode(bool value) async {
-    setState(() {
-      _isDarkMode = value;
-    });
-
-    await Prefs.saveDarkMode(value);
-
-    // Log theme change
-    FirebaseService.instance.logEvent(
-      name: 'theme_changed',
-      parameters: {'theme': value ? 'dark' : 'light'},
-    );
-
-    // Update the app theme
-    if (mounted) {
-      context.read<AppState>().setDarkMode(value);
     }
   }
 
@@ -207,13 +186,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Dark Mode Section
+            // Theme Section
             Card(
-              child: SwitchListTile(
-                title: const Text('Night Mode'),
-                value: _isDarkMode,
-                onChanged: _toggleDarkMode,
-                secondary: Icon(Icons.nights_stay),
+              child: ListTile(
+                title: const Text('Theme'),
+                subtitle: Text(
+                  context.watch<AppState>().currentTheme.displayName,
+                ),
+                leading: const Icon(Icons.palette),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ThemeSelectionScreen(),
+                    ),
+                  );
+                },
               ),
             ),
 

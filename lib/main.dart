@@ -5,6 +5,7 @@ import 'src/state/batch_selection_state.dart';
 import 'src/screens/connection_screen.dart';
 import 'src/screens/torrents_screen.dart';
 import 'src/theme/app_theme.dart';
+import 'src/theme/theme_manager.dart';
 import 'src/utils/app_info.dart';
 import 'src/services/firebase_service.dart';
 
@@ -76,6 +77,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
+  /// Determine theme mode based on current theme variant
+  ThemeMode _getThemeMode(AppState appState) {
+    switch (appState.currentTheme.name) {
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+      case 'oled':
+        return ThemeMode.dark;
+      default:
+        return ThemeMode.light;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -85,12 +99,33 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ],
       child: Consumer<AppState>(
         builder: (context, appState, child) {
-          return MaterialApp(
-            title: 'qBitConnect',
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            home: const _RootRouter(),
+          return FutureBuilder<ThemeData>(
+            future: ThemeManager.getLightTheme(),
+            builder: (context, lightThemeSnapshot) {
+              return FutureBuilder<ThemeData>(
+                future: ThemeManager.getDarkTheme(),
+                builder: (context, darkThemeSnapshot) {
+                  if (lightThemeSnapshot.hasData && darkThemeSnapshot.hasData) {
+                    return MaterialApp(
+                      title: 'qBitConnect',
+                      theme: lightThemeSnapshot.data!,
+                      darkTheme: darkThemeSnapshot.data!,
+                      themeMode: _getThemeMode(appState),
+                      home: const _RootRouter(),
+                    );
+                  } else {
+                    // Fallback to default themes while loading
+                    return MaterialApp(
+                      title: 'qBitConnect',
+                      theme: AppTheme.lightTheme,
+                      darkTheme: AppTheme.darkTheme,
+                      themeMode: _getThemeMode(appState),
+                      home: const _RootRouter(),
+                    );
+                  }
+                },
+              );
+            },
           );
         },
       ),
