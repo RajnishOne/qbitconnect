@@ -175,6 +175,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Future<void> _openGitHubRepository() async {
+    const url = 'https://github.com/RajnishOne/qbitconnect';
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not open GitHub repository'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -394,11 +412,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onTap: _onVersionTap,
                   ),
                   ListTile(
-                    title: const Text('qBitConnect'),
+                    title: const Text('Open Source'),
                     subtitle: const Text(
-                      'A Flutter app for qBittorrent remote',
+                      'This app is open source under MIT license',
                     ),
-                    leading: const Icon(Icons.download),
+                    leading: const Icon(Icons.code),
+                  ),
+                  ListTile(
+                    title: const Text('Contribute'),
+                    subtitle: const Text('Open a pull request on GitHub'),
+                    leading: const Icon(Icons.fork_right),
+                    trailing: const Icon(Icons.open_in_new),
+                    onTap: _openGitHubRepository,
                   ),
                 ],
               ),

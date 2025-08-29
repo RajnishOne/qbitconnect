@@ -1,11 +1,11 @@
-# Contributing to QBitConnect
+# Contributing to qBitConnect
 
-Thank you for your interest in contributing to QBitConnect! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to qBitConnect! This document provides guidelines and information for contributors.
 
 ## 🚀 Quick Start
 
 1. **Fork** the repository
-2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/qbitconnect.git`
+2. **Clone** your fork: `git clone https://github.com/RajnishOne/qbitconnect.git`
 3. **Create** a feature branch: `git checkout -b feature/your-feature-name`
 4. **Make** your changes
 5. **Test** your changes: `flutter test`
@@ -218,4 +218,4 @@ Contributors will be recognized in:
 - Release notes
 - App acknowledgments (if applicable)
 
-Thank you for contributing to QBitConnect! 🚀
+Thank you for contributing to qBitConnect! 🚀
