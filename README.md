@@ -11,7 +11,7 @@ A modern, cross-platform mobile application for remote qBittorrent management. C
 
 ## 📱 Download
 
-[![Google Play](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.bluematter.qbitconnect)
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play Store" width="200">](https://play.google.com/store/apps/details?id=com.bluematter.qbitconnect)
 
 ## Features
 
