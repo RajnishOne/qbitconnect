@@ -9,6 +9,11 @@ A Flutter app for managing qBittorrent remotely.
 
 A modern, cross-platform mobile application for remote qBittorrent management. Connect to your qBittorrent server from anywhere and manage your downloads with ease.
 
+## 📱 Download
+
+Get the app from Google Play Store:
+[![Google Play](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.bluematter.qbitconnect)
+
 ## Features
 
 - Connect to qBittorrent Web UI
