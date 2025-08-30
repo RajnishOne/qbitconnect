@@ -12,6 +12,7 @@ A modern, cross-platform mobile application for remote qBittorrent management. C
 ## 📱 Download
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play Store" width="200">](https://play.google.com/store/apps/details?id=com.bluematter.qbitconnect)
+[<img src="https://user-images.githubusercontent.com/15032958/208871323-c1c5511c-d6bc-47c8-b82b-7ce2f95f244a.png" alt="Get it on GitHub" width="200">](https://github.com/RajnishOne/qbitconnect/releases)
 
 ## Features
 
