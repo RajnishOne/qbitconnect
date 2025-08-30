@@ -203,30 +203,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: Check this README and code comments
 - **Logs**: Enable debug logging for troubleshooting
 
-## 📈 Roadmap
-
-### Planned Features
-
-- [ ] **WebSocket Support**: Real-time updates via WebSocket (if qBittorrent adds support)
-- [ ] **Multiple Server Management**: Switch between multiple qBittorrent instances
-- [ ] **Torrent Search**: Built-in torrent search functionality
-- [ ] **RSS Feeds**: Automatic torrent downloading from RSS feeds
-- [ ] **Scheduling**: Schedule torrent operations
-- [ ] **Notifications**: Push notifications for completed downloads
-- [ ] **Statistics**: Detailed download/upload statistics
-- [ ] **Backup/Restore**: Export/import settings and data
-- [ ] **Themes**: Additional theme options
-- [ ] **Widgets**: Home screen widgets for quick access
-
-### Technical Improvements
-
-- [ ] **Performance Optimization**: Further optimize polling and UI updates
-- [ ] **Offline Support**: Basic offline functionality
-- [ ] **Caching**: Improved data caching strategies
-- [ ] **Testing**: Comprehensive test coverage
-- [ ] **Accessibility**: Enhanced accessibility features
-- [ ] **Internationalization**: Multi-language support
-
 ---
 
 **Last Updated**: August 2025  
