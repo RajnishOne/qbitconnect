@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -66,7 +68,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: SafeArea(
-        bottom: true,
+        bottom: Platform.isAndroid,
         top: false,
         child: Scaffold(
           drawer: Drawer(

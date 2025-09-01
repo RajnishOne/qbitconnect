@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -179,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     return SafeArea(
-      bottom: true,
+      bottom: Platform.isAndroid,
       top: false,
       child: Scaffold(
         appBar: AppBar(title: const Text('Settings')),

@@ -132,7 +132,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: SafeArea(
-        bottom: true,
+        bottom: Platform.isAndroid,
         top: false,
         child: Scaffold(
           bottomNavigationBar: Padding(

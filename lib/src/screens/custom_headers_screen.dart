@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class CustomHeadersScreen extends StatefulWidget {
@@ -92,7 +94,7 @@ class _CustomHeadersScreenState extends State<CustomHeadersScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: true,
+      bottom: Platform.isAndroid,
       top: false,
       child: Scaffold(
         appBar: AppBar(

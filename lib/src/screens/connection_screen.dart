@@ -152,7 +152,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: SafeArea(
-        bottom: true,
+        bottom: Platform.isAndroid,
         top: false,
         child: Scaffold(
           appBar: AppBar(title: const Text('Connect to qBittorrent')),

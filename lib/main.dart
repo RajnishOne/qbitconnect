@@ -12,11 +12,6 @@ import 'src/services/firebase_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase in background to avoid blocking UI
-  FirebaseService.instance.initialize().catchError((e) {
-    print('Firebase initialization failed: $e');
-  });
-
   runApp(const MyApp());
 }
 
@@ -41,10 +36,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       print('App info initialization failed: $e');
     });
 
-    // Log app open event
-    FirebaseService.instance.logAppOpen().catchError((e) {
-      print('Analytics app open logging failed: $e');
-    });
+    // Initialize Firebase and log app open event
+    _initializeFirebaseAndLogAppOpen();
+  }
+
+  Future<void> _initializeFirebaseAndLogAppOpen() async {
+    try {
+      // Wait for Firebase to be initialized
+      await FirebaseService.instance.initialize();
+
+      // Now log app open event after initialization
+      await FirebaseService.instance.logAppOpen();
+    } catch (e) {
+      print('Firebase initialization or app open logging failed: $e');
+    }
   }
 
   @override

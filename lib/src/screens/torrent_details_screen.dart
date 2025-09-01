@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -233,7 +234,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: true,
+      bottom: Platform.isAndroid,
       top: false,
       child: Scaffold(
         appBar: AppBar(
