@@ -541,7 +541,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen> {
   Future<void> _addTorrent() async {
     if (_selectedFile == null || _selectedFile!.bytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a valid torrent file')),
+        SnackBar(content: const Text('Please select a valid torrent file')),
       );
       return;
     }
@@ -585,8 +585,8 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Torrent added successfully'),
+        SnackBar(
+          content: const Text('Torrent added successfully'),
           backgroundColor: Colors.green,
         ),
       );

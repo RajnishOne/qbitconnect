@@ -806,8 +806,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
         case 'recheck':
           await _appState!.recheckTorrent(widget.torrent.hash);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Torrent recheck started'),
+            SnackBar(
+              content: const Text('Torrent recheck started'),
               backgroundColor: Colors.green,
             ),
           );
@@ -821,8 +821,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
         case 'move_up':
           await _appState!.increaseTorrentPriority([widget.torrent.hash]);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Torrent moved up in queue'),
+            SnackBar(
+              content: const Text('Torrent moved up in queue'),
               backgroundColor: Colors.green,
             ),
           );
@@ -830,8 +830,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
         case 'move_down':
           await _appState!.decreaseTorrentPriority([widget.torrent.hash]);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Torrent moved down in queue'),
+            SnackBar(
+              content: const Text('Torrent moved down in queue'),
               backgroundColor: Colors.green,
             ),
           );
@@ -839,8 +839,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
         case 'move_top':
           await _appState!.moveTorrentToTop([widget.torrent.hash]);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Torrent moved to top of queue'),
+            SnackBar(
+              content: const Text('Torrent moved to top of queue'),
               backgroundColor: Colors.green,
             ),
           );
@@ -848,8 +848,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
         case 'move_bottom':
           await _appState!.moveTorrentToBottom([widget.torrent.hash]);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Torrent moved to bottom of queue'),
+            SnackBar(
+              content: const Text('Torrent moved to bottom of queue'),
               backgroundColor: Colors.green,
             ),
           );
@@ -898,8 +898,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                 );
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Torrent renamed successfully'),
+                  SnackBar(
+                    content: const Text('Torrent renamed successfully'),
                     backgroundColor: Colors.green,
                   ),
                 );
@@ -949,8 +949,10 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                 );
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Torrent location changed successfully'),
+                  SnackBar(
+                    content: const Text(
+                      'Torrent location changed successfully',
+                    ),
                     backgroundColor: Colors.green,
                   ),
                 );
@@ -995,8 +997,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                 if (context.mounted) {
                   Navigator.of(context).pop(); // Close details screen
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Torrent deleted successfully'),
+                    SnackBar(
+                      content: const Text('Torrent deleted successfully'),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -1028,8 +1030,10 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                 if (context.mounted) {
                   Navigator.of(context).pop(); // Close details screen
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Torrent and files deleted successfully'),
+                    SnackBar(
+                      content: const Text(
+                        'Torrent and files deleted successfully',
+                      ),
                       backgroundColor: Colors.green,
                     ),
                   );

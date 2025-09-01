@@ -158,6 +158,22 @@ class _TorrentsScreenState extends State<TorrentsScreen>
             actions: [
               Consumer<BatchSelectionState>(
                 builder: (context, batchState, child) {
+                  // Don't show any action buttons when torrent list is empty
+                  if (_getFilteredTorrents(appState).isEmpty) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () =>
+                              context.read<AppState>().refreshNow(),
+                          icon: const Icon(Icons.refresh),
+                          tooltip: 'Refresh torrents',
+                          iconSize: 22,
+                        ),
+                      ],
+                    );
+                  }
+
                   if (batchState.isSelectionMode) {
                     return Row(
                       mainAxisSize: MainAxisSize.min,
@@ -177,11 +193,23 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                       ],
                     );
                   } else {
-                    return IconButton(
-                      onPressed: () => batchState.enterSelectionMode(),
-                      icon: const Icon(Icons.check_box_outlined),
-                      tooltip: 'Select torrents',
-                      iconSize: 22,
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () =>
+                              context.read<AppState>().refreshNow(),
+                          icon: const Icon(Icons.refresh),
+                          tooltip: 'Refresh torrents',
+                          iconSize: 22,
+                        ),
+                        IconButton(
+                          onPressed: () => batchState.enterSelectionMode(),
+                          icon: const Icon(Icons.check_box_outlined),
+                          tooltip: 'Select torrents',
+                          iconSize: 22,
+                        ),
+                      ],
                     );
                   }
                 },
@@ -194,22 +222,23 @@ class _TorrentsScreenState extends State<TorrentsScreen>
             onRefresh: () => context.read<AppState>().refreshNow(),
             child: Column(
               children: [
-                // Search and Filter Bar
-                SearchFilterBar(
-                  searchController: _searchController,
-                  searchQuery: _searchQuery,
-                  onSearchChanged: (value) {
-                    setState(() {
-                      _searchQuery = value.toLowerCase();
-                    });
-                  },
-                  onClearSearch: () {
-                    _searchController.clear();
-                    setState(() {
-                      _searchQuery = '';
-                    });
-                  },
-                ),
+                // Search and Filter Bar - Only show when torrents exist
+                if (_getFilteredTorrents(appState).isNotEmpty)
+                  SearchFilterBar(
+                    searchController: _searchController,
+                    searchQuery: _searchQuery,
+                    onSearchChanged: (value) {
+                      setState(() {
+                        _searchQuery = value.toLowerCase();
+                      });
+                    },
+                    onClearSearch: () {
+                      _searchController.clear();
+                      setState(() {
+                        _searchQuery = '';
+                      });
+                    },
+                  ),
                 // Torrents List
                 Expanded(
                   child: _getFilteredTorrents(appState).isEmpty

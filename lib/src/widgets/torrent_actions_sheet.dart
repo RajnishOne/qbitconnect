@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../models/torrent.dart';
 import '../state/app_state.dart';
 import '../state/batch_selection_state.dart';
-import '../services/firebase_service.dart';
 
 // Delete dialog choices (must be top-level)
 enum DeleteChoice { torrentOnly, withFiles }
@@ -100,8 +99,8 @@ class TorrentActionsSheet extends StatelessWidget {
                           torrent.hash,
                         ]);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Torrent moved up in queue'),
+                          SnackBar(
+                            content: const Text('Torrent moved up in queue'),
                             backgroundColor: Colors.green,
                           ),
                         );
@@ -125,8 +124,8 @@ class TorrentActionsSheet extends StatelessWidget {
                           torrent.hash,
                         ]);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Torrent moved down in queue'),
+                          SnackBar(
+                            content: const Text('Torrent moved down in queue'),
                             backgroundColor: Colors.green,
                           ),
                         );
@@ -150,8 +149,10 @@ class TorrentActionsSheet extends StatelessWidget {
                           torrent.hash,
                         ]);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Torrent moved to top of queue'),
+                          SnackBar(
+                            content: const Text(
+                              'Torrent moved to top of queue',
+                            ),
                             backgroundColor: Colors.green,
                           ),
                         );
@@ -175,8 +176,10 @@ class TorrentActionsSheet extends StatelessWidget {
                           torrent.hash,
                         ]);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Torrent moved to bottom of queue'),
+                          SnackBar(
+                            content: const Text(
+                              'Torrent moved to bottom of queue',
+                            ),
                             backgroundColor: Colors.green,
                           ),
                         );

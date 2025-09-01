@@ -498,7 +498,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen> {
     final urls = _urlController.text.trim();
     if (urls.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter at least one URL')),
+        SnackBar(content: const Text('Please enter at least one URL')),
       );
       return;
     }

@@ -112,9 +112,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Network logs bubble enabled for this session.'),
-          duration: Duration(seconds: 2),
+        SnackBar(
+          content: const Text('Network logs bubble enabled for this session.'),
+          duration: const Duration(seconds: 2),
         ),
       );
     }
@@ -129,8 +129,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not open Privacy Policy'),
+          SnackBar(
+            content: const Text('Could not open Privacy Policy'),
             backgroundColor: Colors.red,
           ),
         );
@@ -147,8 +147,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not open Terms & Conditions'),
+          SnackBar(
+            content: const Text('Could not open Terms & Conditions'),
             backgroundColor: Colors.red,
           ),
         );
@@ -165,12 +165,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not open GitHub repository'),
+          SnackBar(
+            content: const Text('Could not open GitHub repository'),
             backgroundColor: Colors.red,
           ),
         );
       }
+    }
+  }
+
+  String _getIntervalDisplayText(int seconds) {
+    if (seconds < 60) {
+      return 'Every $seconds seconds';
+    } else if (seconds == 60) {
+      return 'Every 1 minute';
+    } else {
+      return 'Every 15 minutes';
     }
   }
 
@@ -310,14 +320,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   if (_pollingEnabled) ...[
                     ListTile(
                       title: const Text('Refresh Interval'),
-                      subtitle: Text('Every $_pollingInterval seconds'),
+                      subtitle: Text(_getIntervalDisplayText(_pollingInterval)),
                       leading: const Icon(Icons.timer),
                       trailing: DropdownButton<int>(
                         value: _pollingInterval,
-                        items: [2, 4, 6, 8, 10, 15].map((seconds) {
+                        items: [2, 4, 6, 8, 10, 15, 60, 900].map((seconds) {
+                          String displayText;
+                          if (seconds < 60) {
+                            displayText = '${seconds}s';
+                          } else if (seconds == 60) {
+                            displayText = '1m';
+                          } else {
+                            displayText = '15m';
+                          }
                           return DropdownMenuItem<int>(
                             value: seconds,
-                            child: Text('${seconds}s'),
+                            child: Text(displayText),
                           );
                         }).toList(),
                         onChanged: (value) {

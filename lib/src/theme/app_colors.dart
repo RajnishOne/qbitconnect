@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 
 /// App color scheme for both light and dark modes
 class AppColors {
-  // Primary colors - Modern teal/cyan instead of blue
-  static const Color primaryLight = Color(0xFF21539A);
-  static const Color primaryDark = Color(0xFF89A1DD);
+  // Primary colors - Modern blue for light, muted purple-blue for dark/OLED
+  static const Color primaryLight = Color(0xFF1976D2);
+  static const Color primaryDark = Color(
+    0xFF5C7CFA,
+  ); // Muted purple-blue for dark theme
 
-  // Secondary colors - Complementary purple
+  // Secondary colors - Complementary purple for light, softer blue for dark
   static const Color secondaryLight = Color(0xFF7C4DFF);
-  static const Color secondaryDark = Color(0xFFB388FF);
+  static const Color secondaryDark = Color(
+    0xFF748FFC,
+  ); // Softer blue for dark theme
 
   // Background colors - Clean whites and dark grays
   static const Color backgroundLight = Color(0xFFFAFAFA);
@@ -32,13 +36,17 @@ class AppColors {
   static const Color errorLight = Color(0xFFF44336);
   static const Color errorDark = Color(0xFFE57373);
   static const Color infoLight = Color(0xFF00BFA5);
-  static const Color infoDark = Color(0xFF4DD0E1);
+  static const Color infoDark = Color(
+    0xFF748FFC,
+  ); // Muted blue info color for dark theme
 
   // Torrent status colors - Distinct and meaningful
   static const Color downloadingLight = Color(0xFF4CAF50);
   static const Color downloadingDark = Color(0xFF81C784);
   static const Color seedingLight = Color(0xFF00BFA5);
-  static const Color seedingDark = Color(0xFF4DD0E1);
+  static const Color seedingDark = Color(
+    0xFF748FFC,
+  ); // Muted blue seeding color for dark theme
   static const Color pausedLight = Color(0xFFFF9800);
   static const Color pausedDark = Color(0xFFFFB74D);
   static const Color completedLight = Color(0xFF9C27B0);
@@ -52,7 +60,9 @@ class AppColors {
   static const Color downloadSpeedLight = Color(0xFF4CAF50);
   static const Color downloadSpeedDark = Color(0xFF81C784);
   static const Color uploadSpeedLight = Color(0xFF00BFA5);
-  static const Color uploadSpeedDark = Color(0xFF4DD0E1);
+  static const Color uploadSpeedDark = Color(
+    0xFF748FFC,
+  ); // Muted blue upload speed color for dark theme
 
   // Border and divider colors - Subtle and clean
   static const Color borderLight = Color(0xFFE0E0E0);

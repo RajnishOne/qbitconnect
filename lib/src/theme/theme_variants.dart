@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
-import 'app_theme.dart';
 import 'app_text_styles.dart';
 
 /// Theme variant with custom color schemes
@@ -407,8 +406,8 @@ AppColorScheme _lightColorScheme({required bool isDarkMode}) {
 
 AppColorScheme _darkColorScheme({required bool isDarkMode}) {
   return const AppColorScheme(
-    primary: Color(0xFF64B5F6), // Light blue
-    secondary: Color(0xFF4DD0E1), // Cyan
+    primary: Color(0xFF5C7CFA), // Muted purple-blue for dark theme
+    secondary: Color(0xFF748FFC), // Softer blue for dark theme
     background: Color(0xFF121212), // Dark gray background
     surface: Color(0xFF1E1E1E), // Darker gray surface
     textPrimary: Color(0xFFE0E0E0), // Light gray text
@@ -417,15 +416,17 @@ AppColorScheme _darkColorScheme({required bool isDarkMode}) {
     success: Color(0xFF81C784), // Light green
     warning: Color(0xFFFFB74D), // Light orange
     error: Color(0xFFE57373), // Light red
-    info: Color(0xFF4DD0E1), // Cyan
+    info: Color(0xFF748FFC), // Muted blue info color for dark theme
     downloading: Color(0xFF81C784), // Light green
-    seeding: Color(0xFF4DD0E1), // Cyan
+    seeding: Color(0xFF748FFC), // Muted blue seeding color for dark theme
     paused: Color(0xFFFFB74D), // Light orange
     completed: Color(0xFFBA68C8), // Light purple
     errored: Color(0xFFE57373), // Light red
     stalled: Color(0xFFB0B0B0), // Light gray
     downloadSpeed: Color(0xFF81C784), // Light green
-    uploadSpeed: Color(0xFF4DD0E1), // Cyan
+    uploadSpeed: Color(
+      0xFF748FFC,
+    ), // Muted blue upload speed color for dark theme
     border: Color(0xFF424242), // Dark gray border
     divider: Color(0xFF424242), // Dark gray divider
     shadow: Color(0x1AFFFFFF), // White shadow
@@ -435,8 +436,8 @@ AppColorScheme _darkColorScheme({required bool isDarkMode}) {
 
 AppColorScheme _oledColorScheme({required bool isDarkMode}) {
   return const AppColorScheme(
-    primary: Color(0xFF64B5F6), // Light blue
-    secondary: Color(0xFF4DD0E1), // Cyan
+    primary: Color(0xFF6C7CE7), // Softer purple-blue for OLED theme
+    secondary: Color(0xFF91A7FF), // Light muted blue for OLED theme
     background: Color(0xFF000000), // Pure black background
     surface: Color(0xFF0A0A0A), // Very dark gray surface
     textPrimary: Color(0xFFE0E0E0), // Light gray text
@@ -445,15 +446,17 @@ AppColorScheme _oledColorScheme({required bool isDarkMode}) {
     success: Color(0xFF81C784), // Light green
     warning: Color(0xFFFFB74D), // Light orange
     error: Color(0xFFE57373), // Light red
-    info: Color(0xFF4DD0E1), // Cyan
+    info: Color(0xFF91A7FF), // Muted blue info color for OLED theme
     downloading: Color(0xFF81C784), // Light green
-    seeding: Color(0xFF4DD0E1), // Cyan
+    seeding: Color(0xFF91A7FF), // Muted blue seeding color for OLED theme
     paused: Color(0xFFFFB74D), // Light orange
     completed: Color(0xFFBA68C8), // Light purple
     errored: Color(0xFFE57373), // Light red
     stalled: Color(0xFFB0B0B0), // Light gray
     downloadSpeed: Color(0xFF81C784), // Light green
-    uploadSpeed: Color(0xFF4DD0E1), // Cyan
+    uploadSpeed: Color(
+      0xFF91A7FF,
+    ), // Muted blue upload speed color for OLED theme
     border: Color(0xFF1A1A1A), // Very dark gray border
     divider: Color(0xFF1A1A1A), // Very dark gray divider
     shadow: Color(0x1AFFFFFF), // White shadow
