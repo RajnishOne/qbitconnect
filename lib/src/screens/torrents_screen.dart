@@ -9,6 +9,8 @@ import '../models/torrent.dart';
 import '../services/firebase_service.dart';
 import '../widgets/search_filter_bar.dart';
 import '../widgets/add_torrent_fab.dart';
+import '../widgets/animated_reload_button.dart';
+import '../widgets/animated_reload_elevated_button.dart';
 import '../widgets/torrent_card_with_selection.dart';
 import '../widgets/torrent_actions_sheet.dart';
 import '../widgets/batch_actions_bar.dart';
@@ -163,10 +165,9 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                     return Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
+                        AnimatedReloadButton(
                           onPressed: () =>
                               context.read<AppState>().refreshNow(),
-                          icon: const Icon(Icons.refresh),
                           tooltip: 'Refresh torrents',
                           iconSize: 22,
                         ),
@@ -196,10 +197,9 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                     return Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
+                        AnimatedReloadButton(
                           onPressed: () =>
                               context.read<AppState>().refreshNow(),
-                          icon: const Icon(Icons.refresh),
                           tooltip: 'Refresh torrents',
                           iconSize: 22,
                         ),
@@ -277,11 +277,10 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                                 if (_searchQuery.isEmpty &&
                                     appState.hasLoadedOnce) ...[
                                   const SizedBox(height: 24),
-                                  ElevatedButton.icon(
+                                  AnimatedReloadElevatedButton(
                                     onPressed: () =>
                                         context.read<AppState>().refreshNow(),
-                                    icon: const Icon(Icons.refresh),
-                                    label: const Text('Reload'),
+                                    label: 'Reload',
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 24,
