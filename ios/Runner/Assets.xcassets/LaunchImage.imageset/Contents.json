@@ -1,0 +1,38 @@
+{
+  "images" : [
+    {
+      "filename" : "LaunchImage.png",
+      "idiom" : "iphone",
+      "scale" : "1x",
+      "size" : "320x568"
+    },
+    {
+      "filename" : "LaunchImage@2x.png",
+      "idiom" : "iphone",
+      "scale" : "2x",
+      "size" : "640x1136"
+    },
+    {
+      "filename" : "LaunchImage@3x.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "size" : "1242x2208"
+    },
+    {
+      "filename" : "LaunchImage-ipad.png",
+      "idiom" : "ipad",
+      "scale" : "1x",
+      "size" : "768x1024"
+    },
+    {
+      "filename" : "LaunchImage-ipad@2x.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "size" : "1536x2048"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
