@@ -1,0 +1,251 @@
+name: Build iOS IPA and Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (e.g., v1.4.0)'
+        required: true
+        type: string
+      release_notes:
+        description: 'Release notes'
+        required: false
+        type: string
+        default: 'New iOS release'
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.0'
+        channel: 'stable'
+        architecture: x64
+        
+    - name: Configure Git for Flutter
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-*
+        flutter --version
+        dart --version
+        
+    - name: Setup Xcode (use pre-installed)
+      run: |
+        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        xcodebuild -version
+        
+    - name: Cache Flutter dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.pub-cache
+          **/.flutter-plugins
+          **/.flutter-plugin-dependencies
+          **/.dart_tool/package_config.json
+        key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-flutter-
+          
+    - name: Cache CocoaPods
+      uses: actions/cache@v4
+      with:
+        path: ios/Pods
+        key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pods-
+          
+    - name: Get Flutter dependencies
+      run: flutter pub get
+      
+    - name: Install FlutterFire CLI
+      run: |
+        dart pub global activate flutterfire_cli
+        echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+      
+    - name: Create Firebase configuration files
+      run: |
+        echo '${{ secrets.IOS_FIREBASE_CONFIG }}' | base64 --decode > ios/Runner/GoogleService-Info.plist
+        echo '${{ secrets.FIREBASE_JSON_CONFIG }}' | base64 --decode > firebase.json
+        echo '${{ secrets.FIREBASE_OPTIONS_DART }}' | base64 --decode > lib/firebase_options.dart
+        
+        # Create firebase_app_id_file.json to prevent Crashlytics warnings
+        echo '{"file_generated_by": "flutterfire_cli", "purpose": "firebase-crashlytics-plugin"}' > ios/firebase_app_id_file.json
+        
+    - name: Install iOS pods
+      run: |
+        cd ios
+        rm -f Podfile.lock
+        pod install --repo-update
+      
+    - name: Create custom build configuration
+      run: |
+        cd ios
+        
+        # Create a custom xcconfig that completely disables code signing
+        echo '#include "Release.xcconfig"' > Flutter/UnsignedRelease.xcconfig
+        echo '' >> Flutter/UnsignedRelease.xcconfig
+        echo '// Completely disable code signing' >> Flutter/UnsignedRelease.xcconfig
+        echo 'CODE_SIGNING_ALLOWED = NO' >> Flutter/UnsignedRelease.xcconfig
+        echo 'CODE_SIGNING_REQUIRED = NO' >> Flutter/UnsignedRelease.xcconfig
+        echo 'CODE_SIGN_IDENTITY = ' >> Flutter/UnsignedRelease.xcconfig
+        echo 'CODE_SIGN_STYLE = Manual' >> Flutter/UnsignedRelease.xcconfig
+        echo 'DEVELOPMENT_TEAM = ' >> Flutter/UnsignedRelease.xcconfig
+        echo 'PROVISIONING_PROFILE = ' >> Flutter/UnsignedRelease.xcconfig
+        echo 'PROVISIONING_PROFILE_SPECIFIER = ' >> Flutter/UnsignedRelease.xcconfig
+        echo 'ENABLE_BITCODE = NO' >> Flutter/UnsignedRelease.xcconfig
+        
+        cd ..
+        
+    - name: Build unsigned iOS app using Flutter (for AltStore)
+      run: |
+        # Set environment variables to disable code signing
+        export CODE_SIGNING_ALLOWED=NO
+        export CODE_SIGNING_REQUIRED=NO
+        export CODE_SIGN_IDENTITY=""
+        
+        # Try Flutter build first
+        echo "Attempting Flutter build with code signing disabled..."
+        if ! flutter build ios --release --no-codesign --verbose; then
+          echo "Flutter build failed, trying alternative approach..."
+          
+          # Try building with additional Xcode arguments
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            PROVISIONING_PROFILE="" \
+            build
+          cd ..
+        fi
+        
+    - name: Create unsigned IPA for AltStore
+      run: |
+        # Check what build outputs we have
+        echo "Checking build outputs..."
+        ls -la build/ios/
+        
+        # Verify we have a device build (required for AltStore)
+        if [ ! -d "build/ios/iphoneos" ]; then
+          echo "ERROR: No device build found! AltStore requires device (arm64) builds."
+          exit 1
+        fi
+        
+        # Create device IPA for AltStore sideloading
+        echo "Creating unsigned device IPA for AltStore..."
+        cd build/ios/iphoneos
+        
+        # Verify Runner.app exists
+        if [ ! -d "Runner.app" ]; then
+          echo "ERROR: Runner.app not found in device build!"
+          exit 1
+        fi
+        
+        # Check app architecture (should be arm64 for real devices)
+        echo "Checking app architecture..."
+        file Runner.app/Runner || true
+        lipo -info Runner.app/Runner || true
+        
+        # Create IPA package
+        mkdir -p Payload
+        cp -r Runner.app Payload/
+        
+        # Create the IPA file
+        zip -r ../../../qbitconnect-unsigned.ipa Payload/
+        cd ../../..
+        
+        # Verify IPA was created
+        if [ -f "qbitconnect-unsigned.ipa" ]; then
+          echo "✅ Successfully created unsigned IPA for AltStore!"
+          ls -lah qbitconnect-unsigned.ipa
+          
+          # Get IPA info
+          unzip -l qbitconnect-unsigned.ipa | head -20
+        else
+          echo "❌ Failed to create IPA file!"
+          exit 1
+        fi
+        
+    - name: Get app version
+      id: get_version
+      run: |
+        VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+        echo "app_version=$VERSION" >> $GITHUB_OUTPUT
+        echo "App version: $VERSION"
+        
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.event.inputs.release_tag }}
+        name: qBitConnect ${{ github.event.inputs.release_tag }}
+        body: |
+          ## qBitConnect iOS Release ${{ github.event.inputs.release_tag }}
+          
+          **App Version:** ${{ steps.get_version.outputs.app_version }}
+          **Build Date:** ${{ github.run_id }}
+          
+          ### Release Notes
+          ${{ github.event.inputs.release_notes }}
+          
+          ### Installation Instructions
+          This is an unsigned device IPA file (arm64) suitable for sideloading.
+          
+          1. **AltStore Sideloading (Recommended):**
+             - Install AltStore on your device
+             - Download this IPA file
+             - Open with AltStore to sideload directly
+             - No additional signing required!
+          
+          2. **Other Sideloading Tools:**
+             - Sideloadly
+             - 3uTools
+             - Cydia Impactor alternatives
+          
+          3. **Manual Re-signing:**
+             - Re-sign with your own certificate using:
+               - Xcode
+               - fastlane
+               - iOS App Signer
+          
+          ### Technical Details
+          - Built with Flutter 3.24.0
+          - iOS Deployment Target: iOS 12.0+
+          - Architecture: arm64
+          - Build Configuration: Release (unsigned)
+          
+          ### Changelog
+          See the commit history for detailed changes since the last release.
+          
+          ---
+          
+          **Note:** This is an unsigned build. You'll need to sign it with your own certificate before installing on physical devices.
+        draft: false
+        prerelease: ${{ github.event.inputs.prerelease }}
+        files: |
+          qbitconnect-unsigned.ipa
+        
+    - name: Build Summary
+      run: |
+        echo "## 🚀 iOS Build Completed Successfully!" >> $GITHUB_STEP_SUMMARY
+        echo "- **Release Tag:** ${{ github.event.inputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **App Version:** ${{ steps.get_version.outputs.app_version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Release:** [${{ github.event.inputs.release_tag }}](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.release_tag }})" >> $GITHUB_STEP_SUMMARY
