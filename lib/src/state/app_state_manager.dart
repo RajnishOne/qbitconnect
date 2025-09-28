@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import '../api/qbittorrent_api.dart';
@@ -8,8 +7,6 @@ import '../models/transfer_info.dart';
 import '../models/torrent_details.dart';
 import '../models/torrent_add_options.dart';
 import '../theme/theme_variants.dart';
-import '../services/deep_link_service.dart';
-import '../services/torrent_file_handler.dart';
 import 'connection_state.dart';
 import 'torrent_state.dart';
 import 'settings_state.dart';
@@ -32,9 +29,6 @@ class AppState extends ChangeNotifier {
     _torrentState.addListener(_onTorrentStateChanged);
     _settingsState.addListener(_onSettingsStateChanged);
     _realtimeState.addListener(_onRealtimeStateChanged);
-
-    // Set up deep link callbacks
-    _setupDeepLinkCallbacks();
   }
 
   // Connection state delegates
@@ -79,119 +73,8 @@ class AppState extends ChangeNotifier {
       // Initialize connection (includes auto-connect)
       // The connection state change handler will automatically start polling if successful
       await _connectionState.initialize();
-
-      // Check for pending torrent files or magnet links
-      await _handlePendingDeepLinks();
     } catch (e) {
       // Handle initialization errors
-    }
-  }
-
-  /// Set up deep link callbacks
-  void _setupDeepLinkCallbacks() {
-    // Set up magnet link callback
-    DeepLinkService().setMagnetLinkCallback(_handleMagnetLink);
-
-    // Set up torrent file callback
-    DeepLinkService().setTorrentFileCallback(_handleTorrentFile);
-  }
-
-  /// Handle pending deep links (magnet links or torrent files)
-  Future<void> _handlePendingDeepLinks() async {
-    // Check for pending magnet links
-    final pendingMagnetLink = DeepLinkService().getPendingMagnetLink();
-    if (pendingMagnetLink != null) {
-      await _handleMagnetLink(pendingMagnetLink);
-      DeepLinkService().clearPendingMagnetLink();
-    }
-
-    // Check for pending torrent files
-    final pendingTorrentFile = DeepLinkService().getPendingTorrentFile();
-    if (pendingTorrentFile != null) {
-      await _handleTorrentFile(pendingTorrentFile);
-      DeepLinkService().clearPendingTorrentFile();
-    }
-  }
-
-  /// Handle magnet link
-  Future<void> _handleMagnetLink(String magnetLink) async {
-    if (kDebugMode) {
-      print('AppState: Handling magnet link: $magnetLink');
-    }
-
-    // If not authenticated, store the magnet link for later
-    if (!isAuthenticated) {
-      if (kDebugMode) {
-        print('AppState: Not authenticated, storing magnet link for later');
-      }
-      return;
-    }
-
-    // Add the magnet link as a torrent
-    await addTorrentFromUrl(url: magnetLink);
-  }
-
-  /// Handle torrent file
-  Future<void> _handleTorrentFile(String torrentFilePath) async {
-    if (kDebugMode) {
-      print('AppState: Handling torrent file: $torrentFilePath');
-    }
-
-    try {
-      // Process the torrent file
-      final processedPath = await TorrentFileHandler().processTorrentFile(
-        torrentFilePath,
-      );
-
-      if (processedPath == null) {
-        if (kDebugMode) {
-          print('AppState: Failed to process torrent file');
-        }
-        return;
-      }
-
-      // If not authenticated, we'll handle it when the user connects
-      if (!isAuthenticated) {
-        if (kDebugMode) {
-          print(
-            'AppState: Not authenticated, torrent file will be added when connected',
-          );
-        }
-        return;
-      }
-
-      // Read the torrent file and add it
-      await _addTorrentFromFile(processedPath);
-    } catch (e) {
-      if (kDebugMode) {
-        print('AppState: Error handling torrent file: $e');
-      }
-    }
-  }
-
-  /// Add torrent from file path
-  Future<void> _addTorrentFromFile(String filePath) async {
-    try {
-      final file = File(filePath);
-      if (!await file.exists()) {
-        if (kDebugMode) {
-          print('AppState: Torrent file does not exist: $filePath');
-        }
-        return;
-      }
-
-      final bytes = await file.readAsBytes();
-      final fileName = file.path.split('/').last;
-
-      await addTorrentFromFile(fileName: fileName, bytes: bytes);
-
-      if (kDebugMode) {
-        print('AppState: Successfully added torrent from file: $fileName');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('AppState: Error adding torrent from file: $e');
-      }
     }
   }
 
@@ -544,10 +427,6 @@ class AppState extends ChangeNotifier {
     _torrentState.removeListener(_onTorrentStateChanged);
     _settingsState.removeListener(_onSettingsStateChanged);
     _realtimeState.removeListener(_onRealtimeStateChanged);
-
-    // Clear deep link callbacks
-    DeepLinkService().clearMagnetLinkCallback();
-    DeepLinkService().clearTorrentFileCallback();
 
     _refreshDebounceTimer?.cancel();
     _connectionState.dispose();

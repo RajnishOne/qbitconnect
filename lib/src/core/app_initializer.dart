@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../theme/theme_cache.dart';
 import '../utils/app_info.dart';
 import '../services/firebase_service.dart';
-import '../services/deep_link_service.dart';
 
 /// Handles all app initialization logic
 class AppInitializer {
@@ -23,9 +22,6 @@ class AppInitializer {
     // Initialize Firebase and log app open event
     await _initializeFirebaseAndLogAppOpen();
 
-    // Initialize deep link service
-    await _initializeDeepLinkService();
-
     // Trigger iOS local network permission dialog early
     await _triggerIOSLocalNetworkPermission();
   }
@@ -40,15 +36,6 @@ class AppInitializer {
       await FirebaseService.instance.logAppOpen();
     } catch (e) {
       // Firebase initialization or app open logging failed: $e
-    }
-  }
-
-  /// Initialize deep link service
-  static Future<void> _initializeDeepLinkService() async {
-    try {
-      await DeepLinkService().initialize();
-    } catch (e) {
-      // Deep link service initialization failed: $e
     }
   }
 
