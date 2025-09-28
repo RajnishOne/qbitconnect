@@ -25,6 +25,49 @@ class AuthService {
     }
   }
 
+  /// Login to qBittorrent without credentials (for local network access)
+  /// This attempts to access the API without authentication
+  Future<void> loginWithoutAuth() async {
+    try {
+      // Try to access a public endpoint to test if authentication is required
+      final response = await _dio.get(
+        QbittorrentEndpoints.buildUrl(
+          _apiPrefix,
+          QbittorrentEndpoints.appVersion,
+        ),
+        options: Options(
+          contentType: 'application/x-www-form-urlencoded',
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      );
+
+      // If we get a successful response, no authentication is required
+      if (response.statusCode == 200) {
+        return;
+      }
+
+      // If we get 401/403, authentication is required
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        throw Exception('Authentication required: ${response.statusCode}');
+      }
+
+      // Other status codes might indicate the endpoint doesn't exist
+      throw Exception('Unexpected response: ${response.statusCode}');
+    } catch (e) {
+      // If it's a DioException, check the status code
+      if (e is DioException) {
+        if (e.response?.statusCode == 401 || e.response?.statusCode == 403) {
+          throw Exception('Authentication required: ${e.response?.statusCode}');
+        }
+        if (e.response?.statusCode == 404) {
+          throw Exception('API endpoint not found: ${e.response?.statusCode}');
+        }
+      }
+      rethrow;
+    }
+  }
+
   /// Logout from qBittorrent
   Future<void> logout() async {
     await _dio.post(

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../services/firebase_service.dart';
 import '../api/qbittorrent_api.dart';
 import '../utils/error_handler.dart';
+import '../utils/network_utils.dart';
 import '../constants/app_strings.dart';
 import '../state/app_state_manager.dart';
 import 'custom_headers_screen.dart';
@@ -98,6 +99,13 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     }
   }
 
+  /// Check if the current host is on a local network
+  bool _isLocalNetwork() {
+    final host = _hostController.text.trim();
+    if (host.isEmpty) return false;
+    return NetworkUtils.isLocalNetwork(host);
+  }
+
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -147,6 +155,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
       return;
     }
 
+    // Set loading state and clear any previous errors
     setState(() {
       _isLoading = true;
       _error = null;
@@ -183,11 +192,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         baseUrl += path;
       }
 
-      // Test connection with provided credentials before connecting
-      setState(() {
-        _isLoading = true;
-        _error = null;
-      });
+      // Get connection parameters
+      final isLocal = _isLocalNetwork();
+      final hasCredentials =
+          _usernameController.text.trim().isNotEmpty &&
+          _passwordController.text.isNotEmpty;
 
       try {
         // Create a temporary API client to test the connection
@@ -197,42 +206,85 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
           enableLogging: false, // Disable logging for validation
         );
 
-        // Test login with provided credentials with timeout
-        await Future.any([
-          tempApiClient.login(
-            username: _usernameController.text.trim(),
-            password: _passwordController.text,
-          ),
-          Future.delayed(const Duration(seconds: 10), () {
-            throw Exception(
-              'Connection timeout - server did not respond within 10 seconds',
-            );
-          }),
-        ]);
-
-        // Logout from the test connection
-        await tempApiClient.logout();
-      } catch (e) {
-        setState(() {
-          // Log the actual error for debugging
-          debugPrint('ConnectionScreen validation error: $e');
-
-          if (e.toString().contains('Login failed') ||
-              e.toString().contains('Fails.') ||
-              e.toString().contains('401') ||
-              e.toString().contains('403')) {
-            _error =
-                'Invalid username or password. Please check your credentials and try again.';
-          } else if (e.toString().contains('Connection refused') ||
-              e.toString().contains('timeout') ||
-              e.toString().contains('Network is unreachable') ||
-              e.toString().contains('Connection timeout')) {
-            _error =
-                'Cannot connect to qBittorrent. Please check the address and port, and ensure qBittorrent is running.';
-          } else {
-            _error =
-                'Failed to connect to qBittorrent: ${e.toString()}. Please check your connection details and try again.';
+        // Test connection based on available credentials and network type
+        if (hasCredentials) {
+          // Test login with provided credentials with timeout
+          await Future.any([
+            tempApiClient.login(
+              username: _usernameController.text.trim(),
+              password: _passwordController.text,
+            ),
+            Future.delayed(const Duration(seconds: 10), () {
+              throw Exception(
+                'Connection timeout - server did not respond within 10 seconds',
+              );
+            }),
+          ]);
+        } else if (isLocal) {
+          // Try to connect without authentication for local network
+          try {
+            await Future.any([
+              tempApiClient.loginWithoutAuth(),
+              Future.delayed(const Duration(seconds: 10), () {
+                throw Exception(
+                  'Connection timeout - server did not respond within 10 seconds',
+                );
+              }),
+            ]);
+          } catch (e) {
+            // If no-auth fails on local network, provide helpful message
+            if (e.toString().contains('Authentication required') ||
+                e.toString().contains('403')) {
+              throw Exception(
+                'This qBittorrent instance requires authentication. Please provide username and password.',
+              );
+            }
+            rethrow;
           }
+        } else {
+          throw Exception(
+            'Username and password are required for remote connections',
+          );
+        }
+
+        // Logout from the test connection if we used authentication
+        if (hasCredentials) {
+          await tempApiClient.logout();
+        }
+      } catch (e) {
+        // Log the actual error for debugging
+        debugPrint('ConnectionScreen validation error: $e');
+
+        // Determine error message
+        String errorMessage;
+        if (e.toString().contains('Username and password are required')) {
+          errorMessage =
+              'Username and password are required for remote connections.';
+        } else if (e.toString().contains('Authentication required') ||
+            e.toString().contains('403')) {
+          errorMessage =
+              'This qBittorrent instance requires authentication. Please provide username and password.';
+        } else if (e.toString().contains('Login failed') ||
+            e.toString().contains('Fails.') ||
+            e.toString().contains('401') ||
+            e.toString().contains('403')) {
+          errorMessage =
+              'Invalid username or password. Please check your credentials and try again.';
+        } else if (e.toString().contains('Connection refused') ||
+            e.toString().contains('timeout') ||
+            e.toString().contains('Network is unreachable') ||
+            e.toString().contains('Connection timeout')) {
+          errorMessage =
+              'Cannot connect to qBittorrent. Please check the address and port, and ensure qBittorrent is running.';
+        } else {
+          errorMessage =
+              'Failed to connect to qBittorrent: ${e.toString()}. Please check your connection details and try again.';
+        }
+
+        // Update state once with error message and loading state
+        setState(() {
+          _error = errorMessage;
+          _isLoading = false;
         });
         _scrollToBottom();
         return;
@@ -258,6 +310,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
             ? _serverNameController.text.trim()
             : cleanHost,
         customHeaders: _parseHeaders(_headersController.text),
+        allowNoAuth: isLocal && !hasCredentials,
       );
 
       // Connection successful, navigation will be handled by the app state
@@ -271,12 +324,17 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         },
       );
 
-      setState(() {
-        _error = ErrorHandler.getUserFriendlyMessage(e);
-      });
-      _scrollToBottom();
-    } finally {
+      // Update state once with error and loading state
       if (mounted) {
+        setState(() {
+          _error = ErrorHandler.getUserFriendlyMessage(e);
+          _isLoading = false;
+        });
+        _scrollToBottom();
+      }
+    } finally {
+      // Only update loading state if no error was set above
+      if (mounted && _error == null) {
         setState(() {
           _isLoading = false;
         });
@@ -414,13 +472,18 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
                   TextFormField(
                     controller: _usernameController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.username,
-                    ),
+                    decoration: InputDecoration(labelText: AppStrings.username),
                     textInputAction: TextInputAction.next,
-                    validator: (v) => (v == null || v.trim().isEmpty)
-                        ? AppStrings.required
-                        : null,
+                    validator: (v) {
+                      final isLocal = _isLocalNetwork();
+                      if (isLocal) {
+                        // For local network, username is optional
+                        return null;
+                      }
+                      return (v == null || v.trim().isEmpty)
+                          ? AppStrings.required
+                          : null;
+                    },
                   ),
                   const SizedBox(height: 12),
 
@@ -444,8 +507,16 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                     ),
                     obscureText: _obscurePassword,
                     textInputAction: TextInputAction.done,
-                    validator: (v) =>
-                        (v == null || v.isEmpty) ? AppStrings.required : null,
+                    validator: (v) {
+                      final isLocal = _isLocalNetwork();
+                      if (isLocal) {
+                        // For local network, password is optional
+                        return null;
+                      }
+                      return (v == null || v.isEmpty)
+                          ? AppStrings.required
+                          : null;
+                    },
                   ),
                   const SizedBox(height: 8),
 

@@ -140,6 +140,12 @@ class QbittorrentApiClient {
     await auth.login(username: username, password: password);
   }
 
+  /// Login without credentials (for local network access)
+  Future<void> loginWithoutAuth() async {
+    await _ensureReady();
+    await auth.loginWithoutAuth();
+  }
+
   Future<void> logout() async {
     await auth.logout();
   }

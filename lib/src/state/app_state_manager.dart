@@ -85,6 +85,7 @@ class AppState extends ChangeNotifier {
     required String password,
     String? serverName,
     Map<String, String>? customHeaders,
+    bool allowNoAuth = false,
   }) async {
     await _connectionState.connect(
       baseUrl: baseUrl,
@@ -92,6 +93,7 @@ class AppState extends ChangeNotifier {
       password: password,
       serverName: serverName,
       customHeaders: customHeaders,
+      allowNoAuth: allowNoAuth,
     );
     // The connection state change handler will automatically start polling if successful
   }

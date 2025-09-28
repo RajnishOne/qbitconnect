@@ -33,6 +33,7 @@ class ConnectionState extends ChangeNotifier {
     required String password,
     String? serverName,
     Map<String, String>? customHeaders,
+    bool allowNoAuth = false,
   }) async {
     // Prevent multiple simultaneous connection attempts
     if (_isAuthenticated) {
@@ -49,7 +50,18 @@ class ConnectionState extends ChangeNotifier {
         defaultHeaders: customHeaders,
       );
 
-      await _client!.login(username: username, password: password);
+      // Try authentication based on provided credentials and settings
+      if (username.isNotEmpty && password.isNotEmpty) {
+        // Use provided credentials
+        await _client!.login(username: username, password: password);
+      } else if (allowNoAuth) {
+        // Try to connect without authentication
+        await _client!.loginWithoutAuth();
+      } else {
+        throw Exception(
+          'Username and password are required for authentication',
+        );
+      }
 
       _isAuthenticated = true;
       _serverName = serverName;
@@ -64,8 +76,12 @@ class ConnectionState extends ChangeNotifier {
 
       // Save session credentials for auto-connect convenience
       await Prefs.saveBaseUrl(baseUrl);
-      await Prefs.saveUsername(username);
-      await Prefs.savePassword(password);
+      if (username.isNotEmpty) {
+        await Prefs.saveUsername(username);
+      }
+      if (password.isNotEmpty) {
+        await Prefs.savePassword(password);
+      }
       if (serverName != null) {
         await Prefs.saveServerName(serverName);
       }
