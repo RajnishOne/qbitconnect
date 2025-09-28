@@ -28,6 +28,22 @@ jobs:
         flutter-version: '3.35.4'
         channel: 'stable'
         
+    - name: Create Firebase config
+      run: |
+        echo '${{ secrets.ANDROID_FIREBASE_CONFIG }}' | base64 --decode > android/app/google-services.json
+        echo '${{ secrets.FIREBASE_OPTIONS_DART }}' > lib/firebase_options.dart
+        echo '${{ secrets.FIREBASE_JSON_CONFIG }}' > firebase.json
+        
+    - name: Setup Android signing
+      run: |
+        echo '${{ secrets.ANDROID_KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
+        cat > android/key.properties << EOF
+        storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
+        keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+        keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+        storeFile=upload-keystore.jks
+        EOF
+        
     - name: Get dependencies
       run: flutter pub get
       
