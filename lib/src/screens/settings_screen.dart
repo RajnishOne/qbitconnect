@@ -178,7 +178,9 @@ class _SettingsScreenState extends State<SettingsScreen>
             '$label:',
             style: TextStyle(
               fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ),
@@ -330,9 +332,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             Card(
               child: ListTile(
                 title: const Text('Torrent Card Display'),
-                subtitle: const Text(
-                  'Customize torrent card',
-                ),
+                subtitle: const Text('Customize torrent card'),
                 leading: const Icon(Icons.view_list),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
