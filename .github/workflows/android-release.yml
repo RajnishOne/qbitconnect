@@ -1,28 +1,23 @@
-name: Build Android APK and AAB for Release
+name: Build Android Release
 
 on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release tag (e.g., v1.4.0)'
+        description: 'Release tag'
         required: true
         type: string
       release_notes:
-        description: 'What's new in this release?'
+        description: 'What is new in this release?'
         required: true
         type: string
-      prerelease:
-        description: 'Mark as pre-release'
-        required: false
-        type: boolean
-        default: false
 
 jobs:
-  build-android:
+  build:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
+    - name: Checkout
       uses: actions/checkout@v4
       
     - name: Setup Java
@@ -36,147 +31,21 @@ jobs:
       with:
         flutter-version: '3.24.0'
         channel: 'stable'
-        architecture: x64
         
-    - name: Configure Git for Flutter
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-*
-        flutter --version
-        dart --version
-        
-    - name: Cache Flutter dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.pub-cache
-          **/.flutter-plugins
-          **/.flutter-plugin-dependencies
-          **/.dart_tool/package_config.json
-        key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-flutter-
-          
-    - name: Cache Gradle dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-          
-    - name: Get Flutter dependencies
+    - name: Get dependencies
       run: flutter pub get
       
-    - name: Install FlutterFire CLI
-      run: |
-        dart pub global activate flutterfire_cli
-        echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-      
-    - name: Create Firebase configuration files
-      run: |
-        echo '${{ secrets.ANDROID_FIREBASE_CONFIG }}' | base64 --decode > android/app/google-services.json
-        echo '${{ secrets.FIREBASE_JSON_CONFIG }}' | base64 --decode > firebase.json
-        echo '${{ secrets.FIREBASE_OPTIONS_DART }}' | base64 --decode > lib/firebase_options.dart
-        
-    - name: Setup Android signing
-      run: |
-        # Create keystore directory
-        mkdir -p android/app
-        
-        # Create keystore from secrets
-        echo '${{ secrets.ANDROID_KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
-        
-        # Create key.properties file
-        cat > android/key.properties << EOF
-        storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
-        keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
-        keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
-        storeFile=upload-keystore.jks
-        EOF
-        
     - name: Build APK
       run: flutter build apk --release
       
-    - name: Build AAB (Android App Bundle)
+    - name: Build AAB
       run: flutter build appbundle --release
       
-    - name: Get app version
-      id: get_version
-      run: |
-        VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
-        echo "app_version=$VERSION" >> $GITHUB_OUTPUT
-        echo "App version: $VERSION"
-        
     - name: Create Release
-      id: create_release
       uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.event.inputs.release_tag }}
-        name: qBitConnect ${{ github.event.inputs.release_tag }}
-        body: |
-          ## qBitConnect Android Release ${{ github.event.inputs.release_tag }}
-          
-          **App Version:** ${{ steps.get_version.outputs.app_version }}
-          **Build Date:** ${{ github.run_id }}
-          
-          ### What's New
-          ${{ github.event.inputs.release_notes }}
-          
-          ### Downloads
-          
-          #### APK (Direct Install)
-          - **qbitconnect-release.apk** - Direct installation file
-          - Compatible with Android 5.0+ (API level 21+)
-          - Install directly on your device or emulator
-          
-          #### AAB (Google Play Store)
-          - **app-release.aab** - Android App Bundle for Play Store
-          - Optimized for Play Store distribution
-          - Smaller download sizes for users
-          
-          ### Installation Instructions
-          
-          #### For APK:
-          1. Download the APK file
-          2. Enable "Install from unknown sources" in your device settings
-          3. Tap the APK file to install
-          4. Grant necessary permissions when prompted
-          
-          #### For AAB (Play Store):
-          1. Upload the AAB file to Google Play Console
-          2. Complete the release process in Play Console
-          3. Users can download from Google Play Store
-          
-          ### Technical Details
-          - Built with Flutter 3.24.0
-          - Target SDK: Android 14 (API level 34)
-          - Minimum SDK: Android 5.0 (API level 21)
-          - Architecture: arm64-v8a, armeabi-v7a, x86_64
-          - Build Configuration: Release (signed)
-          
-          ### Changelog
-          See the commit history for detailed changes since the last release.
-          
-          ---
-          
-          **Note:** This release is signed and ready for distribution. The APK can be installed directly, while the AAB is optimized for Play Store distribution.
-        draft: false
-        prerelease: ${{ github.event.inputs.prerelease }}
+        body: ${{ github.event.inputs.release_notes }}
         files: |
           build/app/outputs/flutter-apk/app-release.apk
           build/app/outputs/bundle/release/app-release.aab
-        
-    - name: Build Summary
-      run: |
-        echo "## 🚀 Android Build Completed Successfully!" >> $GITHUB_STEP_SUMMARY
-        echo "- **Release Tag:** ${{ github.event.inputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **App Version:** ${{ steps.get_version.outputs.app_version }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **APK File:** app-release.apk" >> $GITHUB_STEP_SUMMARY
-        echo "- **AAB File:** app-release.aab" >> $GITHUB_STEP_SUMMARY
-        echo "- **Release:** [${{ github.event.inputs.release_tag }}](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.release_tag }})" >> $GITHUB_STEP_SUMMARY
