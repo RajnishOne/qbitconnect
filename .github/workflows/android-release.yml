@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       release_notes:
-        description: 'What\'s new in this release?'
+        description: 'What's new in this release?'
         required: true
         type: string
       prerelease:
