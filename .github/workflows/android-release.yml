@@ -3,10 +3,6 @@ name: Build Android Release
 on:
   workflow_dispatch:
     inputs:
-      release_tag:
-        description: 'Release tag'
-        required: true
-        type: string
       release_notes:
         description: 'What is new in this release?'
         required: true
@@ -41,10 +37,17 @@ jobs:
     - name: Build AAB
       run: flutter build appbundle --release
       
+    - name: Get version from pubspec
+      id: get_version
+      run: |
+        VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Version: $VERSION"
+      
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.event.inputs.release_tag }}
+        tag_name: v${{ steps.get_version.outputs.version }}
         body: ${{ github.event.inputs.release_notes }}
         files: |
           build/app/outputs/flutter-apk/app-release.apk
