@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../state/app_state_manager.dart';
-import '../models/transfer_info.dart';
 import '../services/prefs.dart';
 import '../services/firebase_service.dart';
 import '../utils/app_info.dart';
@@ -179,7 +178,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             '$label:',
             style: TextStyle(
               fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ),
