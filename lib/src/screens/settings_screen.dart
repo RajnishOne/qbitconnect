@@ -332,7 +332,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               child: ListTile(
                 title: const Text('Torrent Card Display'),
                 subtitle: const Text(
-                  'Customize information shown in torrent cards',
+                  'Customize torrent card',
                 ),
                 leading: const Icon(Icons.view_list),
                 trailing: const Icon(Icons.chevron_right),
