@@ -36,15 +36,15 @@ jobs:
         
     - name: Setup Android signing
       run: |
-        echo '${{ secrets.ANDROID_KEYSTORE }}' | base64 --decode > android/upload-keystore.jks
+        echo '${{ secrets.ANDROID_KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
         cat > android/key.properties << EOF
         storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
         keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
         keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
-        storeFile=upload-keystore.jks
+        storeFile=$PWD/android/app/upload-keystore.jks
         EOF
         # Verify keystore file was created
-        ls -la android/upload-keystore.jks
+        ls -la android/app/upload-keystore.jks
         # Verify key.properties was created
         cat android/key.properties
         
