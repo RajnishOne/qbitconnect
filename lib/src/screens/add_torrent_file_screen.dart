@@ -9,7 +9,9 @@ import '../constants/app_strings.dart';
 import '../services/firebase_service.dart';
 
 class AddTorrentFileScreen extends StatefulWidget {
-  const AddTorrentFileScreen({super.key});
+  final String? filePath;
+
+  const AddTorrentFileScreen({super.key, this.filePath});
 
   @override
   State<AddTorrentFileScreen> createState() => _AddTorrentFileScreenState();
@@ -49,11 +51,28 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
       screenClass: 'AddTorrentFileScreen',
     );
     _initializeDefaults();
+
+    // Handle prefilled file path if provided
+    if (widget.filePath != null) {
+      _handlePrefilledFile(widget.filePath!);
+    }
   }
 
   void _initializeDefaults() {
     _initializeDefaultSavePath();
     _initializeDefaultOptions();
+  }
+
+  void _handlePrefilledFile(String filePath) {
+    // Create a PlatformFile object from the file path
+    final file = File(filePath);
+    if (file.existsSync()) {
+      _selectedFile = PlatformFile(
+        path: filePath,
+        name: file.path.split('/').last,
+        size: file.lengthSync(),
+      );
+    }
   }
 
   void _initializeDefaultOptions() {

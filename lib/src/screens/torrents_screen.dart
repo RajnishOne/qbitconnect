@@ -16,6 +16,8 @@ import '../widgets/torrent_actions_sheet.dart';
 import '../widgets/batch_actions_bar.dart';
 import '../widgets/reusable_widgets.dart';
 import '../constants/app_strings.dart';
+import '../services/deep_link_handler.dart';
+import '../core/app_widget.dart';
 import 'torrent_details_screen.dart';
 import 'settings_screen.dart';
 import 'connection_screen.dart';
@@ -28,7 +30,10 @@ class TorrentsScreen extends StatefulWidget {
 }
 
 class _TorrentsScreenState extends State<TorrentsScreen>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with
+        TickerProviderStateMixin,
+        AutomaticKeepAliveClientMixin,
+        WidgetsBindingObserver {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -65,12 +70,14 @@ class _TorrentsScreenState extends State<TorrentsScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // Log screen view
     FirebaseService.instance.logScreenView(
       screenName: 'torrents_screen',
       screenClass: 'TorrentsScreen',
     );
     _initializeBatchSelection();
+    _checkForPendingDeepLink();
   }
 
   void _initializeBatchSelection() {
@@ -88,11 +95,34 @@ class _TorrentsScreenState extends State<TorrentsScreen>
     });
   }
 
+  void _checkForPendingDeepLink() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Check for pending deep links using global access
+      final pendingLink = AppWidgetAccess.getPendingDeepLink();
+      if (pendingLink != null) {
+        // Process the deep link now that we have a proper navigation context
+        final deepLinkHandler = DeepLinkHandler();
+        deepLinkHandler.handleTorrentLink(pendingLink, context);
+      }
+    });
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      // Check for pending deep links when app comes to foreground
+      _checkForPendingDeepLink();
+    }
   }
 
   @override

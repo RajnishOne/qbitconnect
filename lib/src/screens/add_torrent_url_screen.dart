@@ -8,7 +8,9 @@ import '../constants/app_strings.dart';
 import '../services/firebase_service.dart';
 
 class AddTorrentUrlScreen extends StatefulWidget {
-  const AddTorrentUrlScreen({super.key});
+  final String? prefilledUrl;
+
+  const AddTorrentUrlScreen({super.key, this.prefilledUrl});
 
   @override
   State<AddTorrentUrlScreen> createState() => _AddTorrentUrlScreenState();
@@ -47,6 +49,11 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
       screenClass: 'AddTorrentUrlScreen',
     );
     _initializeDefaults();
+
+    // Pre-fill URL if provided
+    if (widget.prefilledUrl != null) {
+      _urlController.text = widget.prefilledUrl!;
+    }
   }
 
   void _initializeDefaults() {
