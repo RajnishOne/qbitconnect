@@ -58,10 +58,22 @@ class DeepLinkHandler {
     final scheme = uri.scheme.toLowerCase();
     final path = uri.path.toLowerCase();
 
-    return (scheme == 'http' ||
-            scheme == 'https' ||
-            scheme == 'file' ||
-            scheme == 'content') &&
+    // For content URIs, we need to be more flexible since they don't always
+    // have the file extension in the path. We'll accept content URIs that
+    // could potentially be torrent files and let the TorrentFileHandler
+    // validate them properly.
+    if (scheme == 'content') {
+      // Accept content URIs from downloads or external storage providers
+      // that could be torrent files
+      return uri.authority.contains('downloads') ||
+          uri.authority.contains('external') ||
+          uri.authority.contains('media') ||
+          path.contains('torrent') ||
+          path.endsWith('.torrent');
+    }
+
+    // For other schemes, check if path ends with .torrent
+    return (scheme == 'http' || scheme == 'https' || scheme == 'file') &&
         path.endsWith('.torrent');
   }
 
@@ -104,7 +116,7 @@ class DeepLinkHandler {
             ),
           );
         } catch (scaffoldError) {
-          // Silently handle scaffold messenger errors
+          // Silently handle scaffold errors
         }
       }
     }
@@ -138,19 +150,15 @@ class DeepLinkHandler {
     );
 
     if (filePath != null && context.mounted) {
-      // Navigate to add torrent file screen
+      // Navigate to add torrent file screen with the processed file path
       try {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => AddTorrentFileScreen(filePath: filePath),
           ),
         );
-      } catch (e) {
-        // Silently handle navigation errors
-      }
 
-      // Show a success message
-      try {
+        // Show a success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Torrent file detected and pre-selected'),
@@ -159,7 +167,7 @@ class DeepLinkHandler {
           ),
         );
       } catch (e) {
-        // Silently handle scaffold messenger errors
+        // Silently handle navigation errors
       }
     } else if (context.mounted) {
       try {
@@ -170,7 +178,7 @@ class DeepLinkHandler {
           ),
         );
       } catch (e) {
-        // Silently handle scaffold messenger errors
+        // Silently handle scaffold errors
       }
     }
   }

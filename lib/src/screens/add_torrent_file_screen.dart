@@ -64,14 +64,44 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
   }
 
   void _handlePrefilledFile(String filePath) {
-    // Create a PlatformFile object from the file path
-    final file = File(filePath);
-    if (file.existsSync()) {
+    // Handle different types of file paths
+    if (filePath.startsWith('content://')) {
+      // For content URIs, we need to handle them specially
+      // Extract filename from the URI or use a default name
+      final uri = Uri.parse(filePath);
+      final fileName = uri.pathSegments.isNotEmpty
+          ? uri.pathSegments.last
+          : 'torrent_file.torrent';
+
       _selectedFile = PlatformFile(
         path: filePath,
-        name: file.path.split('/').last,
-        size: file.lengthSync(),
+        name: fileName,
+        size: 0, // We can't get size for content URIs without reading the file
+        bytes: null, // Will be loaded when needed
       );
+
+      // Show a message that the file is pre-selected
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Torrent file pre-selected from Files app'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      });
+    } else {
+      // For regular file paths, use the standard File approach
+      final file = File(filePath);
+      if (file.existsSync()) {
+        _selectedFile = PlatformFile(
+          path: filePath,
+          name: file.path.split('/').last,
+          size: file.lengthSync(),
+        );
+      }
     }
   }
 
@@ -577,7 +607,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
   }
 
   Future<void> _addTorrent() async {
-    if (_selectedFile == null || _selectedFile!.bytes == null) {
+    if (_selectedFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: const Text('Please select a valid torrent file')),
       );
@@ -589,6 +619,41 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
     });
 
     try {
+      // Get file bytes based on the file type
+      List<int> fileBytes;
+
+      if (_selectedFile!.path?.startsWith('content://') == true) {
+        // For content URIs, we need to use a different approach
+        // The file_picker plugin can handle content URIs when used properly
+        // We'll use the file picker to get the file data
+        final result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['torrent'],
+          withData: true,
+        );
+
+        if (result == null ||
+            result.files.isEmpty ||
+            result.files.first.bytes == null) {
+          throw Exception(
+            'Failed to read torrent file. Please try selecting the file again.',
+          );
+        }
+
+        fileBytes = result.files.first.bytes!;
+        // Update the selected file with the new data
+        _selectedFile = result.files.first;
+      } else {
+        // For regular files, use the bytes from the selected file
+        if (_selectedFile!.bytes == null) {
+          // If bytes are not available, read from file path
+          final file = File(_selectedFile!.path!);
+          fileBytes = await file.readAsBytes();
+        } else {
+          fileBytes = _selectedFile!.bytes!;
+        }
+      }
+
       final options = TorrentAddOptions(
         savePath: _savePathController.text.trim().isEmpty
             ? null
@@ -617,7 +682,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
 
       await context.read<AppState>().addTorrentFromFile(
         fileName: _selectedFile!.name,
-        bytes: _selectedFile!.bytes!,
+        bytes: fileBytes,
         options: options,
       );
 

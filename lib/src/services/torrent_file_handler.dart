@@ -31,7 +31,13 @@ class TorrentFileHandler {
         return null;
       }
 
-      // Verify the file exists and is readable
+      // For content URIs, we can't validate the file directly
+      // so we'll return the content URI and let the AddTorrentFileScreen handle it
+      if (actualFilePath.startsWith('content://')) {
+        return actualFilePath;
+      }
+
+      // For regular files, verify the file exists and is readable
       final file = File(actualFilePath);
       if (!await file.exists()) {
         return null;
@@ -62,15 +68,14 @@ class TorrentFileHandler {
         await torrentDir.create(recursive: true);
       }
 
-      // Generate a unique filename
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final fileName = 'torrent_$timestamp.torrent';
-      final destinationPath = '${torrentDir.path}/$fileName';
+      // Generate a unique filename (not used in current implementation)
+      // final timestamp = DateTime.now().millisecondsSinceEpoch;
+      // final fileName = 'torrent_$timestamp.torrent';
+      // final destinationPath = '${torrentDir.path}/$fileName';
 
-      // For now, we'll return the content URI as-is
-      // In a real implementation, you'd need to use a plugin like file_picker
-      // or platform-specific code to copy the content URI to the app directory
-      // Return the content URI for now - the app will need to handle this
+      // For content URIs, we need to use platform-specific code to copy the file
+      // Since we can't directly copy content URIs in Dart, we'll return the content URI
+      // and let the AddTorrentFileScreen handle it properly
       return contentUri;
     } catch (e) {
       // Silently handle copy errors
