@@ -86,6 +86,11 @@ class ConnectionState extends ChangeNotifier {
         await Prefs.saveServerName(serverName);
       }
 
+      // Save no-auth session flag if connection was made without authentication
+      await Prefs.saveNoAuthSession(
+        allowNoAuth && (username.isEmpty || password.isEmpty),
+      );
+
       notifyListeners();
     } catch (e, stackTrace) {
       // Clean up on connection failure
@@ -120,6 +125,9 @@ class ConnectionState extends ChangeNotifier {
         await Prefs.clearPassword();
       }
 
+      // Clear no-auth session flag on disconnect
+      await Prefs.saveNoAuthSession(false);
+
       _client = null;
       _isAuthenticated = false;
       _serverName = null;
@@ -141,23 +149,41 @@ class ConnectionState extends ChangeNotifier {
     final username = await Prefs.loadUsername();
     final password = await Prefs.loadPassword();
     final serverName = await Prefs.loadServerName();
+    final isNoAuthSession = await Prefs.loadNoAuthSession();
 
-    if (baseUrl == null ||
-        username == null ||
-        password == null ||
-        password.isEmpty) {
+    if (baseUrl == null) {
       return;
     }
 
-    try {
-      await connect(
-        baseUrl: baseUrl,
-        username: username,
-        password: password,
-        serverName: serverName,
-      );
-    } catch (_) {
-      // ignore; user can connect manually
+    // Check if we have a no-auth session saved
+    if (isNoAuthSession) {
+      try {
+        await connect(
+          baseUrl: baseUrl,
+          username: username ?? '',
+          password: password ?? '',
+          serverName: serverName,
+          allowNoAuth: true,
+        );
+        return;
+      } catch (_) {
+        // If no-auth fails, try with credentials if available
+        // ignore; will try with credentials below
+      }
+    }
+
+    // Try with credentials if available
+    if (username != null && password != null && password.isNotEmpty) {
+      try {
+        await connect(
+          baseUrl: baseUrl,
+          username: username,
+          password: password,
+          serverName: serverName,
+        );
+      } catch (_) {
+        // ignore; user can connect manually
+      }
     }
   }
 

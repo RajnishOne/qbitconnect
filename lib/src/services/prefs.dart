@@ -9,6 +9,7 @@ class Prefs {
   static const String _keyCustomHeaders = 'custom_headers_text';
   static const String _keyPassword = 'password';
   static const String _keySavePassword = 'save_password';
+  static const String _keyNoAuthSession = 'no_auth_session';
   static const String _keyStatusFilter = 'status_filter';
   static const String _keyPollingEnabled = 'polling_enabled';
   static const String _keyPollingInterval = 'polling_interval';
@@ -102,6 +103,17 @@ class Prefs {
     return prefs.getBool(_keySavePassword) ?? false;
   }
 
+  // No-auth session preference
+  static Future<void> saveNoAuthSession(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyNoAuthSession, value);
+  }
+
+  static Future<bool> loadNoAuthSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyNoAuthSession) ?? false;
+  }
+
   // Polling settings
   static Future<void> savePollingEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
@@ -143,7 +155,6 @@ class Prefs {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_keySortDirection) ?? 'asc'; // Default to ascending
   }
-
 
   // Torrent card display options
   static Future<void> saveTorrentCardDisplayOptions(

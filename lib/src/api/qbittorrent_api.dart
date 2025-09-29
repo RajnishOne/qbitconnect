@@ -117,10 +117,26 @@ class QbittorrentApiClient {
     try {
       final username = await Prefs.loadUsername();
       final password = await Prefs.loadPassword();
+      final isNoAuthSession = await Prefs.loadNoAuthSession();
 
+      // Try no-auth re-authentication first if it was a no-auth session
+      if (isNoAuthSession) {
+        try {
+          await auth.loginWithoutAuth();
+          debugPrint('Automatic no-auth re-authentication successful');
+          return;
+        } catch (e) {
+          debugPrint(
+            'No-auth re-authentication failed, trying with credentials: $e',
+          );
+          // Fall through to try with credentials
+        }
+      }
+
+      // Try with saved credentials
       if (username != null && password != null && password.isNotEmpty) {
         await auth.login(username: username, password: password);
-        debugPrint('Automatic re-authentication successful');
+        debugPrint('Automatic credential re-authentication successful');
       } else {
         throw Exception(
           'No saved credentials found for automatic re-authentication',
