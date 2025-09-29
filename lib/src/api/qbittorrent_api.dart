@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'client/http_client.dart';
 import 'endpoints/qbittorrent_endpoints.dart';
 import 'services/api_prefix_service.dart';
@@ -85,9 +84,6 @@ class QbittorrentApiClient {
       return await apiCall();
     } catch (e) {
       if (_isAuthenticationError(e)) {
-        debugPrint(
-          'Authentication error detected, attempting automatic re-authentication',
-        );
         await _performAutoReauth();
         // Retry the original call after re-authentication
         return await apiCall();
@@ -123,12 +119,8 @@ class QbittorrentApiClient {
       if (isNoAuthSession) {
         try {
           await auth.loginWithoutAuth();
-          debugPrint('Automatic no-auth re-authentication successful');
           return;
         } catch (e) {
-          debugPrint(
-            'No-auth re-authentication failed, trying with credentials: $e',
-          );
           // Fall through to try with credentials
         }
       }
@@ -136,14 +128,12 @@ class QbittorrentApiClient {
       // Try with saved credentials
       if (username != null && password != null && password.isNotEmpty) {
         await auth.login(username: username, password: password);
-        debugPrint('Automatic credential re-authentication successful');
       } else {
         throw Exception(
           'No saved credentials found for automatic re-authentication',
         );
       }
     } catch (e) {
-      debugPrint('Automatic re-authentication failed: $e');
       rethrow;
     }
   }
