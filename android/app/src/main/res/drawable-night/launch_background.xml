@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Modify this file to customize your launch splash screen for dark mode -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/black" />
+    <!-- Background color matching Flutter dark theme -->
+    <item android:drawable="@color/splash_background_dark" />
 
     <!-- App Logo -->
     <item 

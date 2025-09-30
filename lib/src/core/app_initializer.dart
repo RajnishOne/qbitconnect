@@ -11,19 +11,29 @@ class AppInitializer {
     // Ensure Flutter binding is initialized
     WidgetsFlutterBinding.ensureInitialized();
 
-    // Initialize theme cache before running the app
+    // Initialize theme cache before running the app (critical for UI)
     await ThemeCache.initialize();
 
+    // Initialize non-critical services in background to reduce splash time
+    _initializeBackgroundServices();
+  }
+
+  /// Initialize non-critical services in background
+  static void _initializeBackgroundServices() {
     // Initialize app info in background
     AppInfo.initialize().catchError((e) {
       // App info initialization failed: $e
     });
 
-    // Initialize Firebase and log app open event
-    await _initializeFirebaseAndLogAppOpen();
+    // Initialize Firebase and log app open event in background
+    _initializeFirebaseAndLogAppOpen().catchError((e) {
+      // Firebase initialization failed: $e
+    });
 
-    // Trigger iOS local network permission dialog early
-    await _triggerIOSLocalNetworkPermission();
+    // Trigger iOS local network permission dialog early in background
+    _triggerIOSLocalNetworkPermission().catchError((e) {
+      // iOS local network permission trigger failed: $e
+    });
   }
 
   /// Initialize Firebase and log app open event
