@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../models/torrent_card_display_options.dart';
 import '../services/display_options_cache.dart';
@@ -83,159 +85,163 @@ class _TorrentCardDisplaySettingsScreenState
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Torrent Card Display'),
-        actions: [
-          if (_selectedOptions.length < TorrentCardDisplayOption.maxSelections)
-            TextButton(
-              onPressed: () {
-                // Reset to default options
-                setState(() {
-                  _selectedOptions = List.from(
-                    TorrentCardDisplayOption.defaultOptions,
-                  );
-                });
-                _saveSettings();
-              },
-              child: const Text('Reset'),
-            ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // Header information
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Customize Torrent Card Info',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Select up to ${TorrentCardDisplayOption.maxSelections} options to display in torrent cards. Currently selected: ${_selectedOptions.length}/${TorrentCardDisplayOption.maxSelections}',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Preview section
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Preview',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .surfaceContainerHighest
-                          .withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      _buildPreviewText(),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(fontFamily: 'monospace'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Options list
-          Card(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.checklist,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Available Options',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                ),
-                ReorderableListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _selectedOptions.length,
-                  onReorder: _onReorder,
-                  itemBuilder: (context, index) {
-                    final option = _selectedOptions[index];
-                    return _OptionTile(
-                      key: ValueKey(option),
-                      option: option,
-                      isSelected: true,
-                      canSelect: true,
-                      onToggle: () => _toggleOption(option),
-                      isReorderable: true,
+    return SafeArea(
+      bottom: Platform.isAndroid,
+      top: false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Torrent Card Display'),
+          actions: [
+            if (_selectedOptions.length < TorrentCardDisplayOption.maxSelections)
+              TextButton(
+                onPressed: () {
+                  // Reset to default options
+                  setState(() {
+                    _selectedOptions = List.from(
+                      TorrentCardDisplayOption.defaultOptions,
                     );
-                  },
+                  });
+                  _saveSettings();
+                },
+                child: const Text('Reset'),
+              ),
+          ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            // Header information
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Customize Torrent Card Info',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Select up to ${TorrentCardDisplayOption.maxSelections} options to display in torrent cards. Currently selected: ${_selectedOptions.length}/${TorrentCardDisplayOption.maxSelections}',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
                 ),
-                // Show unselected options
-                ...TorrentCardDisplayOption.allOptions
-                    .where((option) => !_selectedOptions.contains(option))
-                    .map((option) {
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Preview section
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Preview',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest
+                            .withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        _buildPreviewText(),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(fontFamily: 'monospace'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Options list
+            Card(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.checklist,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Available Options',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ReorderableListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _selectedOptions.length,
+                    onReorder: _onReorder,
+                    itemBuilder: (context, index) {
+                      final option = _selectedOptions[index];
                       return _OptionTile(
                         key: ValueKey(option),
                         option: option,
-                        isSelected: false,
-                        canSelect:
-                            _selectedOptions.length <
-                            TorrentCardDisplayOption.maxSelections,
+                        isSelected: true,
+                        canSelect: true,
                         onToggle: () => _toggleOption(option),
-                        isReorderable: false,
+                        isReorderable: true,
                       );
-                    }),
-              ],
+                    },
+                  ),
+                  // Show unselected options
+                  ...TorrentCardDisplayOption.allOptions
+                      .where((option) => !_selectedOptions.contains(option))
+                      .map((option) {
+                        return _OptionTile(
+                          key: ValueKey(option),
+                          option: option,
+                          isSelected: false,
+                          canSelect:
+                              _selectedOptions.length <
+                              TorrentCardDisplayOption.maxSelections,
+                          onToggle: () => _toggleOption(option),
+                          isReorderable: false,
+                        );
+                      }),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

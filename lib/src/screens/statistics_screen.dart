@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../state/app_state_manager.dart';
@@ -80,18 +82,22 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.analytics),
-        actions: [
-          AnimatedReloadButton(
-            onPressed: _loadStatistics,
-            tooltip: AppStrings.refreshTorrents,
-            iconSize: 22,
-          ),
-        ],
+    return SafeArea(
+      bottom: Platform.isAndroid,
+      top: false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(AppStrings.analytics),
+          actions: [
+            AnimatedReloadButton(
+              onPressed: _loadStatistics,
+              tooltip: AppStrings.refreshTorrents,
+              iconSize: 22,
+            ),
+          ],
+        ),
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 
