@@ -42,35 +42,48 @@ jobs:
           pod install --repo-update
           cd ..
 
-      - name: Disable code signing in Xcode project
-        run: python3 .github/scripts/disable-codesign.py
-
-      - name: Build unsigned iOS app
+      - name: Build Flutter framework and assets
         run: |
-          flutter build ios --release --no-codesign --no-tree-shake-icons
-        env:
-          FLUTTER_BUILD_MODE: release
+          flutter build ios-framework --release --no-codesign
+          flutter build ios --release --no-codesign --config-only
+        continue-on-error: true
 
-      - name: Create IPA from .app bundle
+      - name: Build iOS app with xcodebuild (no signing)
         run: |
+          cd ios
+          xcodebuild \
+            -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath $PWD/build/Runner.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            AD_HOC_CODE_SIGNING_ALLOWED=NO \
+            clean archive
+          cd ..
+
+      - name: Create IPA from archive
+        run: |
+          # Get version info first
+          VERSION=$(grep "version:" pubspec.yaml | sed 's/version: //g' | sed 's/+.*//g')
+          BUILD=$(grep "version:" pubspec.yaml | sed 's/.*+//g')
+          echo "Built version: $VERSION ($BUILD)"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "BUILD=$BUILD" >> $GITHUB_ENV
+          
           # Create Payload directory
           mkdir -p Payload
           
-          # Copy the built .app bundle
-          cp -r build/ios/iphoneos/Runner.app Payload/
+          # Copy the built .app bundle from archive
+          cp -r ios/build/Runner.xcarchive/Products/Applications/Runner.app Payload/
           
           # Create IPA (which is just a zip file with .ipa extension)
           zip -r qBitConnect-unsigned.ipa Payload
           
           # Cleanup
           rm -rf Payload
-          
-          # Get version info
-          VERSION=$(grep "version:" pubspec.yaml | sed 's/version: //g' | sed 's/+.*//g')
-          BUILD=$(grep "version:" pubspec.yaml | sed 's/.*+//g')
-          echo "Built version: $VERSION ($BUILD)"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "BUILD=$BUILD" >> $GITHUB_ENV
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
