@@ -3,4 +3,8 @@
     <!-- Splash screen background colors matching Flutter theme -->
     <color name="splash_background">#FFFFFF</color>
     <color name="splash_background_dark">#121212</color>
+    
+    <!-- Icon background colors for Android 12+ splash screen -->
+    <color name="splash_icon_background">#2196F3</color>
+    <color name="splash_icon_background_dark">#1976D2</color>
 </resources>
