@@ -48,13 +48,17 @@ jobs:
           flutter precache --ios
           flutter packages pub run build_runner build --delete-conflicting-outputs || true
 
-      - name: Create Flutter build settings
+      - name: Create proper Flutter build settings
         run: |
-          # Create the Generated.xcconfig file manually
+          # Get Flutter root
+          FLUTTER_ROOT=$(which flutter | sed 's|/bin/flutter||')
+          echo "Flutter root: $FLUTTER_ROOT"
+          
+          # Create the Generated.xcconfig file with proper format
           mkdir -p ios/Flutter
-          cat > ios/Flutter/Generated.xcconfig << 'EOF'
-          FLUTTER_ROOT=/Users/runner/hostedtoolcache/flutter/stable-3.35.2-x64
-          FLUTTER_APPLICATION_PATH=$(pwd)
+          cat > ios/Flutter/Generated.xcconfig << EOF
+          FLUTTER_ROOT=$FLUTTER_ROOT
+          FLUTTER_APPLICATION_PATH=/Users/runner/work/qbitconnect/qbitconnect
           COCOAPODS_PARALLEL_CODE_SIGN=true
           FLUTTER_BUILD_DIR=build
           FLUTTER_BUILD_NAME=1.4.3
@@ -67,9 +71,17 @@ jobs:
           PACKAGE_CONFIG=.dart_tool/package_config.json
           EOF
           
-          # Update Flutter root path
-          FLUTTER_ROOT=$(which flutter | sed 's|/bin/flutter||')
-          sed -i '' "s|FLUTTER_ROOT=.*|FLUTTER_ROOT=$FLUTTER_ROOT|" ios/Flutter/Generated.xcconfig
+          # Also create Release.xcconfig
+          cat > ios/Flutter/Release.xcconfig << EOF
+          #include "Generated.xcconfig"
+          FLUTTER_BUILD_MODE=release
+          EOF
+          
+          # Create Debug.xcconfig
+          cat > ios/Flutter/Debug.xcconfig << EOF
+          #include "Generated.xcconfig"
+          FLUTTER_BUILD_MODE=debug
+          EOF
 
       - name: Disable all code signing
         run: |
