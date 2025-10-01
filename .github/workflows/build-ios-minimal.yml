@@ -1,4 +1,4 @@
-name: Build iOS - Simple Approach
+name: Build iOS - Minimal Approach
 
 on:
   workflow_dispatch:
@@ -32,36 +32,22 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Fix iOS deployment target
+      - name: Build Flutter web (as backup)
         run: |
-          # Update Podfile to set minimum iOS version
-          cd ios
-          sed -i '' 's/platform :ios.*/platform :ios, '\''12.0'\''/' Podfile
-          
-          # Update project deployment target
-          python3 << 'EOF'
-          import re
-          
-          # Update project.pbxproj
-          with open('Runner.xcodeproj/project.pbxproj', 'r') as f:
-              content = f.read()
-          
-          # Set IPHONEOS_DEPLOYMENT_TARGET to 12.0
-          content = re.sub(r'IPHONEOS_DEPLOYMENT_TARGET = [^;]*;', 'IPHONEOS_DEPLOYMENT_TARGET = 12.0;', content)
-          
-          with open('Runner.xcodeproj/project.pbxproj', 'w') as f:
-              f.write(content)
-          
-          print("✅ Updated deployment target to iOS 12.0")
-          EOF
-          
-          # Reinstall pods with new target
-          pod install --repo-update
-          cd ..
+          flutter build web --release
+          echo "✅ Web build completed as fallback"
 
-      - name: Build for iOS Simulator (Reliable)
+      - name: Try iOS simulator build
         run: |
-          flutter build ios --simulator --release
+          # Clean previous builds
+          flutter clean
+          flutter pub get
+          
+          # Try building for simulator
+          flutter build ios --simulator --release --no-tree-shake-icons || {
+            echo "❌ iOS build failed, but we have web build as backup"
+            exit 1
+          }
           
           # Get version info
           VERSION=$(grep "version:" pubspec.yaml | sed 's/version: //g' | sed 's/+.*//g')
@@ -71,6 +57,7 @@ jobs:
           echo "BUILD=$BUILD" >> $GITHUB_ENV
 
       - name: Create IPA from simulator build
+        if: success()
         run: |
           # Create Payload directory
           mkdir -p Payload
@@ -84,9 +71,18 @@ jobs:
           # Cleanup
           rm -rf Payload
 
-      - name: Upload IPA
+      - name: Upload IPA (if iOS build succeeded)
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: qBitConnect-Simulator-${{ env.VERSION }}
+          name: qBitConnect-iOS-${{ env.VERSION }}
           path: qBitConnect-${{ env.VERSION }}-simulator.ipa
+          retention-days: 30
+
+      - name: Upload Web Build (if iOS failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qBitConnect-Web-Backup
+          path: build/web/
           retention-days: 30
