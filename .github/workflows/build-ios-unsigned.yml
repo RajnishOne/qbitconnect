@@ -42,13 +42,38 @@ jobs:
           pod install --repo-update
           cd ..
 
-      - name: Configure Flutter for release build
+      - name: Generate Flutter build files
         run: |
-          flutter build ios --config-only --release
+          # Generate necessary Flutter files without requiring signing
+          flutter precache --ios
+          flutter packages pub run build_runner build --delete-conflicting-outputs || true
+
+      - name: Create Flutter build settings
+        run: |
+          # Create the Generated.xcconfig file manually
+          mkdir -p ios/Flutter
+          cat > ios/Flutter/Generated.xcconfig << 'EOF'
+          FLUTTER_ROOT=/Users/runner/hostedtoolcache/flutter/stable-3.35.2-x64
+          FLUTTER_APPLICATION_PATH=$(pwd)
+          COCOAPODS_PARALLEL_CODE_SIGN=true
+          FLUTTER_BUILD_DIR=build
+          FLUTTER_BUILD_NAME=1.4.3
+          FLUTTER_BUILD_NUMBER=16
+          EXCLUDED_ARCHS[sdk=iphonesimulator*]=i386
+          EXCLUDED_ARCHS[sdk=iphoneos*]=armv7
+          DART_OBFUSCATION=false
+          TRACK_WIDGET_CREATION=true
+          TREE_SHAKE_ICONS=false
+          PACKAGE_CONFIG=.dart_tool/package_config.json
+          EOF
           
-      - name: Disable code signing in Xcode
+          # Update Flutter root path
+          FLUTTER_ROOT=$(which flutter | sed 's|/bin/flutter||')
+          sed -i '' "s|FLUTTER_ROOT=.*|FLUTTER_ROOT=$FLUTTER_ROOT|" ios/Flutter/Generated.xcconfig
+
+      - name: Disable all code signing
         run: |
-          # Use Python to reliably modify project settings
+          # Comprehensive code signing removal
           python3 << 'EOF'
           import re
           
@@ -56,39 +81,51 @@ jobs:
           with open(pbxproj, 'r') as f:
               content = f.read()
           
-          # Replace signing settings
-          content = re.sub(r'CODE_SIGN_STYLE = Automatic;', 'CODE_SIGN_STYLE = Manual;', content)
-          content = re.sub(r'DEVELOPMENT_TEAM = [^;]*;', 'DEVELOPMENT_TEAM = "";', content)
-          content = re.sub(r'CODE_SIGN_IDENTITY = "[^"]*";', 'CODE_SIGN_IDENTITY = "";', content)
+          # Remove all signing
+          replacements = [
+              (r'CODE_SIGN_STYLE = Automatic;', 'CODE_SIGN_STYLE = Manual;'),
+              (r'DEVELOPMENT_TEAM = [^;]+;', 'DEVELOPMENT_TEAM = "";'),
+              (r'CODE_SIGN_IDENTITY = "[^"]*";', 'CODE_SIGN_IDENTITY = "";'),
+              (r'"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "[^"]*";', '"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";'),
+              (r'PROVISIONING_PROFILE_SPECIFIER = [^;]+;', ''),
+          ]
           
-          # Add signing disabled flags to Release configuration
+          for pattern, replacement in replacements:
+              content = re.sub(pattern, replacement, content)
+          
+          # Add signing disabled flags globally
           if 'CODE_SIGNING_REQUIRED = NO;' not in content:
+              # Add to all buildSettings sections
               content = re.sub(
-                  r'(buildSettings = \{[^\}]*name = Release[^\}]*)',
-                  lambda m: m.group(0) + '\n\t\t\t\tCODE_SIGNING_REQUIRED = NO;\n\t\t\t\tCODE_SIGNING_ALLOWED = NO;',
-                  content,
-                  flags=re.DOTALL
+                  r'(buildSettings = \{)',
+                  r'\1\n\t\t\t\tCODE_SIGNING_REQUIRED = NO;\n\t\t\t\tCODE_SIGNING_ALLOWED = NO;',
+                  content
               )
           
           with open(pbxproj, 'w') as f:
               f.write(content)
-          print("✅ Disabled code signing")
+          print("✅ Disabled all code signing")
           EOF
 
-      - name: Build iOS app with xcodebuild (no signing)
+      - name: Build iOS app with xcodebuild
         run: |
           cd ios
+          
+          # Build using xcodebuild with all signing disabled
           xcodebuild \
             -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -archivePath $PWD/build/Runner.xcarchive \
+            DEVELOPMENT_TEAM="" \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             AD_HOC_CODE_SIGNING_ALLOWED=NO \
-            archive | xcpretty || true
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            archive
+          
           cd ..
 
       - name: Create IPA from archive

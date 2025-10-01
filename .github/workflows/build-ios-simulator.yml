@@ -1,0 +1,72 @@
+name: Build iOS Simulator IPA (Fallback)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios-simulator:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.2"
+          channel: 'stable'
+          cache: true
+
+      - name: Setup Firebase Configuration
+        run: |
+          echo "${{ secrets.FIREBASE_JSON_CONFIG }}" > android/app/google-services.json
+          echo "${{ secrets.IOS_FIREBASE_CONFIG }}" > ios/Runner/GoogleService-Info.plist
+          echo "${{ secrets.FIREBASE_OPTIONS_DART }}" > lib/firebase_options.dart
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      - name: Build for iOS Simulator (no signing required!)
+        run: |
+          flutter build ios --simulator --release
+
+      - name: Create IPA from simulator build
+        run: |
+          # Get version info
+          VERSION=$(grep "version:" pubspec.yaml | sed 's/version: //g' | sed 's/+.*//g')
+          BUILD=$(grep "version:" pubspec.yaml | sed 's/.*+//g')
+          echo "Built version: $VERSION ($BUILD)"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "BUILD=$BUILD" >> $GITHUB_ENV
+          
+          # Create Payload directory
+          mkdir -p Payload
+          
+          # Copy simulator build (it's x86_64 but can be resigned later)
+          cp -r build/ios/iphonesimulator/Runner.app Payload/
+          
+          # Create IPA
+          zip -r qBitConnect-simulator.ipa Payload
+          
+          # Cleanup
+          rm -rf Payload
+
+      - name: Upload Simulator IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: qBitConnect-Simulator-IPA-${{ env.VERSION }}
+          path: qBitConnect-simulator.ipa
+          retention-days: 30
+
