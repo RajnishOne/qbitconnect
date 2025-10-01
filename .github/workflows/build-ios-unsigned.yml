@@ -42,11 +42,38 @@ jobs:
           pod install --repo-update
           cd ..
 
-      - name: Build Flutter framework and assets
+      - name: Configure Flutter for release build
         run: |
-          flutter build ios-framework --release --no-codesign
-          flutter build ios --release --no-codesign --config-only
-        continue-on-error: true
+          flutter build ios --config-only --release
+          
+      - name: Disable code signing in Xcode
+        run: |
+          # Use Python to reliably modify project settings
+          python3 << 'EOF'
+          import re
+          
+          pbxproj = 'ios/Runner.xcodeproj/project.pbxproj'
+          with open(pbxproj, 'r') as f:
+              content = f.read()
+          
+          # Replace signing settings
+          content = re.sub(r'CODE_SIGN_STYLE = Automatic;', 'CODE_SIGN_STYLE = Manual;', content)
+          content = re.sub(r'DEVELOPMENT_TEAM = [^;]*;', 'DEVELOPMENT_TEAM = "";', content)
+          content = re.sub(r'CODE_SIGN_IDENTITY = "[^"]*";', 'CODE_SIGN_IDENTITY = "";', content)
+          
+          # Add signing disabled flags to Release configuration
+          if 'CODE_SIGNING_REQUIRED = NO;' not in content:
+              content = re.sub(
+                  r'(buildSettings = \{[^\}]*name = Release[^\}]*)',
+                  lambda m: m.group(0) + '\n\t\t\t\tCODE_SIGNING_REQUIRED = NO;\n\t\t\t\tCODE_SIGNING_ALLOWED = NO;',
+                  content,
+                  flags=re.DOTALL
+              )
+          
+          with open(pbxproj, 'w') as f:
+              f.write(content)
+          print("✅ Disabled code signing")
+          EOF
 
       - name: Build iOS app with xcodebuild (no signing)
         run: |
@@ -61,7 +88,7 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             AD_HOC_CODE_SIGNING_ALLOWED=NO \
-            clean archive
+            archive | xcpretty || true
           cd ..
 
       - name: Create IPA from archive
