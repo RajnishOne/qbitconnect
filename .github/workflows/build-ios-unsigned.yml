@@ -42,6 +42,9 @@ jobs:
           pod install --repo-update
           cd ..
 
+      - name: Disable code signing in Xcode project
+        run: python3 .github/scripts/disable-codesign.py
+
       - name: Build unsigned iOS app
         run: |
           flutter build ios --release --no-codesign --no-tree-shake-icons
