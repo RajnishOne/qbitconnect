@@ -35,33 +35,33 @@ jobs:
         run: pod repo update
         working-directory: ios
 
-      - name: Disable code signing in Xcode project
+      - name: Build Flutter framework and app
+        run: flutter build ios --release --no-codesign || true
+
+      - name: Build unsigned iOS app with xcodebuild
         run: |
-          sed -i '' 's/CODE_SIGN_IDENTITY = .*/CODE_SIGN_IDENTITY = "";/' ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/DEVELOPMENT_TEAM = .*/DEVELOPMENT_TEAM = "";/' ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/CODE_SIGN_STYLE = .*/CODE_SIGN_STYLE = Manual;/' ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/PROVISIONING_PROFILE_SPECIFIER = .*/PROVISIONING_PROFILE_SPECIFIER = "";/' ios/Runner.xcodeproj/project.pbxproj
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            DEVELOPMENT_TEAM="" \
+            clean build
+        working-directory: ios
 
-      - name: Build iOS app (unsigned)
-        run: flutter build ios --release --no-codesign
-
-      - name: Create Payload directory
-        run: mkdir Payload
-        working-directory: build/ios/iphoneos
-
-      - name: Move app to Payload
-        run: mv Runner.app Payload
-        working-directory: build/ios/iphoneos
-
-      - name: Create IPA archive
-        run: zip -qq -r -9 FlutterIpaExport.ipa Payload
-        working-directory: build/ios/iphoneos
+      - name: Create Payload directory and prepare IPA
+        run: |
+          mkdir -p Payload
+          cp -r ios/build/Release-iphoneos/Runner.app Payload/
+          zip -qq -r -9 FlutterIpaExport.ipa Payload
 
       - name: Upload IPA to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/ios/iphoneos/FlutterIpaExport.ipa
+          file: FlutterIpaExport.ipa
           tag: ${{ github.event.inputs.tag }}
           overwrite: true
           body: "This is first iOS release"
