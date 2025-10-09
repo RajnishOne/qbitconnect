@@ -39,7 +39,7 @@ jobs:
         run: pod install --verbose
         working-directory: ios
 
-      - name: Optional: flutter clean
+      - name: "Optional: flutter clean"
         run: flutter clean
 
       - name: Build Flutter iOS app (unsigned - may fail, that's OK)
