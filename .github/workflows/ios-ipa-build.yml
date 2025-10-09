@@ -52,23 +52,8 @@ jobs:
           which flutterfire
           flutterfire --version || true
 
-      - name: Build Flutter iOS app (unsigned - may fail, that's OK)
-        run: flutter build ios --release --no-codesign || echo "Flutter build completed, continuing..."
-
-      - name: Build unsigned IPA with xcodebuild directly
-        run: |
-          xcodebuild -workspace Runner.xcworkspace \
-            -scheme Runner \
-            -configuration Release \
-            -sdk iphoneos \
-            -derivedDataPath ../build \
-            CODE_SIGN_IDENTITY="-" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            DEVELOPMENT_TEAM="" \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            build
-        working-directory: ios
+      - name: Build Flutter iOS app (unsigned)
+        run: flutter build ios --release --no-codesign
 
       - name: Create Payload directory and prepare IPA
         run: |
@@ -76,31 +61,20 @@ jobs:
           rm -rf Payload FlutterIpaExport.ipa
           mkdir -p Payload
           
-          # Find Runner.app in build output (xcodebuild uses derivedDataPath ../build from ios/)
-          APP_PATH=""
+          # Flutter build output location
+          APP_PATH="build/ios/iphoneos/Runner.app"
           
-          # Check common locations
-          if [ -d "build/Build/Products/Release-iphoneos/Runner.app" ]; then
-            APP_PATH="build/Build/Products/Release-iphoneos/Runner.app"
-          elif [ -d "ios/build/Release-iphoneos/Runner.app" ]; then
-            APP_PATH="ios/build/Release-iphoneos/Runner.app"
-          else
-            # Search for it
-            APP_PATH=$(find build ios -type d -name "Runner.app" 2>/dev/null | grep -i "release-iphoneos" | head -1 || true)
-          fi
-          
-          if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
-            echo "ERROR: Runner.app not found. Searching build directories..."
-            echo "Contents of build/:"
-            find build -name "Runner.app" -type d 2>/dev/null || echo "No Runner.app found in build/"
-            echo "Contents of ios/build/:"
-            find ios/build -name "Runner.app" -type d 2>/dev/null || echo "No ios/build directory"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "ERROR: Runner.app not found at $APP_PATH"
+            echo "Searching for Runner.app..."
+            find build -name "Runner.app" -type d 2>/dev/null || echo "No Runner.app found"
             exit 1
           fi
           
-          echo "Using app at: $APP_PATH"
+          echo "Found Runner.app at: $APP_PATH"
           cp -r "$APP_PATH" Payload/
           zip -qq -r -9 FlutterIpaExport.ipa Payload
+          echo "✓ Created FlutterIpaExport.ipa"
 
       # ---- NEW: install flutterfire CLI and upload symbols if token present ----
       - name: Install FlutterFire CLI
