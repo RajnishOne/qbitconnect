@@ -46,9 +46,9 @@ jobs:
             # Replace occurrences with a harmless echo; create .bak backups for safety
             grep -R --files-with-matches --exclude-dir=Pods "flutterfire upload-crashlytics-symbols" ios | while read -r file; do
               echo "Patching $file"
-              sed -i.bak 's#flutterfire upload-crashlytics-symbols#echo "CI: skipping flutterfire upload-crashlytics-symbols"#g' "$file"
+              sed -i '' 's#flutterfire upload-crashlytics-symbols#echo "CI: skipping flutterfire upload-crashlytics-symbols"#g' "$file"
             done
-            echo "Patched files; backups created with .bak suffix."
+            echo "Patched files successfully."
           else
             echo "No occurrences found; nothing to patch."
           fi
