@@ -35,6 +35,13 @@ jobs:
         run: pod repo update
         working-directory: ios
 
+      - name: Disable code signing in Xcode project
+        run: |
+          sed -i '' 's/CODE_SIGN_IDENTITY = .*/CODE_SIGN_IDENTITY = "";/' ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/DEVELOPMENT_TEAM = .*/DEVELOPMENT_TEAM = "";/' ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/CODE_SIGN_STYLE = .*/CODE_SIGN_STYLE = Manual;/' ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/PROVISIONING_PROFILE_SPECIFIER = .*/PROVISIONING_PROFILE_SPECIFIER = "";/' ios/Runner.xcodeproj/project.pbxproj
+
       - name: Build iOS app (unsigned)
         run: flutter build ios --release --no-codesign
 
