@@ -35,11 +35,31 @@ jobs:
         run: pod repo update
         working-directory: ios
 
-      - name: Build Flutter framework and app
+      - name: Disable FlutterFire upload script in iOS project files
+        run: |
+          set -e
+          echo "Searching for 'flutterfire upload-crashlytics-symbols' under ios/..."
+          matches=$(grep -R --line-number --exclude-dir=Pods "flutterfire upload-crashlytics-symbols" ios || true)
+          if [ -n "$matches" ]; then
+            echo "Found occurrences:"
+            echo "$matches"
+            # Replace occurrences with a harmless echo; create .bak backups for safety
+            grep -R --files-with-matches --exclude-dir=Pods "flutterfire upload-crashlytics-symbols" ios | while read -r file; do
+              echo "Patching $file"
+              sed -i.bak 's#flutterfire upload-crashlytics-symbols#echo "CI: skipping flutterfire upload-crashlytics-symbols"#g' "$file"
+            done
+            echo "Patched files; backups created with .bak suffix."
+          else
+            echo "No occurrences found; nothing to patch."
+          fi
+
+      - name: Build Flutter framework and app (no codesign)
         run: flutter build ios --release --no-codesign || true
 
       - name: Build unsigned iOS app with xcodebuild
         run: |
+          set -e
+          # Basic unsigned build for device (Release-iphoneos)
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -53,7 +73,10 @@ jobs:
 
       - name: Create Payload directory and prepare IPA
         run: |
+          set -e
+          rm -rf Payload FlutterIpaExport.ipa
           mkdir -p Payload
+          # Adjust path if your build output path differs
           cp -r ios/build/Release-iphoneos/Runner.app Payload/
           zip -qq -r -9 FlutterIpaExport.ipa Payload
 
@@ -64,5 +87,5 @@ jobs:
           file: FlutterIpaExport.ipa
           tag: ${{ github.event.inputs.tag }}
           overwrite: true
-          body: "This is first iOS release"
+          body: "Unsigned IPA for AltStore (CI build)."
 
