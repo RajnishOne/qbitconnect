@@ -75,20 +75,29 @@ jobs:
           set -e
           rm -rf Payload FlutterIpaExport.ipa
           mkdir -p Payload
-          # Try common output locations; prefer ios/build/Release-iphoneos
+          
+          # Find Runner.app in build output (xcodebuild uses derivedDataPath ../build from ios/)
           APP_PATH=""
-          if [ -d "ios/build/Release-iphoneos/Runner.app" ]; then
+          
+          # Check common locations
+          if [ -d "build/Build/Products/Release-iphoneos/Runner.app" ]; then
+            APP_PATH="build/Build/Products/Release-iphoneos/Runner.app"
+          elif [ -d "ios/build/Release-iphoneos/Runner.app" ]; then
             APP_PATH="ios/build/Release-iphoneos/Runner.app"
           else
-            # fallback: search for Runner.app under ios/build
-            APP_PATH=$(find ios/build -type d -name "Runner.app" -print -quit || true)
+            # Search for it
+            APP_PATH=$(find build ios -type d -name "Runner.app" 2>/dev/null | grep -i "release-iphoneos" | head -1 || true)
           fi
-          if [ -z "$APP_PATH" ]; then
-            echo "ERROR: Runner.app not found under ios/build. Build possibly failed or path changed."
-            echo "Contents of ios/build:"
-            ls -la ios/build || true
+          
+          if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
+            echo "ERROR: Runner.app not found. Searching build directories..."
+            echo "Contents of build/:"
+            find build -name "Runner.app" -type d 2>/dev/null || echo "No Runner.app found in build/"
+            echo "Contents of ios/build/:"
+            find ios/build -name "Runner.app" -type d 2>/dev/null || echo "No ios/build directory"
             exit 1
           fi
+          
           echo "Using app at: $APP_PATH"
           cp -r "$APP_PATH" Payload/
           zip -qq -r -9 FlutterIpaExport.ipa Payload
