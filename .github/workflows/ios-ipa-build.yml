@@ -2,6 +2,11 @@ name: iOS-ipa-build
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag'
+        required: true
+        default: 'v1.0.0'
 
 jobs:
   build-ios:
@@ -38,7 +43,7 @@ jobs:
         working-directory: build/ios/iphoneos
 
       - name: Move app to Payload
-        run: mv Runner.app/ Payload
+        run: mv Runner.app Payload
         working-directory: build/ios/iphoneos
 
       - name: Create IPA archive
@@ -50,7 +55,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/ios/iphoneos/FlutterIpaExport.ipa
-          tag: v1.4.5
+          tag: ${{ github.event.inputs.tag }}
           overwrite: true
           body: "This is first iOS release"
 
