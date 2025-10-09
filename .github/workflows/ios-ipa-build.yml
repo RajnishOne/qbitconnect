@@ -35,40 +35,29 @@ jobs:
         run: pod repo update
         working-directory: ios
 
-      - name: Disable FlutterFire upload script in iOS project files
-        run: |
-          set -e
-          echo "Searching for 'flutterfire upload-crashlytics-symbols' under ios/..."
-          matches=$(grep -R --line-number --exclude-dir=Pods "flutterfire upload-crashlytics-symbols" ios || true)
-          if [ -n "$matches" ]; then
-            echo "Found occurrences:"
-            echo "$matches"
-            # Replace occurrences with a harmless echo; create .bak backups for safety
-            grep -R --files-with-matches --exclude-dir=Pods "flutterfire upload-crashlytics-symbols" ios | while read -r file; do
-              echo "Patching $file"
-              sed -i '' 's#flutterfire upload-crashlytics-symbols#echo "CI: skipping flutterfire upload-crashlytics-symbols"#g' "$file"
-            done
-            echo "Patched files successfully."
-          else
-            echo "No occurrences found; nothing to patch."
-          fi
+      - name: Install CocoaPods (run pod install)
+        run: pod install --verbose
+        working-directory: ios
 
-      - name: Build Flutter framework and app (no codesign)
-        run: flutter build ios --release --no-codesign || true
+      - name: Optional: flutter clean
+        run: flutter clean
 
-      - name: Build unsigned iOS app with xcodebuild
+      - name: Build Flutter iOS app (unsigned - may fail, that's OK)
+        run: flutter build ios --release --no-codesign || echo "Flutter build completed, continuing..."
+
+      - name: Build unsigned IPA with xcodebuild directly
         run: |
-          set -e
-          # Basic unsigned build for device (Release-iphoneos)
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
-            -destination 'generic/platform=iOS' \
-            CODE_SIGN_IDENTITY="" \
+            -sdk iphoneos \
+            -derivedDataPath ../build \
+            CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             DEVELOPMENT_TEAM="" \
-            clean build
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            build
         working-directory: ios
 
       - name: Create Payload directory and prepare IPA
@@ -76,9 +65,48 @@ jobs:
           set -e
           rm -rf Payload FlutterIpaExport.ipa
           mkdir -p Payload
-          # Adjust path if your build output path differs
-          cp -r ios/build/Release-iphoneos/Runner.app Payload/
+          # Try common output locations; prefer ios/build/Release-iphoneos
+          APP_PATH=""
+          if [ -d "ios/build/Release-iphoneos/Runner.app" ]; then
+            APP_PATH="ios/build/Release-iphoneos/Runner.app"
+          else
+            # fallback: search for Runner.app under ios/build
+            APP_PATH=$(find ios/build -type d -name "Runner.app" -print -quit || true)
+          fi
+          if [ -z "$APP_PATH" ]; then
+            echo "ERROR: Runner.app not found under ios/build. Build possibly failed or path changed."
+            echo "Contents of ios/build:"
+            ls -la ios/build || true
+            exit 1
+          fi
+          echo "Using app at: $APP_PATH"
+          cp -r "$APP_PATH" Payload/
           zip -qq -r -9 FlutterIpaExport.ipa Payload
+
+      # ---- NEW: install flutterfire CLI and upload symbols if token present ----
+      - name: Install FlutterFire CLI
+        run: |
+          set -e
+          echo "Installing FlutterFire CLI..."
+          dart pub global activate flutterfire_cli
+          echo "PATH=\"$HOME/.pub-cache/bin:\$PATH\"" >> $GITHUB_ENV
+
+      - name: Upload Crashlytics symbols (optional)
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          set -e
+          if [ -z "${FIREBASE_TOKEN}" ]; then
+            echo "FIREBASE_TOKEN not set — skipping Crashlytics symbol upload (CI)."
+            exit 0
+          fi
+          if ! command -v flutterfire >/dev/null 2>&1; then
+            echo "flutterfire CLI not found on PATH — skipping Crashlytics symbol upload."
+            exit 0
+          fi
+          echo "Uploading dSYMs to Firebase Crashlytics..."
+          # If your dSYMs are in a different path adjust accordingly
+          flutterfire upload-crashlytics-symbols --app ios || true
 
       - name: Upload IPA to release
         uses: svenstaro/upload-release-action@v2
@@ -88,4 +116,3 @@ jobs:
           tag: ${{ github.event.inputs.tag }}
           overwrite: true
           body: "Unsigned IPA for AltStore (CI build)."
-
