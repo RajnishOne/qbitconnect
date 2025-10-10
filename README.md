@@ -17,8 +17,50 @@ A modern, cross-platform mobile application for remote qBittorrent management. C
 
 ## 📱 Download
 
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play Store" width="200">](https://play.google.com/store/apps/details?id=com.bluematter.qbitconnect)
-[<img src="https://user-images.githubusercontent.com/15032958/208871323-c1c5511c-d6bc-47c8-b82b-7ce2f95f244a.png" alt="Get it on GitHub" width="200">](https://github.com/RajnishOne/qbitconnect/releases)
+<a href="https://play.google.com/store/apps/details?id=com.bluematter.qbitconnect"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play Store" height="80"></a><a href="https://github.com/RajnishOne/qbitconnect/releases"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/github.png" alt="Get it on GitHub" height="80"></a>
+
+### iOS - AltStore Installation
+
+&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore-pal.png" alt="Add to AltStore PAL" height="60"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore.png" alt="Add to AltStore Classic" height="60"></a>
+
+## 🔗 Quick Links For AltStore
+
+### AltStore Sources
+- **For AltStore PAL (EU)**: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json`
+- **For AltStore Classic**: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json`
+
+### Installation Instructions
+
+#### How to Install via AltStore
+
+**What is AltStore?**  
+AltStore is an alternative app store for iOS that allows you to sideload apps using just your Apple ID. No jailbreak required!
+
+**Installation Steps:**
+
+1. **Install AltStore** on your device
+   - Download from [altstore.io](https://altstore.io/)
+   - Follow the installation guide for your platform (Windows/Mac)
+
+2. **Add qBitConnect Source** (choose one method)
+   - **Option A (Easy):** Click one of the buttons above on your iOS device
+   - **Option B (Manual):** 
+     - Open AltStore on your iOS device
+     - Go to **Browse** → **Sources** → tap **+** (top right)
+     - Enter this URL:
+       - For AltStore PAL (EU): `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json`
+       - For AltStore Classic: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json`
+
+3. **Install qBitConnect**
+   - Find qBitConnect in your added source
+   - Tap **GET** to install
+   - The app will auto-update through AltStore
+
+**Benefits:**
+- ✅ Auto-updates when new versions are released
+- ✅ No jailbreak required
+- ✅ Works on any iOS device
+- ✅ Open source and transparent
 
 ## ✨ Features
 
