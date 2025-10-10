@@ -21,7 +21,9 @@ A modern, cross-platform mobile application for remote qBittorrent management. C
 
 ### iOS - AltStore Installation
 
-&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore-pal.png" alt="Add to AltStore PAL" height="60"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore.png" alt="Add to AltStore Classic" height="60"></a>
+<!-- &nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore-pal.png" alt="Add to AltStore PAL" height="60"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore.png" alt="Add to AltStore Classic" height="60"></a> -->
+
+&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore.png" alt="Add to AltStore Classic" height="60"></a>
 
 ## 🔗 Quick Links For AltStore
 
