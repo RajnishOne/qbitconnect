@@ -55,7 +55,7 @@ jobs:
       - name: Create Payload directory and prepare IPA
         run: |
           set -e
-          rm -rf Payload FlutterIpaExport.ipa
+          rm -rf Payload qBitConnect.ipa
           mkdir -p Payload
           
           # Flutter build output location
@@ -70,8 +70,8 @@ jobs:
           
           echo "Found Runner.app at: $APP_PATH"
           cp -r "$APP_PATH" Payload/
-          zip -qq -r -9 FlutterIpaExport.ipa Payload
-          echo "✓ Created FlutterIpaExport.ipa"
+          zip -qq -r -9 qBitConnect.ipa Payload
+          echo "✓ Created qBitConnect.ipa"
 
       # ---- NEW: install flutterfire CLI and upload symbols if token present ----
       - name: Install FlutterFire CLI
@@ -102,7 +102,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: FlutterIpaExport.ipa
+          file: qBitConnect.ipa
           tag: ${{ github.event.inputs.tag }}
           overwrite: true
           body: "Unsigned IPA for AltStore (CI build)."
