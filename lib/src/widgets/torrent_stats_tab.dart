@@ -208,7 +208,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab> {
             Row(
               children: [
                 Text(
-                  'Speed Over Time',
+                  'Transfer Info',
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
