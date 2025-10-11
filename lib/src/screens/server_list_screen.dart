@@ -7,6 +7,7 @@ import '../services/server_storage.dart';
 import '../services/firebase_service.dart';
 import '../models/server_config.dart';
 import '../utils/format_utils.dart';
+import '../utils/error_handler.dart';
 import 'connection_screen.dart';
 
 class ServerListScreen extends StatefulWidget {
@@ -49,9 +50,12 @@ class _ServerListScreenState extends State<ServerListScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to load servers: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Failed to load servers. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -67,12 +71,11 @@ class _ServerListScreenState extends State<ServerListScreen> {
 
       final appState = context.read<AppState>();
 
-      // Disconnect from current server if connected
-      if (appState.isAuthenticated) {
-        await appState.disconnect();
-      }
+      // Don't disconnect first - let connectToServer handle it
+      // This way if connection fails, we stay connected to current server
 
       // Connect to selected server
+      // Note: connectToServer will automatically disconnect from old server if successful
       await appState.connectToServer(server);
 
       // Fetch initial data from the server
@@ -99,13 +102,17 @@ class _ServerListScreenState extends State<ServerListScreen> {
         // Close loading dialog
         Navigator.of(context).pop();
 
-        // Show error message
+        // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to connect: $e'),
+            content: Text(ErrorHandler.getUserFriendlyMessage(e)),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
           ),
         );
+
+        // Refresh list in case active server changed
+        await _loadServers();
       }
     }
   }
@@ -149,7 +156,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete server: $e'),
+              content: const Text('Failed to delete server. Please try again.'),
               backgroundColor: Colors.red,
             ),
           );
@@ -173,7 +180,9 @@ class _ServerListScreenState extends State<ServerListScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to set auto-connect: $e'),
+            content: const Text(
+              'Failed to set auto-connect. Please try again.',
+            ),
             backgroundColor: Colors.red,
           ),
         );
