@@ -21,6 +21,8 @@ import '../services/deep_link_handler.dart';
 import '../core/app_widget.dart';
 import 'torrent_details_screen.dart';
 import 'settings_screen.dart';
+import 'server_list_screen.dart';
+import '../widgets/server_switcher_sheet.dart';
 
 class TorrentsScreen extends StatefulWidget {
   const TorrentsScreen({super.key});
@@ -125,6 +127,45 @@ class _TorrentsScreenState extends State<TorrentsScreen>
     }
   }
 
+  void _showServerSwitcher(BuildContext context, AppState appState) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => ServerSwitcherSheet(
+        currentServerId: appState.activeServerId,
+        onServerSelected: (server) async {
+          Navigator.pop(context);
+          // Show loading
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Switching to ${server.name}...'),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+          try {
+            await appState.connectToServer(server);
+            await appState.refreshNow();
+          } catch (e) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Failed to switch server'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          }
+        },
+        onManageServers: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ServerListScreen()),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
@@ -148,30 +189,45 @@ class _TorrentsScreenState extends State<TorrentsScreen>
               },
               tooltip: AppStrings.settings,
             ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    appState.serverName?.isNotEmpty == true
-                        ? appState.serverName!
-                        : 'qBitConnect',
-                    style: const TextStyle(fontSize: 18),
+            title: GestureDetector(
+              onTap: () => _showServerSwitcher(context, appState),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            appState.serverName?.isNotEmpty == true
+                                ? appState.serverName!
+                                : 'qBitConnect',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Theme.of(context).colorScheme.onSurface,
+                        size: 24,
+                      ),
+                    ],
                   ),
-                ),
-                if (appState.qbittorrentVersion != null)
-                  Text(
-                    appState.qbittorrentVersion!,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.7),
+                  if (appState.qbittorrentVersion != null)
+                    Text(
+                      appState.qbittorrentVersion!,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
             actions: [
               Selector<BatchSelectionState, bool>(
