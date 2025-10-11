@@ -1,4 +1,4 @@
-name: iOS-ipa-build
+name: Build iOS & Android
 
 on:
   workflow_dispatch:
@@ -9,6 +9,71 @@ on:
         default: 'v1.0.0'
 
 jobs:
+  build-android:
+    name: 🤖 Android Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          architecture: x64
+
+      - name: Restore Firebase configuration files
+        run: |
+          echo "${{ secrets.FIREBASE_JSON_CONFIG }}" > firebase.json
+          echo "${{ secrets.FIREBASE_OPTIONS_DART }}" > lib/firebase_options.dart
+          echo "${{ secrets.ANDROID_FIREBASE_CONFIG }}" > android/app/google-services.json
+
+      - name: Decode and setup Android keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/upload-keystore.jks
+          echo "storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=upload-keystore.jks" >> android/key.properties
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Build Android App Bundle (AAB)
+        run: flutter build appbundle --release
+
+      - name: Rename build artifacts
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/qBitConnect-${{ github.event.inputs.tag }}.apk
+          mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/qBitConnect-${{ github.event.inputs.tag }}.aab
+
+      - name: Upload APK to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/app/outputs/flutter-apk/qBitConnect-${{ github.event.inputs.tag }}.apk
+          asset_name: qBitConnect-${{ github.event.inputs.tag }}.apk
+          tag: ${{ github.event.inputs.tag }}
+          overwrite: true
+
+      - name: Upload AAB to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/app/outputs/bundle/release/qBitConnect-${{ github.event.inputs.tag }}.aab
+          asset_name: qBitConnect-${{ github.event.inputs.tag }}.aab
+          tag: ${{ github.event.inputs.tag }}
+          overwrite: true
+
   build-ios:
     name: 🎉 iOS Build
     runs-on: macos-latest
