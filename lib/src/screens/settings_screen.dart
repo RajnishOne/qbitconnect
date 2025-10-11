@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import '../state/app_state_manager.dart';
 import '../services/prefs.dart';
@@ -30,11 +29,6 @@ class _SettingsScreenState extends State<SettingsScreen>
   int _pollingInterval = 4;
   bool _isLoading = true;
 
-  // Store historical speed data (last 60 data points)
-  final List<double> _downloadSpeedHistory = [];
-  final List<double> _uploadSpeedHistory = [];
-  final int _maxDataPoints = 60;
-
   @override
   bool get wantKeepAlive => true;
 
@@ -47,23 +41,6 @@ class _SettingsScreenState extends State<SettingsScreen>
       screenClass: 'SettingsScreen',
     );
     _loadSettings();
-  }
-
-  void _updateSpeedHistory(int dlSpeed, int upSpeed) {
-    if (!mounted) return;
-
-    setState(() {
-      _downloadSpeedHistory.add(dlSpeed.toDouble());
-      _uploadSpeedHistory.add(upSpeed.toDouble());
-
-      // Keep only last N data points
-      if (_downloadSpeedHistory.length > _maxDataPoints) {
-        _downloadSpeedHistory.removeAt(0);
-      }
-      if (_uploadSpeedHistory.length > _maxDataPoints) {
-        _uploadSpeedHistory.removeAt(0);
-      }
-    });
   }
 
   Future<void> _loadSettings() async {
@@ -250,16 +227,6 @@ class _SettingsScreenState extends State<SettingsScreen>
             // Server Info Section
             Consumer<AppState>(
               builder: (context, appState, child) {
-                // Update speed history when transfer info changes
-                if (appState.transferInfo != null) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _updateSpeedHistory(
-                      appState.transferInfo!.dlInfoSpeed,
-                      appState.transferInfo!.upInfoSpeed,
-                    );
-                  });
-                }
-
                 return Card(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,6 +257,46 @@ class _SettingsScreenState extends State<SettingsScreen>
                               ),
                               const SizedBox(height: 8),
                             ],
+                            if (appState.transferInfo != null) ...[
+                              const SizedBox(height: 8),
+                              const Divider(height: 1),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Transfer Speeds',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Chip(
+                                    avatar: const Icon(
+                                      Icons.download,
+                                      color: Colors.green,
+                                    ),
+                                    label: Text(
+                                      ByteFormatter.formatBytesPerSecond(
+                                        appState.transferInfo!.dlInfoSpeed,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Chip(
+                                    avatar: const Icon(
+                                      Icons.upload,
+                                      color: Colors.red,
+                                    ),
+                                    label: Text(
+                                      ByteFormatter.formatBytesPerSecond(
+                                        appState.transferInfo!.upInfoSpeed,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -298,11 +305,6 @@ class _SettingsScreenState extends State<SettingsScreen>
                 );
               },
             ),
-
-            const SizedBox(height: 16),
-
-            // Speed Over Time Graph
-            if (_downloadSpeedHistory.length > 1) _buildSpeedGraph(),
 
             const SizedBox(height: 16),
 
@@ -604,196 +606,6 @@ class _SettingsScreenState extends State<SettingsScreen>
           ],
         );
       },
-    );
-  }
-
-  // Compact speed visualization
-  Widget _buildSpeedGraph() {
-    final dlMax = _downloadSpeedHistory.isEmpty
-        ? 1.0
-        : _downloadSpeedHistory.reduce((a, b) => a > b ? a : b);
-    final upMax = _uploadSpeedHistory.isEmpty
-        ? 1.0
-        : _uploadSpeedHistory.reduce((a, b) => a > b ? a : b);
-
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            // Download Speed with Mini Sparkline
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.download,
-                        color: Color(0xFF2196F3),
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Download',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _downloadSpeedHistory.isEmpty
-                        ? '0 B/s'
-                        : ByteFormatter.formatBytesPerSecond(
-                            _downloadSpeedHistory.last.toInt(),
-                          ),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2196F3),
-                    ),
-                  ),
-                  if (_downloadSpeedHistory.length > 1) ...[
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 40,
-                      child: LineChart(
-                        LineChartData(
-                          gridData: const FlGridData(show: false),
-                          titlesData: const FlTitlesData(show: false),
-                          borderData: FlBorderData(show: false),
-                          minX: 0,
-                          maxX: (_downloadSpeedHistory.length - 1).toDouble(),
-                          minY: 0,
-                          maxY: dlMax * 1.2,
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: _downloadSpeedHistory
-                                  .asMap()
-                                  .entries
-                                  .map((e) => FlSpot(e.key.toDouble(), e.value))
-                                  .toList(),
-                              isCurved: true,
-                              color: const Color(0xFF2196F3),
-                              barWidth: 2,
-                              isStrokeCapRound: true,
-                              dotData: const FlDotData(show: false),
-                              belowBarData: BarAreaData(
-                                show: true,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    const Color(0xFF2196F3).withOpacity(0.3),
-                                    const Color(0xFF2196F3).withOpacity(0.05),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                              ),
-                            ),
-                          ],
-                          lineTouchData: const LineTouchData(enabled: false),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            Container(
-              width: 1,
-              height: 80,
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              color: Theme.of(context).colorScheme.outlineVariant,
-            ),
-            // Upload Speed with Mini Sparkline
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.upload,
-                        color: Color(0xFF4CAF50),
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Upload',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _uploadSpeedHistory.isEmpty
-                        ? '0 B/s'
-                        : ByteFormatter.formatBytesPerSecond(
-                            _uploadSpeedHistory.last.toInt(),
-                          ),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF4CAF50),
-                    ),
-                  ),
-                  if (_uploadSpeedHistory.length > 1) ...[
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 40,
-                      child: LineChart(
-                        LineChartData(
-                          gridData: const FlGridData(show: false),
-                          titlesData: const FlTitlesData(show: false),
-                          borderData: FlBorderData(show: false),
-                          minX: 0,
-                          maxX: (_uploadSpeedHistory.length - 1).toDouble(),
-                          minY: 0,
-                          maxY: upMax * 1.2,
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: _uploadSpeedHistory
-                                  .asMap()
-                                  .entries
-                                  .map((e) => FlSpot(e.key.toDouble(), e.value))
-                                  .toList(),
-                              isCurved: true,
-                              color: const Color(0xFF4CAF50),
-                              barWidth: 2,
-                              isStrokeCapRound: true,
-                              dotData: const FlDotData(show: false),
-                              belowBarData: BarAreaData(
-                                show: true,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    const Color(0xFF4CAF50).withOpacity(0.3),
-                                    const Color(0xFF4CAF50).withOpacity(0.05),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                              ),
-                            ),
-                          ],
-                          lineTouchData: const LineTouchData(enabled: false),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
