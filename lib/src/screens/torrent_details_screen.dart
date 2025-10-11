@@ -234,10 +234,10 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           bottom: TabBar(
             controller: _tabController,
             tabs: const [
+              Tab(text: 'Stats', icon: Icon(Icons.bar_chart)),
               ReusableWidgets.infoTab,
               ReusableWidgets.filesTab,
               ReusableWidgets.trackersTab,
-              Tab(text: 'Stats', icon: Icon(Icons.bar_chart)),
             ],
           ),
         ),
@@ -246,6 +246,15 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
             : TabBarView(
                 controller: _tabController,
                 children: [
+                  RepaintBoundary(
+                    child: RefreshIndicator(
+                      onRefresh: _refreshInfoTab,
+                      child: TorrentStatsTab(
+                        torrent: widget.torrent,
+                        details: _details,
+                      ),
+                    ),
+                  ),
                   RepaintBoundary(
                     child: RefreshIndicator(
                       onRefresh: _refreshInfoTab,
@@ -262,15 +271,6 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                     child: RefreshIndicator(
                       onRefresh: _refreshTrackersTab,
                       child: _buildTrackersTab(),
-                    ),
-                  ),
-                  RepaintBoundary(
-                    child: RefreshIndicator(
-                      onRefresh: _refreshInfoTab,
-                      child: TorrentStatsTab(
-                        torrent: widget.torrent,
-                        details: _details,
-                      ),
                     ),
                   ),
                 ],

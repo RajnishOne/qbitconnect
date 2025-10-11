@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import '../models/torrent.dart';
 import '../models/torrent_details.dart';
 import '../utils/byte_formatter.dart';
+import 'animated_pieces_widget.dart';
 
 class TorrentStatsTab extends StatefulWidget {
   final Torrent torrent;
@@ -77,8 +78,8 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
       children: [
-        // Big Progress Circle at top
-        _buildProgressCircle(details, theme),
+        // Animated Pieces Visualization
+        AnimatedPiecesWidget(details: details),
         const SizedBox(height: 24),
 
         // Speed Cards
@@ -100,102 +101,6 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
         // Quick Stats
         _buildQuickStats(details, theme),
       ],
-    );
-  }
-
-  // Big circular progress indicator at the top
-  Widget _buildProgressCircle(TorrentDetails details, ThemeData theme) {
-    final progress = details.progress.clamp(0.0, 1.0);
-
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 200,
-              width: 200,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Background circle
-                  SizedBox(
-                    height: 200,
-                    width: 200,
-                    child: CircularProgressIndicator(
-                      value: 1.0,
-                      strokeWidth: 20,
-                      backgroundColor: Colors.transparent,
-                      valueColor: AlwaysStoppedAnimation(
-                        theme.colorScheme.surfaceContainerHighest,
-                      ),
-                    ),
-                  ),
-                  // Progress circle
-                  SizedBox(
-                    height: 200,
-                    width: 200,
-                    child: CircularProgressIndicator(
-                      value: progress,
-                      strokeWidth: 20,
-                      backgroundColor: Colors.transparent,
-                      valueColor: AlwaysStoppedAnimation(
-                        _getProgressColor(progress),
-                      ),
-                    ),
-                  ),
-                  // Center text
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '${(progress * 100).toStringAsFixed(1)}%',
-                        style: theme.textTheme.displaySmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: _getProgressColor(progress),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Complete',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildInfoCard(
-                    'Downloaded',
-                    details.formattedSize,
-                    Icons.download_rounded,
-                    const Color(0xFF2196F3),
-                    theme,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildInfoCard(
-                    'ETA',
-                    details.formattedEta,
-                    Icons.schedule_rounded,
-                    const Color(0xFF4CAF50),
-                    theme,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -731,65 +636,5 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
         ),
       ],
     );
-  }
-
-  Widget _buildInfoCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-    ThemeData theme,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, size: 20, color: color),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Color _getProgressColor(double progress) {
-    if (progress >= 1.0) return const Color(0xFF4CAF50);
-    if (progress >= 0.75) return const Color(0xFF2196F3);
-    if (progress >= 0.5) return const Color(0xFF00BCD4);
-    if (progress >= 0.25) return const Color(0xFFFF9800);
-    return const Color(0xFFFF5722);
   }
 }
