@@ -7,6 +7,10 @@ on:
         description: 'Release tag'
         required: true
         default: 'v1.0.0'
+      release_notes:
+        description: 'Release notes'
+        required: false
+        default: 'Release build'
 
 jobs:
   build-android:
@@ -64,6 +68,7 @@ jobs:
           asset_name: qBitConnect-${{ github.event.inputs.tag }}.apk
           tag: ${{ github.event.inputs.tag }}
           overwrite: true
+          body: ${{ github.event.inputs.release_notes }}
 
       - name: Upload AAB to release
         uses: svenstaro/upload-release-action@v2
@@ -73,6 +78,7 @@ jobs:
           asset_name: qBitConnect-${{ github.event.inputs.tag }}.aab
           tag: ${{ github.event.inputs.tag }}
           overwrite: true
+          body: ${{ github.event.inputs.release_notes }}
 
   build-ios:
     name: 🎉 iOS Build
@@ -170,4 +176,7 @@ jobs:
           file: qBitConnect.ipa
           tag: ${{ github.event.inputs.tag }}
           overwrite: true
-          body: "Unsigned IPA for AltStore (CI build)."
+          body: |
+            ${{ github.event.inputs.release_notes }}
+            
+            **Note:** iOS build is unsigned IPA for AltStore/sideloading.
