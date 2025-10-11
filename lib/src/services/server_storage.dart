@@ -170,6 +170,9 @@ class ServerStorage {
     if (autoConnectId == serverId) {
       await setAutoConnectServerId(null);
     }
+
+    // Note: Legacy storage handling is done by the caller (server_list_screen)
+    // to allow for better UX (asking user to select new auto-connect server)
   }
 
   /// Get a server configuration by ID

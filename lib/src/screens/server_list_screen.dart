@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../state/app_state_manager.dart';
 import '../services/server_storage.dart';
+import '../services/prefs.dart';
 import '../services/firebase_service.dart';
 import '../models/server_config.dart';
 import '../utils/format_utils.dart';
 import '../utils/error_handler.dart';
+import '../widgets/auto_connect_replacement_sheet.dart';
 import 'connection_screen.dart';
 
 class ServerListScreen extends StatefulWidget {
@@ -118,56 +120,166 @@ class _ServerListScreenState extends State<ServerListScreen> {
   }
 
   Future<void> _deleteServer(ServerConfig server) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Server'),
-        content: Text(
-          'Are you sure you want to delete "${server.name}"?\n\n'
-          'This will remove the server configuration and saved password.',
+    // Check if this is the auto-connect server
+    final autoConnectId = await ServerStorage.getAutoConnectServerId();
+    final isAutoConnect = autoConnectId == server.id;
+
+    if (isAutoConnect) {
+      // For auto-connect servers, show replacement selection first
+      await _showAutoConnectReplacementSheet(server);
+    } else {
+      // For non-auto-connect servers, show simple confirmation
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete Server'),
+          content: Text(
+            'Are you sure you want to delete "${server.name}"?\n\n'
+            'This will remove the server configuration and saved password.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+      );
+
+      if (confirmed == true) {
+        await _performDelete(server, null);
+      }
+    }
+  }
+
+  Future<void> _showAutoConnectReplacementSheet(
+    ServerConfig serverToDelete,
+  ) async {
+    final remainingServers = _servers
+        .where((s) => s.id != serverToDelete.id)
+        .toList();
+
+    if (remainingServers.isEmpty) {
+      // No servers remaining, just confirm deletion
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete Last Server'),
+          content: Text(
+            'Are you sure you want to delete "${serverToDelete.name}"?\n\n'
+            'This is your last server. You will need to add a new server to continue.',
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed == true) {
+        await _performDelete(serverToDelete, null);
+      }
+      return;
+    }
+
+    // Show bottom sheet to select replacement
+    await showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      builder: (context) => AutoConnectReplacementSheet(
+        serverToDelete: serverToDelete,
+        availableServers: remainingServers,
+        onDelete: (replacement) async {
+          await _performDelete(serverToDelete, replacement);
+        },
       ),
     );
+  }
 
-    if (confirmed == true) {
-      try {
-        await ServerStorage.deleteServerConfig(server.id);
+  Future<void> _performDelete(
+    ServerConfig server,
+    ServerConfig? replacement,
+  ) async {
+    try {
+      // Delete the server
+      await ServerStorage.deleteServerConfig(server.id);
 
+      // Set replacement as auto-connect if provided
+      if (replacement != null) {
+        await ServerStorage.setAutoConnectServerId(replacement.id);
+        await _updateLegacyStorage(replacement);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '${server.name} deleted. ${replacement.name} set as auto-connect',
+              ),
+            ),
+          );
+        }
+      } else {
         if (mounted) {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('${server.name} deleted')));
-
-          // Reload servers
-          await _loadServers();
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Failed to delete server. Please try again.'),
-              backgroundColor: Colors.red,
-            ),
-          );
         }
       }
+
+      // Reload servers
+      if (mounted) {
+        await _loadServers();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Failed to delete server. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _updateLegacyStorage(ServerConfig server) async {
+    // Update legacy storage for backward compatibility
+    final password = await ServerStorage.loadServerPassword(server.id);
+
+    await Prefs.saveBaseUrl(server.baseUrl);
+    await Prefs.saveUsername(server.username);
+    await Prefs.saveServerName(server.name);
+    await Prefs.saveNoAuthSession(server.noAuthSession);
+
+    if (server.customHeadersText != null) {
+      await Prefs.saveCustomHeadersText(server.customHeadersText!);
+    } else {
+      await Prefs.saveCustomHeadersText('');
+    }
+
+    if (password != null && password.isNotEmpty) {
+      await Prefs.savePassword(password);
     }
   }
 
   Future<void> _setAutoConnect(ServerConfig server) async {
     try {
       await ServerStorage.setAutoConnectServerId(server.id);
+
+      // Update legacy storage for backward compatibility
+      await _updateLegacyStorage(server);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
