@@ -86,6 +86,17 @@ class ConnectionState extends ChangeNotifier {
         await Prefs.saveServerName(serverName);
       }
 
+      // Save custom headers for auto-connect
+      if (customHeaders != null && customHeaders.isNotEmpty) {
+        final headersText = customHeaders.entries
+            .map((e) => '${e.key}: ${e.value}')
+            .join('\n');
+        await Prefs.saveCustomHeadersText(headersText);
+      } else {
+        // Clear custom headers if none provided
+        await Prefs.saveCustomHeadersText('');
+      }
+
       // Save no-auth session flag if connection was made without authentication
       await Prefs.saveNoAuthSession(
         allowNoAuth && (username.isEmpty || password.isEmpty),
@@ -149,11 +160,15 @@ class ConnectionState extends ChangeNotifier {
     final username = await Prefs.loadUsername();
     final password = await Prefs.loadPassword();
     final serverName = await Prefs.loadServerName();
+    final customHeadersText = await Prefs.loadCustomHeadersText();
     final isNoAuthSession = await Prefs.loadNoAuthSession();
 
     if (baseUrl == null) {
       return;
     }
+
+    // Parse custom headers if available
+    final customHeaders = _parseCustomHeaders(customHeadersText);
 
     // Check if we have a no-auth session saved
     if (isNoAuthSession) {
@@ -163,6 +178,7 @@ class ConnectionState extends ChangeNotifier {
           username: username ?? '',
           password: password ?? '',
           serverName: serverName,
+          customHeaders: customHeaders,
           allowNoAuth: true,
         );
         return;
@@ -180,6 +196,7 @@ class ConnectionState extends ChangeNotifier {
           username: username,
           password: password,
           serverName: serverName,
+          customHeaders: customHeaders,
         );
       } catch (_) {
         // ignore; user can connect manually
@@ -198,6 +215,31 @@ class ConnectionState extends ChangeNotifier {
       _isInitializing = false;
       notifyListeners();
     }
+  }
+
+  /// Parse custom headers from text format to Map
+  /// Format: "Key: Value" per line
+  Map<String, String>? _parseCustomHeaders(String? headersText) {
+    if (headersText == null || headersText.isEmpty) return null;
+
+    final Map<String, String> headers = {};
+    final lines = headersText.split('\n');
+
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty) continue;
+
+      final colonIndex = trimmed.indexOf(':');
+      if (colonIndex > 0 && colonIndex < trimmed.length - 1) {
+        final key = trimmed.substring(0, colonIndex).trim();
+        final value = trimmed.substring(colonIndex + 1).trim();
+        if (key.isNotEmpty && value.isNotEmpty) {
+          headers[key] = value;
+        }
+      }
+    }
+
+    return headers.isEmpty ? null : headers;
   }
 
   @override
