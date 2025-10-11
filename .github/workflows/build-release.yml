@@ -107,7 +107,7 @@ jobs:
         working-directory: ios
 
       - name: Install CocoaPods (run pod install)
-        run: pod install --verbose
+        run: pod install
         working-directory: ios
 
       - name: Create dummy flutterfire command to prevent build script errors
