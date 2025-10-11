@@ -36,7 +36,7 @@ jobs:
         run: |
           echo "${{ secrets.FIREBASE_JSON_CONFIG }}" > firebase.json
           echo "${{ secrets.FIREBASE_OPTIONS_DART }}" > lib/firebase_options.dart
-          echo "${{ secrets.ANDROID_FIREBASE_CONFIG }}" > android/app/google-services.json
+          echo "${{ secrets.ANDROID_FIREBASE_CONFIG }}" | base64 --decode > android/app/google-services.json
 
       - name: Decode and setup Android keystore
         run: |
