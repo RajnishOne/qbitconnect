@@ -156,19 +156,25 @@ class _TorrentStatsTabState extends State<TorrentStatsTab> {
             ),
             const SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildInfoPill(
-                  'Downloaded',
-                  details.formattedSize,
-                  Icons.download,
-                  theme,
+                Expanded(
+                  child: _buildInfoCard(
+                    'Downloaded',
+                    details.formattedSize,
+                    Icons.download_rounded,
+                    const Color(0xFF2196F3),
+                    theme,
+                  ),
                 ),
-                _buildInfoPill(
-                  'ETA',
-                  details.formattedEta,
-                  Icons.schedule,
-                  theme,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildInfoCard(
+                    'ETA',
+                    details.formattedEta,
+                    Icons.schedule_rounded,
+                    const Color(0xFF4CAF50),
+                    theme,
+                  ),
                 ),
               ],
             ),
@@ -694,40 +700,52 @@ class _TorrentStatsTabState extends State<TorrentStatsTab> {
     );
   }
 
-  Widget _buildInfoPill(
+  Widget _buildInfoCard(
     String label,
     String value,
     IconData icon,
+    Color color,
     ThemeData theme,
   ) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(20),
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: theme.colorScheme.primary),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 20, color: color),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  ),
                 ),
-              ),
-              Text(
-                value,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
