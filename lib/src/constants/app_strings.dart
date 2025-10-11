@@ -141,4 +141,13 @@ class AppStrings {
   static const String update = 'Update';
   static const String add = 'Add';
   static const String chooseTheme = 'Choose Theme';
+
+  // Server Management
+  static const String servers = 'Servers';
+  static const String manageServers = 'Manage Servers';
+  static const String serverList = 'Server List';
+  static const String noServers = 'No Servers';
+  static const String active = 'Active';
+  static const String deleteServer = 'Delete Server';
+  static const String setAsAutoConnect = 'Set as Auto-Connect';
 }

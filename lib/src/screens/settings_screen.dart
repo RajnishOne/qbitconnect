@@ -12,6 +12,8 @@ import 'theme_selection_screen.dart';
 import 'statistics_screen.dart';
 import 'webview_screen.dart';
 import 'torrent_card_display_settings_screen.dart';
+import 'server_list_screen.dart';
+import '../constants/app_strings.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -79,7 +81,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     // Log polling setting change
     FirebaseService.instance.logEvent(
       name: 'polling_setting_changed',
-      parameters: {'polling_enabled': value},
+      parameters: {'polling_enabled': value ? 'yes' : 'no'},
     );
 
     // Update the app polling setting
@@ -304,6 +306,26 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                 );
               },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Servers Section
+            Card(
+              child: ListTile(
+                title: const Text(AppStrings.servers),
+                subtitle: const Text('Manage your qBittorrent servers'),
+                leading: const Icon(Icons.dns),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ServerListScreen(),
+                    ),
+                  );
+                },
+              ),
             ),
 
             const SizedBox(height: 16),

@@ -6,6 +6,8 @@ import '../models/torrent.dart';
 import '../models/transfer_info.dart';
 import '../models/torrent_details.dart';
 import '../models/torrent_add_options.dart';
+import '../models/server_config.dart';
+import '../services/server_storage.dart';
 import '../theme/theme_variants.dart';
 import 'connection_state.dart';
 import 'torrent_state.dart';
@@ -87,6 +89,16 @@ class AppState extends ChangeNotifier {
     Map<String, String>? customHeaders,
     bool allowNoAuth = false,
   }) async {
+    // Clear torrent data when switching to a different server
+    final currentUrl = _connectionState.baseUrl;
+    final normalized = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+
+    if (currentUrl != null && currentUrl != normalized) {
+      _torrentState.clearData();
+    }
+
     await _connectionState.connect(
       baseUrl: baseUrl,
       username: username,
@@ -104,6 +116,42 @@ class AppState extends ChangeNotifier {
     _torrentState.clearData();
     await _connectionState.disconnect();
   }
+
+  // Multi-server methods
+  Future<void> connectToServer(ServerConfig server) async {
+    // Clear torrent data when switching to a different server
+    final currentUrl = _connectionState.baseUrl;
+    if (currentUrl != null && currentUrl != server.baseUrl) {
+      _torrentState.clearData();
+    }
+
+    await _connectionState.connectToServer(server);
+    // The connection state change handler will automatically start polling if successful
+  }
+
+  Future<void> connectToServerId(String serverId) async {
+    // Load server to check if we're switching
+    final server = await ServerStorage.getServerConfig(serverId);
+    if (server != null) {
+      final currentUrl = _connectionState.baseUrl;
+      if (currentUrl != null && currentUrl != server.baseUrl) {
+        _torrentState.clearData();
+      }
+    }
+
+    await _connectionState.connectToServerId(serverId);
+    // The connection state change handler will automatically start polling if successful
+  }
+
+  Future<ServerConfig?> getActiveServer() async {
+    return await _connectionState.getActiveServer();
+  }
+
+  Future<List<ServerConfig>> getAllServers() async {
+    return await _connectionState.getAllServers();
+  }
+
+  String? get activeServerId => _connectionState.activeServerId;
 
   // Settings methods
   void setFilter(String filter) {

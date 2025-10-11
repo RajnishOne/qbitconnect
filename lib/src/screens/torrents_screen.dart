@@ -21,7 +21,6 @@ import '../services/deep_link_handler.dart';
 import '../core/app_widget.dart';
 import 'torrent_details_screen.dart';
 import 'settings_screen.dart';
-import 'connection_screen.dart';
 
 class TorrentsScreen extends StatefulWidget {
   const TorrentsScreen({super.key});
@@ -149,42 +148,30 @@ class _TorrentsScreenState extends State<TorrentsScreen>
               },
               tooltip: AppStrings.settings,
             ),
-            title: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ConnectionScreen(),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    appState.serverName?.isNotEmpty == true
+                        ? appState.serverName!
+                        : 'qBitConnect',
+                    style: const TextStyle(fontSize: 18),
                   ),
-                );
-              },
-              child: Container(
-                color: Colors.transparent,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        appState.serverName?.isNotEmpty == true
-                            ? appState.serverName!
-                            : 'qBitConnect',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                    if (appState.qbittorrentVersion != null)
-                      Text(
-                        appState.qbittorrentVersion!,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
-                      ),
-                  ],
                 ),
-              ),
+                if (appState.qbittorrentVersion != null)
+                  Text(
+                    appState.qbittorrentVersion!,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                  ),
+              ],
             ),
             actions: [
               Selector<BatchSelectionState, bool>(

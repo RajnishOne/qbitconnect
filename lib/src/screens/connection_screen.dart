@@ -295,8 +295,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         name: 'connection_established',
         parameters: {
           'protocol': scheme,
-          'has_custom_headers': _headersController.text.isNotEmpty,
-          'save_password': _savePassword,
+          'has_custom_headers': _headersController.text.isNotEmpty
+              ? 'yes'
+              : 'no',
+          'save_password': _savePassword ? 'yes' : 'no',
         },
       );
 
@@ -313,7 +315,18 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         allowNoAuth: isLocal && !hasCredentials,
       );
 
-      // Connection successful, navigation will be handled by the app state
+      // Fetch initial data from the new server
+      // This is important especially when polling is disabled
+      await appState.refreshNow();
+
+      // Connection successful
+      if (mounted) {
+        // Pop back to previous screen if this was opened as a modal
+        // (e.g., from server list). The navigator will check if we can pop.
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+      }
     } catch (e) {
       // Log error
       FirebaseService.instance.logEvent(
