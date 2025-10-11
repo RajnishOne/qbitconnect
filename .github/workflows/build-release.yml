@@ -67,6 +67,7 @@ jobs:
           file: build/app/outputs/flutter-apk/qBitConnect-${{ github.event.inputs.tag }}.apk
           asset_name: qBitConnect-${{ github.event.inputs.tag }}.apk
           tag: ${{ github.event.inputs.tag }}
+          release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
           body: ${{ github.event.inputs.release_notes }}
 
@@ -77,6 +78,7 @@ jobs:
           file: build/app/outputs/bundle/release/qBitConnect-${{ github.event.inputs.tag }}.aab
           asset_name: qBitConnect-${{ github.event.inputs.tag }}.aab
           tag: ${{ github.event.inputs.tag }}
+          release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
           body: ${{ github.event.inputs.release_notes }}
 
@@ -126,7 +128,7 @@ jobs:
       - name: Create Payload directory and prepare IPA
         run: |
           set -e
-          rm -rf Payload qBitConnect.ipa
+          rm -rf Payload qBitConnect*.ipa
           mkdir -p Payload
           
           # Flutter build output location
@@ -141,8 +143,9 @@ jobs:
           
           echo "Found Runner.app at: $APP_PATH"
           cp -r "$APP_PATH" Payload/
-          zip -qq -r -9 qBitConnect.ipa Payload
-          echo "✓ Created qBitConnect.ipa"
+          IPA_NAME="qBitConnect-${{ github.event.inputs.tag }}.ipa"
+          zip -qq -r -9 "$IPA_NAME" Payload
+          echo "✓ Created $IPA_NAME"
 
       # ---- NEW: install flutterfire CLI and upload symbols if token present ----
       - name: Install FlutterFire CLI
@@ -173,8 +176,10 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: qBitConnect.ipa
+          file: qBitConnect-${{ github.event.inputs.tag }}.ipa
+          asset_name: qBitConnect-${{ github.event.inputs.tag }}.ipa
           tag: ${{ github.event.inputs.tag }}
+          release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
           body: |
             ${{ github.event.inputs.release_notes }}
