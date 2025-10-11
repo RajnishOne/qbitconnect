@@ -18,11 +18,24 @@ class TorrentStatsTab extends StatefulWidget {
   State<TorrentStatsTab> createState() => _TorrentStatsTabState();
 }
 
-class _TorrentStatsTabState extends State<TorrentStatsTab> {
+class _TorrentStatsTabState extends State<TorrentStatsTab>
+    with AutomaticKeepAliveClientMixin {
   // Store historical speed data (last 60 data points)
   final List<double> _downloadSpeeds = [];
   final List<double> _uploadSpeeds = [];
   final int _maxDataPoints = 60;
+
+  @override
+  bool get wantKeepAlive => true; // Keep state alive when switching tabs
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with current data if available
+    if (widget.details != null) {
+      _updateSpeedHistory();
+    }
+  }
 
   @override
   void didUpdateWidget(TorrentStatsTab oldWidget) {
@@ -51,6 +64,8 @@ class _TorrentStatsTabState extends State<TorrentStatsTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+
     if (widget.details == null) {
       return const Center(child: Text('No stats data available'));
     }
@@ -70,9 +85,9 @@ class _TorrentStatsTabState extends State<TorrentStatsTab> {
         _buildSpeedCards(details, theme),
         const SizedBox(height: 20),
 
-        // Speed Graph
-        if (_downloadSpeeds.length > 1) _buildSpeedGraph(theme),
-        if (_downloadSpeeds.length > 1) const SizedBox(height: 20),
+        // Speed Graph - Show card immediately, with placeholder if not enough data
+        _buildSpeedGraph(theme),
+        const SizedBox(height: 20),
 
         // Connection Info
         _buildConnectionCards(details, theme),
@@ -186,17 +201,6 @@ class _TorrentStatsTabState extends State<TorrentStatsTab> {
 
   // Real-time speed graph
   Widget _buildSpeedGraph(ThemeData theme) {
-    if (_downloadSpeeds.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    // Find max value for Y axis
-    final allSpeeds = [..._downloadSpeeds, ..._uploadSpeeds];
-    final maxSpeed = allSpeeds.isEmpty
-        ? 100.0
-        : allSpeeds.reduce((a, b) => a > b ? a : b);
-    final yMax = maxSpeed > 0 ? maxSpeed * 1.2 : 100.0;
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -245,128 +249,157 @@ class _TorrentStatsTabState extends State<TorrentStatsTab> {
             const SizedBox(height: 20),
             SizedBox(
               height: 200,
-              child: LineChart(
-                LineChartData(
-                  gridData: FlGridData(
-                    show: true,
-                    drawVerticalLine: false,
-                    horizontalInterval: yMax / 4,
-                    getDrawingHorizontalLine: (value) {
-                      return FlLine(
-                        color: theme.colorScheme.outline.withOpacity(0.1),
-                        strokeWidth: 1,
-                      );
-                    },
-                  ),
-                  titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 50,
-                        getTitlesWidget: (value, meta) {
-                          return Text(
-                            ByteFormatter.formatBytesPerSecond(value.toInt()),
-                            style: TextStyle(
-                              fontSize: 10,
+              child: _downloadSpeeds.length > 1
+                  ? _buildLineChart(theme)
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.show_chart,
+                            size: 48,
+                            color: theme.colorScheme.primary.withOpacity(0.5),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Collecting data...',
+                            style: theme.textTheme.bodyLarge?.copyWith(
                               color: theme.colorScheme.onSurface.withOpacity(
                                 0.6,
                               ),
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
                     ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        interval: 10,
-                        getTitlesWidget: (value, meta) {
-                          if (value.toInt() % 10 == 0) {
-                            return Text(
-                              '${value.toInt()}s',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: theme.colorScheme.onSurface.withOpacity(
-                                  0.6,
-                                ),
-                              ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  minX: 0,
-                  maxX: (_downloadSpeeds.length - 1).toDouble(),
-                  minY: 0,
-                  maxY: yMax,
-                  lineBarsData: [
-                    // Download speed line
-                    LineChartBarData(
-                      spots: _downloadSpeeds
-                          .asMap()
-                          .entries
-                          .map((e) => FlSpot(e.key.toDouble(), e.value))
-                          .toList(),
-                      isCurved: true,
-                      color: const Color(0xFF2196F3),
-                      barWidth: 3,
-                      isStrokeCapRound: true,
-                      dotData: const FlDotData(show: false),
-                      belowBarData: BarAreaData(
-                        show: true,
-                        color: const Color(0xFF2196F3).withOpacity(0.1),
-                      ),
-                    ),
-                    // Upload speed line
-                    LineChartBarData(
-                      spots: _uploadSpeeds
-                          .asMap()
-                          .entries
-                          .map((e) => FlSpot(e.key.toDouble(), e.value))
-                          .toList(),
-                      isCurved: true,
-                      color: const Color(0xFFFF9800),
-                      barWidth: 3,
-                      isStrokeCapRound: true,
-                      dotData: const FlDotData(show: false),
-                      belowBarData: BarAreaData(
-                        show: true,
-                        color: const Color(0xFFFF9800).withOpacity(0.1),
-                      ),
-                    ),
-                  ],
-                  lineTouchData: LineTouchData(
-                    touchTooltipData: LineTouchTooltipData(
-                      getTooltipColor: (touchedSpot) =>
-                          theme.colorScheme.inverseSurface,
-                      getTooltipItems: (touchedSpots) {
-                        return touchedSpots.map((spot) {
-                          final isDownload = spot.barIndex == 0;
-                          return LineTooltipItem(
-                            '${isDownload ? "DL" : "UP"}: ${ByteFormatter.formatBytesPerSecond(spot.y.toInt())}\n',
-                            TextStyle(
-                              color: theme.colorScheme.onInverseSurface,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          );
-                        }).toList();
-                      },
-                    ),
-                  ),
-                ),
-              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Build the line chart widget
+  Widget _buildLineChart(ThemeData theme) {
+    // Find max value for Y axis
+    final allSpeeds = [..._downloadSpeeds, ..._uploadSpeeds];
+    final maxSpeed = allSpeeds.isEmpty
+        ? 100.0
+        : allSpeeds.reduce((a, b) => a > b ? a : b);
+    final yMax = maxSpeed > 0 ? maxSpeed * 1.2 : 100.0;
+
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: yMax / 4,
+          getDrawingHorizontalLine: (value) {
+            return FlLine(
+              color: theme.colorScheme.outline.withOpacity(0.1),
+              strokeWidth: 1,
+            );
+          },
+        ),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 50,
+              getTitlesWidget: (value, meta) {
+                return Text(
+                  ByteFormatter.formatBytesPerSecond(value.toInt()),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  ),
+                );
+              },
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              interval: 10,
+              getTitlesWidget: (value, meta) {
+                if (value.toInt() % 10 == 0) {
+                  return Text(
+                    '${value.toInt()}s',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        minX: 0,
+        maxX: (_downloadSpeeds.length - 1).toDouble(),
+        minY: 0,
+        maxY: yMax,
+        lineBarsData: [
+          // Download speed line
+          LineChartBarData(
+            spots: _downloadSpeeds
+                .asMap()
+                .entries
+                .map((e) => FlSpot(e.key.toDouble(), e.value))
+                .toList(),
+            isCurved: true,
+            color: const Color(0xFF2196F3),
+            barWidth: 3,
+            isStrokeCapRound: true,
+            dotData: const FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              color: const Color(0xFF2196F3).withOpacity(0.1),
+            ),
+          ),
+          // Upload speed line
+          LineChartBarData(
+            spots: _uploadSpeeds
+                .asMap()
+                .entries
+                .map((e) => FlSpot(e.key.toDouble(), e.value))
+                .toList(),
+            isCurved: true,
+            color: const Color(0xFFFF9800),
+            barWidth: 3,
+            isStrokeCapRound: true,
+            dotData: const FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              color: const Color(0xFFFF9800).withOpacity(0.1),
+            ),
+          ),
+        ],
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipColor: (touchedSpot) => theme.colorScheme.inverseSurface,
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((spot) {
+                final isDownload = spot.barIndex == 0;
+                return LineTooltipItem(
+                  '${isDownload ? "DL" : "UP"}: ${ByteFormatter.formatBytesPerSecond(spot.y.toInt())}\n',
+                  TextStyle(
+                    color: theme.colorScheme.onInverseSurface,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                );
+              }).toList();
+            },
+          ),
         ),
       ),
     );
