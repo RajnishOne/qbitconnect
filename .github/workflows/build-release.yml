@@ -81,7 +81,7 @@ jobs:
           body: ${{ github.event.inputs.release_notes }}
 
   build-ios:
-    name: 🎉 iOS Build
+    name: 🍎 iOS Build
     runs-on: macos-latest
     steps:
       - name: Checkout repository
