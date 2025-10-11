@@ -8,6 +8,7 @@ import '../utils/error_handler.dart';
 import '../utils/byte_formatter.dart';
 import '../utils/file_extension_cache.dart';
 import '../widgets/reusable_widgets.dart';
+import '../widgets/torrent_stats_tab.dart';
 import '../constants/app_strings.dart';
 
 class TorrentDetailsScreen extends StatefulWidget {
@@ -36,7 +37,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _loadData();
 
     // Start real-time updates
@@ -236,6 +237,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
               ReusableWidgets.infoTab,
               ReusableWidgets.filesTab,
               ReusableWidgets.trackersTab,
+              Tab(text: 'Stats', icon: Icon(Icons.bar_chart)),
             ],
           ),
         ),
@@ -260,6 +262,15 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                     child: RefreshIndicator(
                       onRefresh: _refreshTrackersTab,
                       child: _buildTrackersTab(),
+                    ),
+                  ),
+                  RepaintBoundary(
+                    child: RefreshIndicator(
+                      onRefresh: _refreshInfoTab,
+                      child: TorrentStatsTab(
+                        torrent: widget.torrent,
+                        details: _details,
+                      ),
                     ),
                   ),
                 ],
