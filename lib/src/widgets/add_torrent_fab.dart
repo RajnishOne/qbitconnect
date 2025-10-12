@@ -4,17 +4,22 @@ import '../screens/add_torrent_url_screen.dart';
 import '../screens/add_torrent_file_screen.dart';
 
 class AddTorrentFab extends StatelessWidget {
-  const AddTorrentFab({super.key});
+  final FocusNode? searchFocusNode;
+
+  const AddTorrentFab({super.key, this.searchFocusNode});
 
   @override
   Widget build(BuildContext context) {
     return ExpandableFab(
       distance: 72,
+      onToggle: () => searchFocusNode?.unfocus(),
       children: [
         FloatingActionButton.small(
           heroTag: 'add_url',
           tooltip: 'Add via URL',
           onPressed: () {
+            // Unfocus search field when opening add torrent screen
+            searchFocusNode?.unfocus();
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const AddTorrentUrlScreen(),
@@ -27,6 +32,8 @@ class AddTorrentFab extends StatelessWidget {
           heroTag: 'add_file',
           tooltip: 'Add .torrent file',
           onPressed: () {
+            // Unfocus search field when opening add torrent screen
+            searchFocusNode?.unfocus();
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const AddTorrentFileScreen(),

@@ -80,6 +80,13 @@ class _TorrentsScreenState extends State<TorrentsScreen>
     );
     _initializeBatchSelection();
     _checkForPendingDeepLink();
+
+    // Unfocus search field when user starts scrolling
+    _scrollController.addListener(() {
+      if (_searchFocusNode.hasFocus) {
+        _searchFocusNode.unfocus();
+      }
+    });
   }
 
   void _initializeBatchSelection() {
@@ -129,6 +136,9 @@ class _TorrentsScreenState extends State<TorrentsScreen>
   }
 
   void _showServerSwitcher(BuildContext context, AppState appState) {
+    // Unfocus search field when opening server switcher
+    _searchFocusNode.unfocus();
+
     showModalBottomSheet(
       context: context,
       builder: (context) => ServerSwitcherSheet(
@@ -182,6 +192,8 @@ class _TorrentsScreenState extends State<TorrentsScreen>
             leading: IconButton(
               icon: const Icon(Icons.tune_rounded),
               onPressed: () {
+                // Unfocus search field when opening settings
+                _searchFocusNode.unfocus();
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const SettingsScreen(),
@@ -265,7 +277,9 @@ class _TorrentsScreenState extends State<TorrentsScreen>
               ),
             ],
           ),
-          floatingActionButton: const AddTorrentFab(),
+          floatingActionButton: AddTorrentFab(
+            searchFocusNode: _searchFocusNode,
+          ),
           bottomNavigationBar: const BatchActionsBar(),
           body: RefreshIndicator(
             onRefresh: () => context.read<AppState>().refreshNow(),
@@ -371,6 +385,8 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                               // Add key for better performance
                               torrent: torrent,
                               onTap: () {
+                                // Unfocus search field when tapping on torrent
+                                _searchFocusNode.unfocus();
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
@@ -414,6 +430,9 @@ class _TorrentsScreenState extends State<TorrentsScreen>
   }
 
   void _showTorrentActions(BuildContext context, Torrent torrent) {
+    // Unfocus search field when opening torrent actions
+    _searchFocusNode.unfocus();
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

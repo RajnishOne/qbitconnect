@@ -85,6 +85,9 @@ class SearchFilterBar extends StatelessWidget {
   }
 
   void _showFilterBottomSheet(BuildContext context) {
+    // Unfocus search field when opening filter
+    searchFocusNode.unfocus();
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

@@ -7,11 +7,13 @@ class ExpandableFab extends StatefulWidget {
     this.initialOpen,
     required this.distance,
     required this.children,
+    this.onToggle,
   });
 
   final bool? initialOpen;
   final double distance;
   final List<Widget> children;
+  final VoidCallback? onToggle;
 
   @override
   State<ExpandableFab> createState() => _ExpandableFabState();
@@ -43,6 +45,7 @@ class _ExpandableFabState extends State<ExpandableFab>
   }
 
   void _toggle() {
+    widget.onToggle?.call();
     setState(() {
       _open = !_open;
       final controller = AnimationManager.getControllerByKey(
