@@ -24,7 +24,6 @@ class ConnectionState extends ChangeNotifier {
   // Getters
   bool get isAuthenticated => _isAuthenticated;
   bool get isInitializing => _isInitializing;
-  bool get attemptedAuto => _attemptedAuto;
   bool get autoConnectFailed => _autoConnectFailed;
   QbittorrentApiClient? get client => _client;
   String? get serverName => _serverName;

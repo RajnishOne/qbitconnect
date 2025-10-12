@@ -125,9 +125,9 @@ class ByteFormatter {
   static String formatRatio(int uploaded, int downloaded) {
     if (downloaded == 0) return '∞';
     if (uploaded == 0) return '0.00';
-    
+
     final ratio = uploaded / downloaded;
-    
+
     if (ratio >= 100) {
       return ratio.toStringAsFixed(0);
     } else if (ratio >= 10) {
@@ -135,15 +135,6 @@ class ByteFormatter {
     } else {
       return ratio.toStringAsFixed(2);
     }
-  }
-
-  /// Legacy method for backward compatibility.
-  ///
-  /// This method maintains the same signature as the old _formatBytes
-  /// but uses the optimized implementation internally.
-  @Deprecated('Use ByteFormatter.formatBytes() instead')
-  static String legacyFormatBytes(int bytes) {
-    return formatBytes(bytes);
   }
 }
 

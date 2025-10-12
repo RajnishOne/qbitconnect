@@ -8,7 +8,6 @@ class Prefs {
   static const String _keyServerName = 'server_name';
   static const String _keyCustomHeaders = 'custom_headers_text';
   static const String _keyPassword = 'password';
-  static const String _keySavePassword = 'save_password';
   static const String _keyNoAuthSession = 'no_auth_session';
   static const String _keyStatusFilter = 'status_filter';
   static const String _keyPollingEnabled = 'polling_enabled';
@@ -70,17 +69,6 @@ class Prefs {
     return _secure.read(key: _keyPassword);
   }
 
-  static Future<void> clearPassword() async {
-    await _secure.delete(key: _keyPassword);
-  }
-
-  // Dark mode settings (deprecated - kept for migration)
-  @Deprecated('Use ThemeManager for dark mode instead')
-  static Future<bool> loadDarkMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('dark_mode') ?? false;
-  }
-
   // Status filter settings
   static Future<void> saveStatusFilter(String filter) async {
     final prefs = await SharedPreferences.getInstance();
@@ -90,17 +78,6 @@ class Prefs {
   static Future<String> loadStatusFilter() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_keyStatusFilter) ?? 'all';
-  }
-
-  // Save password preference
-  static Future<void> saveSavePasswordPreference(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keySavePassword, value);
-  }
-
-  static Future<bool> loadSavePasswordPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keySavePassword) ?? false;
   }
 
   // No-auth session preference
