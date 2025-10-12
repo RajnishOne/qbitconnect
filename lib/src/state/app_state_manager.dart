@@ -36,6 +36,7 @@ class AppState extends ChangeNotifier {
   // Connection state delegates
   bool get isAuthenticated => _connectionState.isAuthenticated;
   bool get isInitializing => _connectionState.isInitializing;
+  bool get autoConnectFailed => _connectionState.autoConnectFailed;
   QbittorrentApiClient? get client => _connectionState.client;
   String? get serverName => _connectionState.serverName;
   String? get baseUrl => _connectionState.baseUrl;

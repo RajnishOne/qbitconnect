@@ -13,6 +13,7 @@ class ConnectionState extends ChangeNotifier {
   bool _isAuthenticated = false;
   bool _attemptedAuto = false;
   bool _isInitializing = true;
+  bool _autoConnectFailed = false;
 
   // Server information
   String? _serverName;
@@ -24,6 +25,7 @@ class ConnectionState extends ChangeNotifier {
   bool get isAuthenticated => _isAuthenticated;
   bool get isInitializing => _isInitializing;
   bool get attemptedAuto => _attemptedAuto;
+  bool get autoConnectFailed => _autoConnectFailed;
   QbittorrentApiClient? get client => _client;
   String? get serverName => _serverName;
   String? get baseUrl => _baseUrl;
@@ -66,9 +68,13 @@ class ConnectionState extends ChangeNotifier {
       await ServerStorage.updateServerVersion(server.id, _qbittorrentVersion!);
     }
 
-    // Set as active server
+    // Set as active server and auto-connect server
     await ServerStorage.setActiveServerId(server.id);
+    await ServerStorage.setAutoConnectServerId(server.id);
     _activeServerId = server.id;
+
+    // Clear auto-connect failure flag on successful connection
+    _autoConnectFailed = false;
   }
 
   /// Connect to a server by ID
@@ -338,6 +344,7 @@ class ConnectionState extends ChangeNotifier {
   Future<void> tryAutoConnect() async {
     if (_attemptedAuto || _isAuthenticated) return;
     _attemptedAuto = true;
+    _autoConnectFailed = false;
 
     // Step 1: Check if migration from legacy storage is needed
     if (!await ServerStorage.isMigrationCompleted()) {
@@ -349,8 +356,9 @@ class ConnectionState extends ChangeNotifier {
           await connectToServer(migratedServer);
           return;
         } catch (e) {
-          // Migration succeeded but connection failed, user can connect manually
+          // Migration succeeded but connection failed
           debugPrint('Auto-connect failed after migration: $e');
+          _autoConnectFailed = true;
           return;
         }
       }
@@ -363,9 +371,10 @@ class ConnectionState extends ChangeNotifier {
         await connectToServerId(autoConnectServerId);
         return;
       } catch (e) {
-        // Auto-connect server not found or connection failed
+        // Auto-connect failed
         debugPrint('Auto-connect to saved server failed: $e');
-        // Fall through to try legacy storage
+        _autoConnectFailed = true;
+        return;
       }
     }
 
@@ -416,8 +425,9 @@ class ConnectionState extends ChangeNotifier {
           saveAsNewServer: true, // Will save to new storage
         );
       } catch (e) {
-        // ignore; user can connect manually
+        // Legacy auto-connect failed
         debugPrint('Legacy auto-connect failed: $e');
+        _autoConnectFailed = true;
       }
     }
   }

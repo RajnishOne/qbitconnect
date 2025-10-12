@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../state/app_state_manager.dart';
 import '../services/server_storage.dart';
-import '../services/prefs.dart';
 import '../services/firebase_service.dart';
 import '../models/server_config.dart';
 import '../utils/format_utils.dart';
 import '../utils/error_handler.dart';
 import '../widgets/auto_connect_replacement_sheet.dart';
+import '../widgets/auto_connect_warning_card.dart';
 import '../api/qbittorrent_api.dart';
 import 'connection_screen.dart';
 
@@ -104,13 +104,6 @@ class _ServerListScreenState extends State<ServerListScreen> {
         _checkingServerId = null;
       });
 
-      // Show loading dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(child: CircularProgressIndicator()),
-      );
-
       final appState = context.read<AppState>();
 
       // Connect to selected server
@@ -120,9 +113,6 @@ class _ServerListScreenState extends State<ServerListScreen> {
       await appState.refreshNow();
 
       if (mounted) {
-        // Close loading dialog
-        Navigator.of(context).pop();
-
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -276,7 +266,6 @@ class _ServerListScreenState extends State<ServerListScreen> {
       // Set replacement as auto-connect if provided
       if (replacement != null) {
         await ServerStorage.setAutoConnectServerId(replacement.id);
-        await _updateLegacyStorage(replacement);
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -311,54 +300,6 @@ class _ServerListScreenState extends State<ServerListScreen> {
     }
   }
 
-  Future<void> _updateLegacyStorage(ServerConfig server) async {
-    // Update legacy storage for backward compatibility
-    final password = await ServerStorage.loadServerPassword(server.id);
-
-    await Prefs.saveBaseUrl(server.baseUrl);
-    await Prefs.saveUsername(server.username);
-    await Prefs.saveServerName(server.name);
-    await Prefs.saveNoAuthSession(server.noAuthSession);
-
-    if (server.customHeadersText != null) {
-      await Prefs.saveCustomHeadersText(server.customHeadersText!);
-    } else {
-      await Prefs.saveCustomHeadersText('');
-    }
-
-    if (password != null && password.isNotEmpty) {
-      await Prefs.savePassword(password);
-    }
-  }
-
-  Future<void> _setAutoConnect(ServerConfig server) async {
-    try {
-      await ServerStorage.setAutoConnectServerId(server.id);
-
-      // Update legacy storage for backward compatibility
-      await _updateLegacyStorage(server);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${server.name} set as default auto-connect server'),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
-              'Failed to set auto-connect. Please try again.',
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
   void _showServerOptions(ServerConfig server) {
     final isActive = server.id == _activeServerId;
 
@@ -374,14 +315,6 @@ class _ServerListScreenState extends State<ServerListScreen> {
               onTap: () {
                 Navigator.pop(context);
                 _connectToServer(server);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.autorenew),
-              title: const Text('Set as Auto-Connect'),
-              onTap: () {
-                Navigator.pop(context);
-                _setAutoConnect(server);
               },
             ),
             if (isActive)
@@ -490,6 +423,8 @@ class _ServerListScreenState extends State<ServerListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<AppState>();
+
     return SafeArea(
       bottom: Platform.isAndroid,
       top: false,
@@ -541,6 +476,10 @@ class _ServerListScreenState extends State<ServerListScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
+                    // Warning banner if auto-connect failed
+                    if (appState.autoConnectFailed)
+                      const AutoConnectWarningCard(),
+
                     // Info card
                     Card(
                       color: Theme.of(
