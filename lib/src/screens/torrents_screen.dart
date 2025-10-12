@@ -37,6 +37,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
         WidgetsBindingObserver {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   String _searchQuery = '';
 
   @override
@@ -113,6 +114,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
     WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -171,7 +173,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
     final appState = context.watch<AppState>();
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () => _searchFocusNode.unfocus(),
       child: SafeArea(
         bottom: Platform.isAndroid,
         top: false,
@@ -271,6 +273,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
               children: [
                 SearchFilterBar(
                   searchController: _searchController,
+                  searchFocusNode: _searchFocusNode,
                   searchQuery: _searchQuery,
                   onSearchChanged: (value) {
                     setState(() {

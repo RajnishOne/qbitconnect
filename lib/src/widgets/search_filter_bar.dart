@@ -4,6 +4,7 @@ import 'filter_bottom_sheet.dart';
 
 class SearchFilterBar extends StatelessWidget {
   final TextEditingController searchController;
+  final FocusNode searchFocusNode;
   final String searchQuery;
   final ValueChanged<String> onSearchChanged;
   final VoidCallback onClearSearch;
@@ -11,6 +12,7 @@ class SearchFilterBar extends StatelessWidget {
   const SearchFilterBar({
     super.key,
     required this.searchController,
+    required this.searchFocusNode,
     required this.searchQuery,
     required this.onSearchChanged,
     required this.onClearSearch,
@@ -26,6 +28,7 @@ class SearchFilterBar extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: searchController,
+              focusNode: searchFocusNode,
               onChanged: onSearchChanged,
               decoration: InputDecoration(
                 hintText: 'Search torrents...',
