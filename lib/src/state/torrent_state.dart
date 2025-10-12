@@ -296,7 +296,7 @@ class TorrentState extends ChangeNotifier {
     }
   }
 
-  /// Clear torrent data (used on disconnect)
+  /// Clear torrent data (used when switching servers or losing connection)
   void clearData() {
     _torrents = const [];
     _transferInfo = null;

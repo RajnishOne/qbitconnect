@@ -308,38 +308,6 @@ class ConnectionState extends ChangeNotifier {
     }
   }
 
-  /// Disconnect from qBittorrent server
-  Future<void> disconnect() async {
-    try {
-      try {
-        await _client?.logout();
-      } catch (_) {}
-
-      // Only clear password if user hasn't opted to save it
-      final savePasswordPreference = await Prefs.loadSavePasswordPreference();
-      if (!savePasswordPreference) {
-        await Prefs.clearPassword();
-      }
-
-      // Clear no-auth session flag on disconnect
-      await Prefs.saveNoAuthSession(false);
-
-      // Clear active server
-      await ServerStorage.setActiveServerId(null);
-
-      _client = null;
-      _isAuthenticated = false;
-      _serverName = null;
-      _baseUrl = null;
-      _qbittorrentVersion = null;
-      _activeServerId = null;
-      notifyListeners();
-    } catch (e, stackTrace) {
-      // Log disconnection error to Firebase Crashlytics
-      await FirebaseService.instance.recordError(e, stackTrace);
-    }
-  }
-
   /// Auto-connect using saved preferences
   Future<void> tryAutoConnect() async {
     if (_attemptedAuto || _isAuthenticated) return;

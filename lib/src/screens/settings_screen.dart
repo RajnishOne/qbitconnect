@@ -209,19 +209,6 @@ class _SettingsScreenState extends State<SettingsScreen>
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                tooltip: "Disconnect",
-                onPressed: () => _showDisconnectDialog(context),
-                icon: Icon(
-                  Icons.power_settings_new_rounded,
-                  color: Colors.orange,
-                ),
-              ),
-            ),
-          ],
         ),
         body: ListView(
           padding: const EdgeInsets.all(16),
@@ -598,36 +585,6 @@ class _SettingsScreenState extends State<SettingsScreen>
           ],
         ),
       ),
-    );
-  }
-
-  void _showDisconnectDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Disconnect'),
-          content: const Text(
-            'Are you sure you want to disconnect from the qBittorrent server?',
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Disconnect'),
-              onPressed: () {
-                context.read<AppState>().disconnect();
-                Navigator.of(context).pop(); // Dismiss Dialog
-                Navigator.of(context).pop(); // Go to torrent screen
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

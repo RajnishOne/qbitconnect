@@ -111,13 +111,6 @@ class AppState extends ChangeNotifier {
     // The connection state change handler will automatically start polling if successful
   }
 
-  Future<void> disconnect() async {
-    _stopPolling();
-    _realtimeState.stopAllRealTimeUpdates();
-    _torrentState.clearData();
-    await _connectionState.disconnect();
-  }
-
   // Multi-server methods
   Future<void> connectToServer(ServerConfig server) async {
     // Clear torrent data when switching to a different server
