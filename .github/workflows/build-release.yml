@@ -57,15 +57,15 @@ jobs:
 
       - name: Rename build artifacts
         run: |
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/qBitConnect-${{ github.event.inputs.tag }}.apk
-          mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/qBitConnect-${{ github.event.inputs.tag }}.aab
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/qBitConnect.apk
+          mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/qBitConnect.aab
 
       - name: Upload APK to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/app/outputs/flutter-apk/qBitConnect-${{ github.event.inputs.tag }}.apk
-          asset_name: qBitConnect-${{ github.event.inputs.tag }}.apk
+          file: build/app/outputs/flutter-apk/qBitConnect.apk
+          asset_name: qBitConnect.apk
           tag: ${{ github.event.inputs.tag }}
           release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
@@ -75,8 +75,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/app/outputs/bundle/release/qBitConnect-${{ github.event.inputs.tag }}.aab
-          asset_name: qBitConnect-${{ github.event.inputs.tag }}.aab
+          file: build/app/outputs/bundle/release/qBitConnect.aab
+          asset_name: qBitConnect.aab
           tag: ${{ github.event.inputs.tag }}
           release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
@@ -143,7 +143,7 @@ jobs:
           
           echo "Found Runner.app at: $APP_PATH"
           cp -r "$APP_PATH" Payload/
-          IPA_NAME="qBitConnect-${{ github.event.inputs.tag }}.ipa"
+          IPA_NAME="qBitConnect.ipa"
           zip -qq -r -9 "$IPA_NAME" Payload
           echo "✓ Created $IPA_NAME"
 
@@ -176,8 +176,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: qBitConnect-${{ github.event.inputs.tag }}.ipa
-          asset_name: qBitConnect-${{ github.event.inputs.tag }}.ipa
+          file: qBitConnect.ipa
+          asset_name: qBitConnect.ipa
           tag: ${{ github.event.inputs.tag }}
           release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
