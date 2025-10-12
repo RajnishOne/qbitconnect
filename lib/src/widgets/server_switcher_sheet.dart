@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/server_config.dart';
 import '../services/server_storage.dart';
+import '../api/qbittorrent_api.dart';
 
 /// Server switcher bottom sheet widget
 class ServerSwitcherSheet extends StatefulWidget {
@@ -22,6 +23,9 @@ class ServerSwitcherSheet extends StatefulWidget {
 class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
   List<ServerConfig> _servers = [];
   bool _isLoading = true;
+  String? _checkingServerId; // Track which server is being tested
+  Set<String> _failedServerIds =
+      {}; // Track servers that failed connection test
 
   @override
   void initState() {
@@ -42,6 +46,70 @@ class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
       if (mounted) {
         setState(() => _isLoading = false);
       }
+    }
+  }
+
+  /// Check if server is alive before switching
+  Future<void> _handleServerSelection(ServerConfig server) async {
+    // Set checking state
+    setState(() {
+      _checkingServerId = server.id;
+    });
+
+    try {
+      // Load password from secure storage
+      final password = await ServerStorage.loadServerPassword(server.id);
+
+      // Parse custom headers
+      final customHeaders = server.parseCustomHeaders();
+
+      // Create a temporary API client to test the connection
+      final tempApiClient = QbittorrentApiClient(
+        baseUrl: server.baseUrl,
+        defaultHeaders: customHeaders,
+        enableLogging: false,
+      );
+
+      // Test connection with timeout
+      await Future.any([
+        _testServerConnection(tempApiClient, server, password ?? ''),
+        Future.delayed(const Duration(seconds: 5), () {
+          throw Exception('Connection timeout - server did not respond');
+        }),
+      ]);
+
+      // If we reach here, server is alive - proceed with selection
+      if (mounted) {
+        setState(() {
+          _checkingServerId = null;
+        });
+        widget.onServerSelected(server);
+      }
+    } catch (e) {
+      // Server is not alive or connection failed
+      if (mounted) {
+        setState(() {
+          _checkingServerId = null;
+          _failedServerIds.add(server.id); // Mark server as failed
+        });
+      }
+    }
+  }
+
+  /// Test server connection
+  Future<void> _testServerConnection(
+    QbittorrentApiClient client,
+    ServerConfig server,
+    String password,
+  ) async {
+    if (server.username.isNotEmpty && password.isNotEmpty) {
+      // Test login with credentials
+      await client.login(username: server.username, password: password);
+    } else if (server.noAuthSession) {
+      // Try to connect without authentication
+      await client.loginWithoutAuth();
+    } else {
+      throw Exception('No credentials available for server');
     }
   }
 
@@ -97,17 +165,29 @@ class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
                   final server = _servers[index];
                   final isActive = server.id == widget.currentServerId;
 
+                  final isChecking = _checkingServerId == server.id;
+                  final hasFailed = _failedServerIds.contains(server.id);
+
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundColor: isActive
                           ? Colors.green
                           : Colors.grey.shade400,
                       radius: 20,
-                      child: Icon(
-                        isActive ? Icons.check : Icons.dns,
-                        color: Colors.white,
-                        size: 20,
-                      ),
+                      child: isChecking
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Icon(
+                              isActive ? Icons.check : Icons.dns,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                     ),
                     title: Text(
                       server.name,
@@ -118,7 +198,7 @@ class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
                       ),
                     ),
                     subtitle: Text(
-                      server.baseUrl,
+                      isChecking ? 'Checking connection...' : server.baseUrl,
                       style: const TextStyle(fontSize: 12),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -134,10 +214,12 @@ class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
                             ),
                             side: BorderSide.none,
                           )
+                        : hasFailed
+                        ? const Icon(Icons.warning, color: Colors.red, size: 28)
                         : null,
-                    onTap: isActive
+                    onTap: isActive || isChecking
                         ? null
-                        : () => widget.onServerSelected(server),
+                        : () => _handleServerSelection(server),
                   );
                 },
               ),

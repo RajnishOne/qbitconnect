@@ -10,6 +10,7 @@ import '../models/server_config.dart';
 import '../utils/format_utils.dart';
 import '../utils/error_handler.dart';
 import '../widgets/auto_connect_replacement_sheet.dart';
+import '../api/qbittorrent_api.dart';
 import 'connection_screen.dart';
 
 class ServerListScreen extends StatefulWidget {
@@ -23,6 +24,9 @@ class _ServerListScreenState extends State<ServerListScreen> {
   List<ServerConfig> _servers = [];
   String? _activeServerId;
   bool _isLoading = true;
+  String? _checkingServerId; // Track which server is being tested
+  Set<String> _failedServerIds =
+      {}; // Track servers that failed connection test
 
   @override
   void initState() {
@@ -62,8 +66,44 @@ class _ServerListScreenState extends State<ServerListScreen> {
     }
   }
 
+  /// Check if server is alive before connecting
   Future<void> _connectToServer(ServerConfig server) async {
+    // Set checking state
+    setState(() {
+      _checkingServerId = server.id;
+      _failedServerIds.remove(server.id); // Clear previous failure state
+    });
+
     try {
+      // Load password from secure storage
+      final password = await ServerStorage.loadServerPassword(server.id);
+
+      // Parse custom headers
+      final customHeaders = server.parseCustomHeaders();
+
+      // Create a temporary API client to test the connection
+      final tempApiClient = QbittorrentApiClient(
+        baseUrl: server.baseUrl,
+        defaultHeaders: customHeaders,
+        enableLogging: false,
+      );
+
+      // Test connection with timeout
+      await Future.any([
+        _testServerConnection(tempApiClient, server, password ?? ''),
+        Future.delayed(const Duration(seconds: 5), () {
+          throw Exception('Connection timeout - server did not respond');
+        }),
+      ]);
+
+      // Server is alive - proceed with connection
+      if (!mounted) return;
+
+      // Clear checking state
+      setState(() {
+        _checkingServerId = null;
+      });
+
       // Show loading dialog
       showDialog(
         context: context,
@@ -73,15 +113,10 @@ class _ServerListScreenState extends State<ServerListScreen> {
 
       final appState = context.read<AppState>();
 
-      // Don't disconnect first - let connectToServer handle it
-      // This way if connection fails, we stay connected to current server
-
       // Connect to selected server
-      // Note: connectToServer will automatically disconnect from old server if successful
       await appState.connectToServer(server);
 
       // Fetch initial data from the server
-      // Important especially when polling is disabled
       await appState.refreshNow();
 
       if (mounted) {
@@ -100,22 +135,44 @@ class _ServerListScreenState extends State<ServerListScreen> {
         await _loadServers();
       }
     } catch (e) {
+      // Server is not alive or connection failed
       if (mounted) {
-        // Close loading dialog
-        Navigator.of(context).pop();
+        setState(() {
+          _checkingServerId = null;
+          _failedServerIds.add(server.id); // Mark server as failed
+        });
 
         // Show user-friendly error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(ErrorHandler.getUserFriendlyMessage(e)),
+            content: Text(
+              'Cannot connect to ${server.name}. ${ErrorHandler.getUserFriendlyMessage(e)}',
+            ),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5),
           ),
         );
 
-        // Refresh list in case active server changed
+        // Refresh list to show warning icon
         await _loadServers();
       }
+    }
+  }
+
+  /// Test server connection
+  Future<void> _testServerConnection(
+    QbittorrentApiClient client,
+    ServerConfig server,
+    String password,
+  ) async {
+    if (server.username.isNotEmpty && password.isNotEmpty) {
+      // Test login with credentials
+      await client.login(username: server.username, password: password);
+    } else if (server.noAuthSession) {
+      // Try to connect without authentication
+      await client.loginWithoutAuth();
+    } else {
+      throw Exception('No credentials available for server');
     }
   }
 
@@ -361,13 +418,24 @@ class _ServerListScreenState extends State<ServerListScreen> {
 
   Widget _buildServerCard(ServerConfig server) {
     final isActive = server.id == _activeServerId;
+    final isChecking = _checkingServerId == server.id;
+    final hasFailed = _failedServerIds.contains(server.id);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: isActive ? Colors.green : Colors.grey,
-          child: Icon(isActive ? Icons.check : Icons.dns, color: Colors.white),
+          child: isChecking
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : Icon(isActive ? Icons.check : Icons.dns, color: Colors.white),
         ),
         title: Text(
           server.name,
@@ -379,8 +447,11 @@ class _ServerListScreenState extends State<ServerListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
-            Text(server.baseUrl, style: const TextStyle(fontSize: 12)),
-            if (server.lastConnectedAt != null) ...[
+            Text(
+              isChecking ? 'Checking connection...' : server.baseUrl,
+              style: const TextStyle(fontSize: 12),
+            ),
+            if (!isChecking && server.lastConnectedAt != null) ...[
               const SizedBox(height: 4),
               Text(
                 'Last connected: ${FormatUtils.formatDate(server.lastConnectedAt!)}',
@@ -390,7 +461,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
                 ),
               ),
             ],
-            if (server.qbittorrentVersion != null) ...[
+            if (!isChecking && server.qbittorrentVersion != null) ...[
               const SizedBox(height: 4),
               Text(
                 'qBittorrent ${server.qbittorrentVersion}',
@@ -408,9 +479,11 @@ class _ServerListScreenState extends State<ServerListScreen> {
                 backgroundColor: Colors.green.withValues(alpha: 0.2),
                 side: BorderSide.none,
               )
+            : hasFailed
+            ? const Icon(Icons.warning, color: Colors.red, size: 28)
             : const Icon(Icons.chevron_right),
-        onTap: () => _connectToServer(server),
-        onLongPress: () => _showServerOptions(server),
+        onTap: isChecking ? null : () => _connectToServer(server),
+        onLongPress: isChecking ? null : () => _showServerOptions(server),
       ),
     );
   }
