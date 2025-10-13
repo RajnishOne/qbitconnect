@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../constants/app_strings.dart';
 import '../state/app_state_manager.dart';
 import '../state/batch_selection_state.dart';
@@ -150,12 +151,14 @@ class _AppWidgetState extends State<AppWidget> with WidgetsBindingObserver {
             }
           });
 
-          // Use cached themes directly - no more nested FutureBuilders!
           return MaterialApp(
             title: AppStrings.appName,
             theme: ThemeCache.lightTheme,
             darkTheme: ThemeCache.darkTheme,
             themeMode: _getThemeMode(appState),
+            locale: context.locale,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
             home: const RootRouter(),
           );
         },
@@ -164,7 +167,7 @@ class _AppWidgetState extends State<AppWidget> with WidgetsBindingObserver {
   }
 }
 
-/// Global access to AppWidget for deep link handling
+/// Global access to AppWidget for deep link handling and language updates
 class AppWidgetAccess {
   static _AppWidgetState? _appWidgetState;
 
@@ -175,4 +178,7 @@ class AppWidgetAccess {
   static Uri? getPendingDeepLink() {
     return _appWidgetState?.getPendingDeepLink();
   }
+
+  /// Convenience getter for accessing the app widget state
+  static _AppWidgetState? get appWidgetState => _appWidgetState;
 }

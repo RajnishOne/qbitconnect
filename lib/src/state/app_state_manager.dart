@@ -10,6 +10,7 @@ import '../models/server_config.dart';
 import '../services/server_storage.dart';
 import '../services/directory_suggestion_service.dart';
 import '../theme/theme_variants.dart';
+import '../services/language_manager.dart';
 import 'connection_state.dart';
 import 'torrent_state.dart';
 import 'settings_state.dart';
@@ -478,6 +479,28 @@ class AppState extends ChangeNotifier {
   }
 
   void _onRealtimeStateChanged() {
+    notifyListeners();
+  }
+
+  /// Get the current language
+  Future<LanguageInfo> getCurrentLanguage() async {
+    return await LanguageManager.getCurrentLanguage();
+  }
+
+  /// Set the app language
+  Future<void> setLanguage(LanguageInfo language) async {
+    await LanguageManager.setLanguage(language);
+    notifyListeners();
+  }
+
+  /// Get available languages
+  List<LanguageInfo> getAvailableLanguages() {
+    return LanguageManager.availableLanguages;
+  }
+
+  /// Reset to default language
+  Future<void> resetToDefaultLanguage() async {
+    await LanguageManager.resetToDefault();
     notifyListeners();
   }
 

@@ -17,7 +17,7 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   provider: ^6.1.5+1
   file_picker: ^10.3.3
-  intl: ^0.20.2
+  easy_localization: ^3.0.8
   shared_preferences: ^2.5.3
   package_info_plus: ^9.0.0
   network_ninja: ^1.4.0
@@ -39,3 +39,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: false
+  
+  assets:
+    - assets/translations/

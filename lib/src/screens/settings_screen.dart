@@ -10,6 +10,7 @@ import '../utils/byte_formatter.dart';
 import 'package:network_ninja/network_ninja.dart';
 import 'theme_selection_screen.dart';
 import 'statistics_screen.dart';
+import 'language_selection_screen.dart';
 import 'webview_screen.dart';
 import 'torrent_card_display_settings_screen.dart';
 import 'server_list_screen.dart';
@@ -209,6 +210,22 @@ class _SettingsScreenState extends State<SettingsScreen>
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LanguageSelectionScreen(),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.language),
+              ),
+            ),
+          ],
         ),
         body: ListView(
           padding: const EdgeInsets.all(16),
