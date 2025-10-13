@@ -30,9 +30,11 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
   bool _isThemeDark(AppThemeVariant theme) {
     switch (theme.name) {
       case 'light':
+      case 'high_contrast_light':
         return false;
       case 'dark':
       case 'oled':
+      case 'high_contrast_dark':
         return true;
       case 'system':
         // For system theme, check the current system brightness

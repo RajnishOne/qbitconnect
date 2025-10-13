@@ -105,9 +105,11 @@ class ThemeCache {
 
     switch (_currentThemeVariant!.name) {
       case 'light':
+      case 'high_contrast_light':
         return ThemeMode.light;
       case 'dark':
       case 'oled':
+      case 'high_contrast_dark':
         return ThemeMode.dark;
       case 'system':
         return ThemeMode.system;

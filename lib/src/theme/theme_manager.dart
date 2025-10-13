@@ -11,6 +11,8 @@ class ThemeManager {
     AppThemeVariant.light,
     AppThemeVariant.dark,
     AppThemeVariant.oled,
+    AppThemeVariant.highContrastLight,
+    AppThemeVariant.highContrastDark,
     AppThemeVariant.system,
   ];
 

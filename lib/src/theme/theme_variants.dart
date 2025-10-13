@@ -380,6 +380,20 @@ class AppThemeVariant {
     description: 'Follows your device\'s system theme',
     colorSchemeBuilder: _systemColorScheme,
   );
+
+  static const AppThemeVariant highContrastLight = AppThemeVariant(
+    name: 'high_contrast_light',
+    displayName: 'High Contrast Light',
+    description: 'High contrast light theme for better accessibility',
+    colorSchemeBuilder: _highContrastLightColorScheme,
+  );
+
+  static const AppThemeVariant highContrastDark = AppThemeVariant(
+    name: 'high_contrast_dark',
+    displayName: 'High Contrast Dark',
+    description: 'High contrast dark theme for better accessibility',
+    colorSchemeBuilder: _highContrastDarkColorScheme,
+  );
 }
 
 // Color scheme builders for each theme variant
@@ -478,4 +492,60 @@ AppColorScheme _systemColorScheme({required bool isDarkMode}) {
   } else {
     return _lightColorScheme(isDarkMode: isDarkMode);
   }
+}
+
+AppColorScheme _highContrastLightColorScheme({required bool isDarkMode}) {
+  return const AppColorScheme(
+    primary: Color(0xFF000080), // Deep blue for high contrast
+    secondary: Color(0xFF000000), // Pure black for maximum contrast
+    background: Color(0xFFFFFFFF), // Pure white background
+    surface: Color(0xFFFFFFFF), // Pure white surface
+    textPrimary: Color(0xFF000000), // Pure black text
+    textSecondary: Color(0xFF000000), // Pure black for secondary text
+    textHint: Color(0xFF000000), // Pure black for hints
+    success: Color(0xFF008000), // Pure green
+    warning: Color(0xFF800000), // Pure red for warnings
+    error: Color(0xFF800000), // Pure red for errors
+    info: Color(0xFF000080), // Deep blue for info
+    downloading: Color(0xFF008000), // Pure green
+    seeding: Color(0xFF000080), // Deep blue
+    paused: Color(0xFF800000), // Pure red
+    completed: Color(0xFF000080), // Deep blue
+    errored: Color(0xFF800000), // Pure red
+    stalled: Color(0xFF000000), // Pure black
+    downloadSpeed: Color(0xFF008000), // Pure green
+    uploadSpeed: Color(0xFF000080), // Deep blue
+    border: Color(0xFF000000), // Pure black borders
+    divider: Color(0xFF000000), // Pure black dividers
+    shadow: Color(0x80000000), // Black shadow
+    overlay: Color(0x80000000), // Black overlay
+  );
+}
+
+AppColorScheme _highContrastDarkColorScheme({required bool isDarkMode}) {
+  return const AppColorScheme(
+    primary: Color(0xFF87CEEB), // Sky blue for high contrast on dark
+    secondary: Color(0xFFFFFFFF), // Pure white for maximum contrast
+    background: Color(0xFF000000), // Pure black background
+    surface: Color(0xFF000000), // Pure black surface
+    textPrimary: Color(0xFFFFFFFF), // Pure white text
+    textSecondary: Color(0xFFFFFFFF), // Pure white for secondary text
+    textHint: Color(0xFFFFFFFF), // Pure white for hints
+    success: Color(0xFF00FF00), // Pure green
+    warning: Color(0xFFFF0000), // Pure red for warnings
+    error: Color(0xFFFF0000), // Pure red for errors
+    info: Color(0xFF87CEEB), // Sky blue for info
+    downloading: Color(0xFF00FF00), // Pure green
+    seeding: Color(0xFF87CEEB), // Sky blue
+    paused: Color(0xFFFF0000), // Pure red
+    completed: Color(0xFF87CEEB), // Sky blue
+    errored: Color(0xFFFF0000), // Pure red
+    stalled: Color(0xFFFFFFFF), // Pure white
+    downloadSpeed: Color(0xFF00FF00), // Pure green
+    uploadSpeed: Color(0xFF87CEEB), // Sky blue
+    border: Color(0xFFFFFFFF), // Pure white borders
+    divider: Color(0xFFFFFFFF), // Pure white dividers
+    shadow: Color(0x80FFFFFF), // White shadow
+    overlay: Color(0x80000000), // Black overlay
+  );
 }
