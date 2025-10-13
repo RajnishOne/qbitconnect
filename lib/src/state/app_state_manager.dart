@@ -8,7 +8,7 @@ import '../models/torrent_details.dart';
 import '../models/torrent_add_options.dart';
 import '../models/server_config.dart';
 import '../services/server_storage.dart';
-import '../services/directory_history_service.dart';
+import '../services/directory_suggestion_service.dart';
 import '../theme/theme_variants.dart';
 import 'connection_state.dart';
 import 'torrent_state.dart';
@@ -297,20 +297,22 @@ class AppState extends ChangeNotifier {
     if (client == null) return;
 
     await _torrentState.setTorrentLocation(client!, hash, location);
-
-    // Save directory to history for future autocomplete
-    await DirectoryHistoryService().addDirectoryToHistory(location);
-
     await refreshNow();
   }
 
-  /// Get all unique directories from torrents for autocomplete
+  /// Get all unique directories from qBittorrent API and torrents for autocomplete
   Future<List<String>> getAllDirectories() async {
-    final directoryService = DirectoryHistoryService();
+    final directoryService = DirectorySuggestionService();
     return await directoryService.getAllDirectories(
       torrents: torrents,
       client: client,
     );
+  }
+
+  /// Get the default save path from qBittorrent preferences
+  Future<String?> getDefaultSavePath() async {
+    final directoryService = DirectorySuggestionService();
+    return await directoryService.getDefaultSavePath(client);
   }
 
   Future<void> setTorrentName(String hash, String name) async {

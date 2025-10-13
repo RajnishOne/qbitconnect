@@ -9,31 +9,27 @@ class DirectorySuggestionService {
   factory DirectorySuggestionService() => _instance;
   DirectorySuggestionService._internal();
 
-  /// Get all unique directories from qBittorrent API and torrents
+  /// Get all existing directories from qBittorrent API preferences and torrents
   Future<List<String>> getAllDirectories({
     required List<Torrent> torrents,
     QbittorrentApiClient? client,
   }) async {
     final Set<String> allDirectories = {};
 
-    // 1. Get directories from qBittorrent API preferences (highest priority)
+    // 1. Get directories from qBittorrent API preferences (only existing ones)
     if (client != null) {
       try {
         final preferences = await client.fetchAppPreferences();
 
-        // Default save path
+        // Default save path (only if it exists)
         final defaultSavePath = preferences['save_path'];
         if (defaultSavePath != null && defaultSavePath.toString().isNotEmpty) {
           allDirectories.add(defaultSavePath.toString());
         }
 
-        // Temp path
-        final tempPath = preferences['temp_path'];
-        if (tempPath != null && tempPath.toString().isNotEmpty) {
-          allDirectories.add(tempPath.toString());
-        }
+        // Note: We skip temp_path as it's for incomplete downloads, not final storage
 
-        // Watched folders (scan directories)
+        // Watched folders (scan directories) - these should exist
         final scanDirs = preferences['scan_dirs'];
         if (scanDirs != null && scanDirs is Map) {
           for (final path in scanDirs.keys) {
@@ -43,7 +39,7 @@ class DirectorySuggestionService {
           }
         }
 
-        // Category save paths (if available)
+        // Category save paths (only if they exist)
         final categoryPaths = preferences['category_path'];
         if (categoryPaths != null && categoryPaths is Map) {
           for (final path in categoryPaths.values) {
@@ -57,7 +53,7 @@ class DirectorySuggestionService {
       }
     }
 
-    // 2. Get directories from existing torrents (as backup/enhancement)
+    // 2. Get directories from existing torrents (these definitely exist)
     for (final torrent in torrents) {
       if (torrent.savePath.isNotEmpty) {
         allDirectories.add(torrent.savePath);
