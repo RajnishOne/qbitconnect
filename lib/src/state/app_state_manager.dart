@@ -417,6 +417,8 @@ class AppState extends ChangeNotifier {
 
   void onAppPaused() {
     if (isAuthenticated) {
+      _pollingStarted =
+          false; // Reset flag so polling can restart when app resumes
       _stopPolling();
       _realtimeState.clearCaches();
       // Note: We don't stop real-time updates when app is paused
@@ -436,6 +438,7 @@ class AppState extends ChangeNotifier {
   }
 
   void _startPolling() {
+    _pollingStarted = true; // Mark polling as started
     _realtimeState.startPolling(
       pollingEnabled: _settingsState.pollingEnabled,
       pollingInterval: _settingsState.pollingInterval,
@@ -455,8 +458,7 @@ class AppState extends ChangeNotifier {
     if (_connectionState.isAuthenticated &&
         client != null &&
         !_pollingStarted) {
-      _pollingStarted = true;
-      _startPolling();
+      _startPolling(); // _pollingStarted is now set inside _startPolling()
       refreshNow().catchError((e) {
         // Background refresh failed, ignore
       });
