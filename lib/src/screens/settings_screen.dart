@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../services/prefs.dart';
 import '../services/firebase_service.dart';
@@ -14,7 +16,6 @@ import 'language_selection_screen.dart';
 import 'webview_screen.dart';
 import 'torrent_card_display_settings_screen.dart';
 import 'server_list_screen.dart';
-import '../constants/app_strings.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -209,7 +210,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       top: false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Settings'),
+          title: Text(LocaleKeys.settings.tr()),
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 8),
@@ -317,8 +318,8 @@ class _SettingsScreenState extends State<SettingsScreen>
             // Servers Section
             Card(
               child: ListTile(
-                title: const Text(AppStrings.servers),
-                subtitle: const Text('Manage your qBittorrent servers'),
+                title: Text(LocaleKeys.servers.tr()),
+                subtitle: Text(LocaleKeys.manageServers.tr()),
                 leading: const Icon(Icons.dns),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
@@ -337,8 +338,8 @@ class _SettingsScreenState extends State<SettingsScreen>
             // Statistics Section
             Card(
               child: ListTile(
-                title: const Text('Statistics'),
-                subtitle: const Text('View detailed torrent statistics'),
+                title: Text(LocaleKeys.statistics.tr()),
+                subtitle: Text(LocaleKeys.analytics.tr()),
                 leading: const Icon(Icons.analytics),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
@@ -357,8 +358,8 @@ class _SettingsScreenState extends State<SettingsScreen>
             // Torrent Card Display Section
             Card(
               child: ListTile(
-                title: const Text('Torrent Card Display'),
-                subtitle: const Text('Customize torrent card'),
+                title: Text(LocaleKeys.torrentCardDisplay.tr()),
+                subtitle: Text(LocaleKeys.customizeTorrentCard.tr()),
                 leading: const Icon(Icons.view_list),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
@@ -378,7 +379,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             // Theme Section
             Card(
               child: ListTile(
-                title: const Text('Theme'),
+                title: Text(LocaleKeys.theme.tr()),
                 subtitle: Text(
                   context.watch<AppState>().currentTheme.displayName,
                 ),
@@ -419,8 +420,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     ),
                   ),
                   ListTile(
-                    title: const Text('All Torrents'),
-                    subtitle: const Text('Show all torrents by default'),
+                    title: Text(LocaleKeys.allTorrents.tr()),
+                    subtitle: Text(LocaleKeys.showAllTorrents.tr()),
                     leading: ValueListenableBuilder<String>(
                       valueListenable: _statusFilterNotifier,
                       builder: (context, value, child) {
@@ -430,8 +431,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onTap: () => _setStatusFilter('all'),
                   ),
                   ListTile(
-                    title: const Text('Downloading'),
-                    subtitle: const Text('Show only downloading torrents'),
+                    title: Text(LocaleKeys.downloading.tr()),
+                    subtitle: Text(LocaleKeys.showOnlyDownloading.tr()),
                     leading: ValueListenableBuilder<String>(
                       valueListenable: _statusFilterNotifier,
                       builder: (context, value, child) {
@@ -441,8 +442,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onTap: () => _setStatusFilter('downloading'),
                   ),
                   ListTile(
-                    title: const Text('Completed'),
-                    subtitle: const Text('Show only completed torrents'),
+                    title: Text(LocaleKeys.completed.tr()),
+                    subtitle: Text(LocaleKeys.showOnlyCompleted.tr()),
                     leading: ValueListenableBuilder<String>(
                       valueListenable: _statusFilterNotifier,
                       builder: (context, value, child) {
@@ -452,8 +453,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onTap: () => _setStatusFilter('completed'),
                   ),
                   ListTile(
-                    title: const Text('Seeding'),
-                    subtitle: const Text('Show only seeding torrents'),
+                    title: Text(LocaleKeys.seeding.tr()),
+                    subtitle: Text(LocaleKeys.showOnlySeeding.tr()),
                     leading: ValueListenableBuilder<String>(
                       valueListenable: _statusFilterNotifier,
                       builder: (context, value, child) {
@@ -463,8 +464,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onTap: () => _setStatusFilter('seeding'),
                   ),
                   ListTile(
-                    title: const Text('Paused'),
-                    subtitle: const Text('Show only paused torrents'),
+                    title: Text(LocaleKeys.paused.tr()),
+                    subtitle: Text(LocaleKeys.showOnlyPaused.tr()),
                     leading: ValueListenableBuilder<String>(
                       valueListenable: _statusFilterNotifier,
                       builder: (context, value, child) {
@@ -474,8 +475,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onTap: () => _setStatusFilter('paused'),
                   ),
                   ListTile(
-                    title: const Text('Active'),
-                    subtitle: const Text('Show only active torrents'),
+                    title: Text(LocaleKeys.active.tr()),
+                    subtitle: Text(LocaleKeys.showOnlyActive.tr()),
                     leading: ValueListenableBuilder<String>(
                       valueListenable: _statusFilterNotifier,
                       builder: (context, value, child) {
@@ -512,15 +513,17 @@ class _SettingsScreenState extends State<SettingsScreen>
                     ),
                   ),
                   SwitchListTile(
-                    title: const Text('Enable Auto-Refresh'),
-                    subtitle: const Text('Automatically refresh torrent list'),
+                    title: Text(LocaleKeys.enableAutoRefresh.tr()),
+                    subtitle: Text(
+                      LocaleKeys.automaticallyRefreshTorrentList.tr(),
+                    ),
                     value: _pollingEnabled,
                     onChanged: _togglePolling,
                     secondary: const Icon(Icons.sync),
                   ),
                   if (_pollingEnabled) ...[
                     ListTile(
-                      title: const Text('Refresh Interval'),
+                      title: Text(LocaleKeys.refreshInterval.tr()),
                       subtitle: Text(_getIntervalDisplayText(_pollingInterval)),
                       leading: const Icon(Icons.timer),
                       trailing: DropdownButton<int>(
@@ -559,15 +562,15 @@ class _SettingsScreenState extends State<SettingsScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
-                    title: const Text('Privacy Policy'),
-                    subtitle: const Text('Read our privacy policy'),
+                    title: Text(LocaleKeys.privacyPolicy.tr()),
+                    subtitle: Text(LocaleKeys.readOurPrivacyPolicy.tr()),
                     leading: const Icon(Icons.privacy_tip_outlined),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: _openPrivacyPolicy,
                   ),
                   ListTile(
-                    title: const Text('Terms & Conditions'),
-                    subtitle: const Text('Read our terms and conditions'),
+                    title: Text(LocaleKeys.termsConditions.tr()),
+                    subtitle: Text(LocaleKeys.readOurTermsAndConditions.tr()),
                     leading: const Icon(Icons.description_outlined),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: _openTermsAndConditions,
@@ -580,7 +583,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
             Card(
               child: ListTile(
-                title: const Text('Logs'),
+                title: Text(LocaleKeys.logs.tr()),
                 leading: const Icon(Icons.network_check_rounded),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: context.showNetworkLogs,
@@ -592,7 +595,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             // About Section
             Card(
               child: ListTile(
-                title: const Text('Version'),
+                title: Text(LocaleKeys.version.tr()),
                 trailing: Text(AppInfo.version),
                 leading: const Icon(Icons.app_settings_alt),
               ),

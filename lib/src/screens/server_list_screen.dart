@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../services/server_storage.dart';
 import '../services/firebase_service.dart';
@@ -58,7 +60,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Failed to load servers. Please try again.'),
+            content: Text(LocaleKeys.failedToLoadServers.tr()),
             backgroundColor: Colors.red,
           ),
         );
@@ -116,7 +118,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Connected to ${server.name}'),
+            content: Text('${LocaleKeys.connectedTo.tr()} ${server.name}'),
             backgroundColor: Colors.green,
           ),
         );
@@ -179,7 +181,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Delete Server'),
+          title: Text(LocaleKeys.deleteServer.tr()),
           content: Text(
             'Are you sure you want to delete "${server.name}"?\n\n'
             'This will remove the server configuration and saved password.',

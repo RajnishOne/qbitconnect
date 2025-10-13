@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../models/torrent_add_options.dart';
 import '../constants/app_strings.dart';
@@ -26,9 +28,9 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
       TextEditingController();
   final TextEditingController _uploadLimitController = TextEditingController();
 
-  String _torrentManagementMode = AppStrings.manual;
-  String _stopCondition = AppStrings.none;
-  String _contentLayout = AppStrings.original;
+  String _torrentManagementMode = LocaleKeys.manual.tr();
+  String _stopCondition = LocaleKeys.none.tr();
+  String _contentLayout = LocaleKeys.original.tr();
 
   bool _startTorrent = true;
   bool _addToTopOfQueue = false;
@@ -133,8 +135,8 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
             .reduce((a, b) => a.value > b.value ? a : b)
             .key;
         _torrentManagementMode = mostUsedTmm
-            ? AppStrings.automatic
-            : AppStrings.manual;
+            ? LocaleKeys.automatic.tr()
+            : LocaleKeys.manual.tr();
       }
 
       // Set sequential download based on most common
@@ -210,11 +212,11 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
               onPressed: (_selectedFile != null && !_isLoading)
                   ? _addTorrent
                   : null,
-              child: const Text(AppStrings.addTorrent),
+              child: Text(LocaleKeys.addTorrent.tr()),
             ),
           ),
           appBar: AppBar(
-            title: const Text(AppStrings.addTorrentFile),
+            title: Text(LocaleKeys.addTorrentFile.tr()),
             actions: [
               if (_isLoading)
                 const Padding(
@@ -239,8 +241,8 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          AppStrings.torrentFile,
+                        Text(
+                          LocaleKeys.torrentFile.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -258,7 +260,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
                                 ),
                                 child: Text(
                                   _selectedFile?.name ??
-                                      AppStrings.pleaseSelectFile,
+                                      LocaleKeys.pleaseSelectFile.tr(),
                                   style: TextStyle(
                                     color: _selectedFile != null
                                         ? Colors.black
@@ -271,14 +273,14 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
                             ElevatedButton.icon(
                               onPressed: _isLoading ? null : _pickFile,
                               icon: const Icon(Icons.upload_file),
-                              label: const Text(AppStrings.select),
+                              label: Text(LocaleKeys.select.tr()),
                             ),
                           ],
                         ),
                         if (_selectedFile != null) ...[
                           const SizedBox(height: 8),
                           Text(
-                            'File size: ${_formatFileSize(_selectedFile!.size)}',
+                            '${LocaleKeys.fileSize.tr()}: ${_formatFileSize(_selectedFile!.size)}',
                             style: const TextStyle(
                               fontSize: 12,
                               color: Colors.grey,
@@ -298,8 +300,8 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          AppStrings.torrentOptions,
+                        Text(
+                          LocaleKeys.torrentOptions.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -351,9 +353,9 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
           children: [
             Expanded(
               child: _buildDropdownOption(
-                'Torrent Management Mode:',
+                LocaleKeys.torrentManagementMode.tr(),
                 _torrentManagementMode,
-                [AppStrings.manual, AppStrings.automatic],
+                [LocaleKeys.manual.tr(), LocaleKeys.automatic.tr()],
                 (value) => setState(() => _torrentManagementMode = value!),
               ),
             ),
@@ -367,23 +369,33 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
         Row(
           children: [
             Expanded(
-              child: _buildTextOption('Rename torrent:', _nameController),
+              child: _buildTextOption(
+                LocaleKeys.renameTorrent.tr(),
+                _nameController,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: _buildDropdownOption(
-                'Category:',
+                LocaleKeys.category.tr(),
                 _categoryController.text.isEmpty
-                    ? AppStrings.none
+                    ? LocaleKeys.none.tr()
                     : _categoryController.text,
                 [
-                  AppStrings.none,
-                  ...context.read<AppState>().allCategories.where(
-                    (category) => category != 'Uncategorized',
-                  ),
+                  LocaleKeys.none.tr(),
+                  ...context
+                      .read<AppState>()
+                      .allCategories
+                      .where(
+                        (category) =>
+                            category != 'Uncategorized' &&
+                            category != LocaleKeys.none.tr(),
+                      )
+                      .toSet()
+                      .toList(),
                 ],
                 (value) => setState(
-                  () => _categoryController.text = value == AppStrings.none
+                  () => _categoryController.text = value == LocaleKeys.none.tr()
                       ? ''
                       : value!,
                 ),
@@ -398,7 +410,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
           children: [
             Expanded(
               child: _buildCheckboxOption(
-                AppStrings.startTorrent,
+                LocaleKeys.startTorrent.tr(),
                 _startTorrent,
                 (value) => setState(() => _startTorrent = value!),
               ),
@@ -406,7 +418,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
             const SizedBox(width: 16),
             Expanded(
               child: _buildCheckboxOption(
-                AppStrings.addToTopOfQueue,
+                LocaleKeys.addToTopOfQueue.tr(),
                 _addToTopOfQueue,
                 (value) => setState(() => _addToTopOfQueue = value!),
               ),
@@ -420,9 +432,13 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
           children: [
             Expanded(
               child: _buildDropdownOption(
-                'Stop condition:',
+                LocaleKeys.stopCondition.tr(),
                 _stopCondition,
-                ['None', 'Metadata received', 'Files checked'],
+                [
+                  LocaleKeys.none.tr(),
+                  LocaleKeys.metadataReceived.tr(),
+                  LocaleKeys.filesChecked.tr(),
+                ],
                 (value) => setState(() => _stopCondition = value!),
               ),
             ),
@@ -443,9 +459,13 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
           children: [
             Expanded(
               child: _buildDropdownOption(
-                'Content layout:',
+                LocaleKeys.contentLayout.tr(),
                 _contentLayout,
-                ['Original', 'Create subfolder', 'Don\'t create subfolder'],
+                [
+                  LocaleKeys.original.tr(),
+                  LocaleKeys.createSubfolder.tr(),
+                  LocaleKeys.dontCreateSubfolder.tr(),
+                ],
                 (value) => setState(() => _contentLayout = value!),
               ),
             ),
@@ -763,9 +783,13 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
             : _categoryController.text.trim(),
         startTorrent: _startTorrent,
         addToTopOfQueue: _addToTopOfQueue,
-        stopCondition: _stopCondition == 'None' ? null : _stopCondition,
+        stopCondition: _stopCondition == LocaleKeys.none.tr()
+            ? null
+            : _stopCondition,
         skipHashCheck: _skipHashCheck,
-        contentLayout: _contentLayout == 'Original' ? null : _contentLayout,
+        contentLayout: _contentLayout == LocaleKeys.original.tr()
+            ? null
+            : _contentLayout,
         sequentialDownload: _sequentialDownload,
         firstLastPiecePriority: _firstLastPiecePriority,
         downloadLimit: _downloadLimitController.text.trim().isEmpty

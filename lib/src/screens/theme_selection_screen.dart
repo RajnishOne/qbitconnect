@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../theme/theme_manager.dart';
 import '../theme/theme_variants.dart';
@@ -59,7 +61,7 @@ class _ThemeSelectionScreenState extends State<ThemeSelectionScreen> {
       bottom: Platform.isAndroid,
       top: false,
       child: Scaffold(
-        appBar: AppBar(title: const Text(AppStrings.chooseTheme)),
+        appBar: AppBar(title: Text(LocaleKeys.chooseTheme.tr())),
         body: ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: ThemeManager.availableThemes.length,

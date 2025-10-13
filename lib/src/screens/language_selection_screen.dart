@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../services/language_manager.dart';
 import '../services/firebase_service.dart';
@@ -197,7 +198,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Language changed to ${language.nativeName}'),
+          content: Text(
+            '${LocaleKeys.languageChangedTo.tr()} ${language.nativeName}',
+          ),
           duration: const Duration(seconds: 2),
         ),
       );

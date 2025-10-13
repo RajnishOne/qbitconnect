@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../models/torrent_card_display_options.dart';
 import '../services/display_options_cache.dart';
 
@@ -90,9 +92,10 @@ class _TorrentCardDisplaySettingsScreenState
       top: false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Torrent Card Display'),
+          title: Text(LocaleKeys.torrentCardDisplay.tr()),
           actions: [
-            if (_selectedOptions.length < TorrentCardDisplayOption.maxSelections)
+            if (_selectedOptions.length <
+                TorrentCardDisplayOption.maxSelections)
               TextButton(
                 onPressed: () {
                   // Reset to default options
@@ -103,7 +106,7 @@ class _TorrentCardDisplaySettingsScreenState
                   });
                   _saveSettings();
                 },
-                child: const Text('Reset'),
+                child: Text(LocaleKeys.reset.tr()),
               ),
           ],
         ),
@@ -172,9 +175,9 @@ class _TorrentCardDisplaySettingsScreenState
                       ),
                       child: Text(
                         _buildPreviewText(),
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(fontFamily: 'monospace'),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontFamily: 'monospace',
+                        ),
                       ),
                     ),
                   ],

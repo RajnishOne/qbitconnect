@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../models/statistics.dart';
 import '../models/sync_data.dart';
@@ -87,11 +89,11 @@ class _StatisticsScreenState extends State<StatisticsScreen>
       top: false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(AppStrings.analytics),
+          title: Text(LocaleKeys.analytics.tr()),
           actions: [
             AnimatedReloadButton(
               onPressed: _loadStatistics,
-              tooltip: AppStrings.refreshTorrents,
+              tooltip: LocaleKeys.refreshTorrents.tr(),
               iconSize: 22,
             ),
           ],
@@ -125,7 +127,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadStatistics,
-              child: const Text(AppStrings.retry),
+              child: Text(LocaleKeys.retry.tr()),
             ),
           ],
         ),
@@ -133,7 +135,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
     }
 
     if (_statistics == null) {
-      return const Center(child: Text(AppStrings.noDataAvailable));
+      return Center(child: Text(LocaleKeys.noDataAvailable.tr()));
     }
 
     return RefreshIndicator(

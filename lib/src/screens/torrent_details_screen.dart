@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../models/torrent.dart';
 import '../models/torrent_details.dart';
@@ -281,7 +283,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
 
   Widget _buildInfoTab() {
     if (_details == null) {
-      return const Center(child: Text(AppStrings.noDetailsAvailable));
+      return Center(child: Text(LocaleKeys.noDetailsAvailable.tr()));
     }
 
     final details = _details!;
@@ -477,19 +479,19 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${AppStrings.status}: ${tracker.statusText}'),
+                  Text('${LocaleKeys.status.tr()}: ${tracker.statusText}'),
                   if (tracker.msg.isNotEmpty)
-                    Text('${AppStrings.message}: ${tracker.msg}'),
-                  Text('${AppStrings.tier}: ${tracker.tier}'),
+                    Text('${LocaleKeys.message.tr()}: ${tracker.msg}'),
+                  Text('${LocaleKeys.tier.tr()}: ${tracker.tier}'),
                 ],
               ),
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('${tracker.numPeers} ${AppStrings.peers}'),
-                  Text('${tracker.numSeeds} ${AppStrings.seeds}'),
-                  Text('${tracker.numLeeches} ${AppStrings.leeches}'),
+                  Text('${tracker.numPeers} ${LocaleKeys.peers.tr()}'),
+                  Text('${tracker.numSeeds} ${LocaleKeys.seeders.tr()}'),
+                  Text('${tracker.numLeeches} ${LocaleKeys.leechers.tr()}'),
                 ],
               ),
             ),
@@ -624,24 +626,26 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('${AppStrings.setPriority} ${file.name.split('/').last}'),
+        title: Text(
+          '${LocaleKeys.setPriority.tr()} ${file.name.split('/').last}',
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text(AppStrings.doNotDownload),
+              title: Text(LocaleKeys.doNotDownload.tr()),
               leading: buildCustomRadio(context, 0, file.priority),
             ),
             ListTile(
-              title: const Text(AppStrings.normal),
+              title: Text(LocaleKeys.normal.tr()),
               leading: buildCustomRadio(context, 1, file.priority),
             ),
             ListTile(
-              title: const Text(AppStrings.high),
+              title: Text(LocaleKeys.high.tr()),
               leading: buildCustomRadio(context, 6, file.priority),
             ),
             ListTile(
-              title: const Text(AppStrings.maximum),
+              title: Text(LocaleKeys.maximum.tr()),
               leading: buildCustomRadio(context, 7, file.priority),
             ),
           ],
@@ -649,7 +653,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text(AppStrings.cancel),
+            child: Text(LocaleKeys.cancel.tr()),
           ),
         ],
       ),
@@ -683,7 +687,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           await _appState!.recheckTorrent(widget.torrent.hash);
           scaffoldMessenger.showSnackBar(
             SnackBar(
-              content: const Text(AppStrings.torrentRecheckStarted),
+              content: Text(LocaleKeys.torrentRecheckStarted.tr()),
               backgroundColor: Colors.green,
             ),
           );

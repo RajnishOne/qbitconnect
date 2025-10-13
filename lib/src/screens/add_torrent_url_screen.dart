@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../models/torrent_add_options.dart';
 import '../constants/app_strings.dart';
@@ -26,9 +28,9 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
       TextEditingController();
   final TextEditingController _uploadLimitController = TextEditingController();
 
-  String _torrentManagementMode = AppStrings.manual;
-  String _stopCondition = AppStrings.none;
-  String _contentLayout = AppStrings.original;
+  String _torrentManagementMode = LocaleKeys.manual.tr();
+  String _stopCondition = LocaleKeys.none.tr();
+  String _contentLayout = LocaleKeys.original.tr();
 
   bool _startTorrent = true;
   bool _addToTopOfQueue = false;
@@ -89,8 +91,8 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
             .reduce((a, b) => a.value > b.value ? a : b)
             .key;
         _torrentManagementMode = mostUsedTmm
-            ? AppStrings.automatic
-            : AppStrings.manual;
+            ? LocaleKeys.automatic.tr()
+            : LocaleKeys.manual.tr();
       }
 
       // Set sequential download based on most common
@@ -165,11 +167,11 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
             ),
             child: FilledButton(
               onPressed: _isLoading ? null : _addTorrent,
-              child: const Text(AppStrings.addTorrent),
+              child: Text(LocaleKeys.addTorrent.tr()),
             ),
           ),
           appBar: AppBar(
-            title: const Text(AppStrings.addTorrentUrl),
+            title: Text(LocaleKeys.addTorrentUrl.tr()),
             actions: [
               if (_isLoading)
                 const Padding(
@@ -194,8 +196,8 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          AppStrings.urls,
+                        Text(
+                          LocaleKeys.urls.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -206,12 +208,12 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
                           controller: _urlController,
                           maxLines: 6,
                           textAlign: TextAlign.start,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
                             alignLabelWithHint: true,
                             hintText:
                                 'Enter magnet links, HTTP URLs, or info-hashes',
-                            labelText: AppStrings.torrentUrls,
+                            labelText: LocaleKeys.torrentUrls.tr(),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -232,8 +234,8 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          AppStrings.torrentOptions,
+                        Text(
+                          LocaleKeys.torrentOptions.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -261,9 +263,9 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
           children: [
             Expanded(
               child: _buildDropdownOption(
-                'Torrent Management Mode:',
+                LocaleKeys.torrentManagementMode.tr(),
                 _torrentManagementMode,
-                [AppStrings.manual, AppStrings.automatic],
+                [LocaleKeys.manual.tr(), LocaleKeys.automatic.tr()],
                 (value) => setState(() => _torrentManagementMode = value!),
               ),
             ),
@@ -277,24 +279,35 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
         Row(
           children: [
             Expanded(
-              child: _buildTextOption('Rename torrent:', _nameController),
+              child: _buildTextOption(
+                LocaleKeys.renameTorrent.tr(),
+                _nameController,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: _buildDropdownOption(
-                'Category:',
+                LocaleKeys.category.tr(),
                 _categoryController.text.isEmpty
-                    ? 'None'
+                    ? LocaleKeys.none.tr()
                     : _categoryController.text,
                 [
-                  'None',
-                  ...context.read<AppState>().allCategories.where(
-                    (category) => category != 'Uncategorized',
-                  ),
+                  LocaleKeys.none.tr(),
+                  ...context
+                      .read<AppState>()
+                      .allCategories
+                      .where(
+                        (category) =>
+                            category != 'Uncategorized' &&
+                            category != LocaleKeys.none.tr(),
+                      )
+                      .toSet()
+                      .toList(),
                 ],
                 (value) => setState(
-                  () =>
-                      _categoryController.text = value == 'None' ? '' : value!,
+                  () => _categoryController.text = value == LocaleKeys.none.tr()
+                      ? ''
+                      : value!,
                 ),
               ),
             ),
@@ -307,7 +320,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
           children: [
             Expanded(
               child: _buildCheckboxOption(
-                AppStrings.startTorrent,
+                LocaleKeys.startTorrent.tr(),
                 _startTorrent,
                 (value) => setState(() => _startTorrent = value!),
               ),
@@ -315,7 +328,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
             const SizedBox(width: 16),
             Expanded(
               child: _buildCheckboxOption(
-                AppStrings.addToTopOfQueue,
+                LocaleKeys.addToTopOfQueue.tr(),
                 _addToTopOfQueue,
                 (value) => setState(() => _addToTopOfQueue = value!),
               ),
@@ -329,9 +342,13 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
           children: [
             Expanded(
               child: _buildDropdownOption(
-                'Stop condition:',
+                LocaleKeys.stopCondition.tr(),
                 _stopCondition,
-                ['None', 'Metadata received', 'Files checked'],
+                [
+                  LocaleKeys.none.tr(),
+                  LocaleKeys.metadataReceived.tr(),
+                  LocaleKeys.filesChecked.tr(),
+                ],
                 (value) => setState(() => _stopCondition = value!),
               ),
             ),
@@ -352,9 +369,13 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
           children: [
             Expanded(
               child: _buildDropdownOption(
-                'Content layout:',
+                LocaleKeys.contentLayout.tr(),
                 _contentLayout,
-                ['Original', 'Create subfolder', 'Don\'t create subfolder'],
+                [
+                  LocaleKeys.original.tr(),
+                  LocaleKeys.createSubfolder.tr(),
+                  LocaleKeys.dontCreateSubfolder.tr(),
+                ],
                 (value) => setState(() => _contentLayout = value!),
               ),
             ),
@@ -616,7 +637,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
     final urls = _urlController.text.trim();
     if (urls.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: const Text('Please enter at least one URL')),
+        SnackBar(content: Text(LocaleKeys.pleaseEnterAtLeastOneUrl.tr())),
       );
       return;
     }
@@ -641,9 +662,13 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
             : _categoryController.text.trim(),
         startTorrent: _startTorrent,
         addToTopOfQueue: _addToTopOfQueue,
-        stopCondition: _stopCondition == 'None' ? null : _stopCondition,
+        stopCondition: _stopCondition == LocaleKeys.none.tr()
+            ? null
+            : _stopCondition,
         skipHashCheck: _skipHashCheck,
-        contentLayout: _contentLayout == 'Original' ? null : _contentLayout,
+        contentLayout: _contentLayout == LocaleKeys.original.tr()
+            ? null
+            : _contentLayout,
         sequentialDownload: _sequentialDownload,
         firstLastPiecePriority: _firstLastPiecePriority,
         downloadLimit: _downloadLimitController.text.trim().isEmpty
@@ -669,7 +694,9 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
         } catch (e) {
           scaffoldMessenger.showSnackBar(
             SnackBar(
-              content: Text('Failed to add torrent: ${url.trim()}'),
+              content: Text(
+                '${LocaleKeys.failedToAddTorrent.tr()}: ${url.trim()}',
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -680,7 +707,9 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
         if (!mounted) return;
         scaffoldMessenger.showSnackBar(
           SnackBar(
-            content: Text('Successfully added $addedCount torrent(s)'),
+            content: Text(
+              '${LocaleKeys.successfullyAddedTorrents.tr()} $addedCount',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -690,7 +719,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
       if (!mounted) return;
       scaffoldMessenger.showSnackBar(
         SnackBar(
-          content: Text('Error adding torrent: $e'),
+          content: Text('${LocaleKeys.errorAddingTorrent.tr()}: $e'),
           backgroundColor: Colors.red,
         ),
       );
