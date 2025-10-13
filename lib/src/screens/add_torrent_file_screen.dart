@@ -358,12 +358,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
               ),
             ),
             const SizedBox(width: 16),
-            Expanded(
-              child: _buildTextOption(
-                'Save files to location:',
-                _savePathController,
-              ),
-            ),
+            Expanded(child: _buildSavePathAutocomplete()),
           ],
         ),
         const SizedBox(height: 16),
@@ -562,6 +557,108 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSavePathAutocomplete() {
+    return FutureBuilder<List<String>>(
+      future: context.read<AppState>().getAllDirectories(),
+      builder: (context, snapshot) {
+        final availableDirectories = snapshot.data ?? [];
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Save files to location:',
+              style: TextStyle(fontWeight: FontWeight.w500),
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 8),
+            Autocomplete<String>(
+              initialValue: TextEditingValue(text: _savePathController.text),
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text.isEmpty) {
+                  return availableDirectories;
+                }
+                return availableDirectories.where((String option) {
+                  return option.toLowerCase().contains(
+                    textEditingValue.text.toLowerCase(),
+                  );
+                });
+              },
+              onSelected: (String selection) {
+                _savePathController.text = selection;
+              },
+              fieldViewBuilder:
+                  (
+                    BuildContext context,
+                    TextEditingController textEditingController,
+                    FocusNode focusNode,
+                    VoidCallback onFieldSubmitted,
+                  ) {
+                    // Sync the autocomplete controller with our main controller
+                    textEditingController.text = _savePathController.text;
+                    textEditingController.addListener(() {
+                      _savePathController.text = textEditingController.text;
+                    });
+
+                    return TextField(
+                      controller: textEditingController,
+                      focusNode: focusNode,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        hintText: 'Type or select a directory',
+                      ),
+                    );
+                  },
+              optionsViewBuilder:
+                  (
+                    BuildContext context,
+                    AutocompleteOnSelected<String> onSelected,
+                    Iterable<String> options,
+                  ) {
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: Material(
+                        elevation: 4.0,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 150,
+                            maxWidth: 400,
+                          ),
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemCount: options.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final String option = options.elementAt(index);
+                              return InkWell(
+                                onTap: () {
+                                  onSelected(option);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Text(
+                                    option,
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+            ),
+          ],
+        );
+      },
     );
   }
 

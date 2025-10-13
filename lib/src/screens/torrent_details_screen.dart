@@ -765,17 +765,102 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
     );
   }
 
-  void _showLocationDialog() {
+  void _showLocationDialog() async {
     final controller = TextEditingController(text: _details?.savePath ?? '');
+    final appState = context.read<AppState>();
+
+    // Fetch all available directories
+    final List<String> availableDirectories = await appState
+        .getAllDirectories();
+
+    if (!mounted) return;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Change Save Location'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            labelText: 'New Location',
-            border: OutlineInputBorder(),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Autocomplete<String>(
+            initialValue: TextEditingValue(text: _details?.savePath ?? ''),
+            optionsBuilder: (TextEditingValue textEditingValue) {
+              if (textEditingValue.text.isEmpty) {
+                return availableDirectories;
+              }
+              return availableDirectories.where((String option) {
+                return option.toLowerCase().contains(
+                  textEditingValue.text.toLowerCase(),
+                );
+              });
+            },
+            onSelected: (String selection) {
+              controller.text = selection;
+            },
+            fieldViewBuilder:
+                (
+                  BuildContext context,
+                  TextEditingController textEditingController,
+                  FocusNode focusNode,
+                  VoidCallback onFieldSubmitted,
+                ) {
+                  // Sync the autocomplete controller with our main controller
+                  textEditingController.text = controller.text;
+                  textEditingController.addListener(() {
+                    controller.text = textEditingController.text;
+                  });
+
+                  return TextField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    decoration: const InputDecoration(
+                      labelText: 'New Location',
+                      border: OutlineInputBorder(),
+                      hintText: 'Type or select a directory',
+                    ),
+                    onSubmitted: (String value) {
+                      onFieldSubmitted();
+                    },
+                  );
+                },
+            optionsViewBuilder:
+                (
+                  BuildContext context,
+                  AutocompleteOnSelected<String> onSelected,
+                  Iterable<String> options,
+                ) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 4.0,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxHeight: 200,
+                          maxWidth: 400,
+                        ),
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: options.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final String option = options.elementAt(index);
+                            return InkWell(
+                              onTap: () {
+                                onSelected(option);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  option,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
           ),
         ),
         actions: [
