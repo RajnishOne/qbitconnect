@@ -138,7 +138,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Cannot connect to ${server.name}. ${ErrorHandler.getUserFriendlyMessage(e)}',
+              '${LocaleKeys.cannotConnectToQBittorrent.tr()}: ${server.name}. ${ErrorHandler.getUserFriendlyMessage(e)}',
             ),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5),

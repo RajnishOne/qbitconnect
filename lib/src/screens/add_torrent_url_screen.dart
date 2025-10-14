@@ -535,13 +535,13 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
                     return TextField(
                       controller: textEditingController,
                       focusNode: focusNode,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
                         ),
-                        hintText: 'Type or select a directory',
+                        hintText: LocaleKeys.typeOrSelectDirectory.tr(),
                       ),
                     );
                   },

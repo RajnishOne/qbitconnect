@@ -162,10 +162,10 @@ class DeepLinkHandler {
 
         // Show a success message
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(LocaleKeys.torrentFileDetected.tr()),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       } catch (e) {

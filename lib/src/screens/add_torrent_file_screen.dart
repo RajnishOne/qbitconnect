@@ -85,10 +85,10 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text(LocaleKeys.torrentFilePreselected.tr()),
               backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           );
         }
@@ -625,13 +625,13 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
                     return TextField(
                       controller: textEditingController,
                       focusNode: focusNode,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
                         ),
-                        hintText: 'Type or select a directory',
+                        hintText: LocaleKeys.typeOrSelectDirectory.tr(),
                       ),
                     );
                   },
