@@ -11,18 +11,13 @@ class TorrentStatsTab extends StatefulWidget {
   final Torrent torrent;
   final TorrentDetails? details;
 
-  const TorrentStatsTab({
-    super.key,
-    required this.torrent,
-    required this.details,
-  });
+  const TorrentStatsTab({super.key, required this.torrent, required this.details});
 
   @override
   State<TorrentStatsTab> createState() => _TorrentStatsTabState();
 }
 
-class _TorrentStatsTabState extends State<TorrentStatsTab>
-    with AutomaticKeepAliveClientMixin {
+class _TorrentStatsTabState extends State<TorrentStatsTab> with AutomaticKeepAliveClientMixin {
   // Store historical speed data (last 60 data points)
   final List<double> _downloadSpeeds = [];
   final List<double> _uploadSpeeds = [];
@@ -123,30 +118,18 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                     Container(
                       width: 12,
                       height: 12,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF2196F3),
-                        shape: BoxShape.circle,
-                      ),
+                      decoration: const BoxDecoration(color: Color(0xFF2196F3), shape: BoxShape.circle),
                     ),
                     const SizedBox(width: 6),
-                    Text(
-                      LocaleKeys.download.tr(),
-                      style: theme.textTheme.bodySmall,
-                    ),
+                    Text(LocaleKeys.download.tr(), style: theme.textTheme.bodySmall),
                     const SizedBox(width: 16),
                     Container(
                       width: 12,
                       height: 12,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFFF9800),
-                        shape: BoxShape.circle,
-                      ),
+                      decoration: const BoxDecoration(color: Color(0xFFFF9800), shape: BoxShape.circle),
                     ),
                     const SizedBox(width: 6),
-                    Text(
-                      LocaleKeys.upload.tr(),
-                      style: theme.textTheme.bodySmall,
-                    ),
+                    Text(LocaleKeys.upload.tr(), style: theme.textTheme.bodySmall),
                   ],
                 ),
               ],
@@ -160,18 +143,12 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.show_chart,
-                            size: 48,
-                            color: theme.colorScheme.primary.withOpacity(0.5),
-                          ),
+                          Icon(Icons.show_chart, size: 48, color: theme.colorScheme.primary.withValues(alpha: 0.5)),
                           const SizedBox(height: 12),
                           Text(
                             LocaleKeys.collectingData.tr(),
                             style: theme.textTheme.bodyLarge?.copyWith(
-                              color: theme.colorScheme.onSurface.withOpacity(
-                                0.6,
-                              ),
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                           ),
                         ],
@@ -188,9 +165,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
   Widget _buildLineChart(ThemeData theme) {
     // Find max value for Y axis
     final allSpeeds = [..._downloadSpeeds, ..._uploadSpeeds];
-    final maxSpeed = allSpeeds.isEmpty
-        ? 100.0
-        : allSpeeds.reduce((a, b) => a > b ? a : b);
+    final maxSpeed = allSpeeds.isEmpty ? 100.0 : allSpeeds.reduce((a, b) => a > b ? a : b);
     final yMax = maxSpeed > 0 ? maxSpeed * 1.2 : 100.0;
 
     return LineChart(
@@ -200,10 +175,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
           drawVerticalLine: false,
           horizontalInterval: yMax / 4,
           getDrawingHorizontalLine: (value) {
-            return FlLine(
-              color: theme.colorScheme.outline.withOpacity(0.1),
-              strokeWidth: 1,
-            );
+            return FlLine(color: theme.colorScheme.outline.withValues(alpha: 0.1), strokeWidth: 1);
           },
         ),
         titlesData: FlTitlesData(
@@ -214,10 +186,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
               getTitlesWidget: (value, meta) {
                 return Text(
                   ByteFormatter.formatBytesPerSecond(value.toInt()),
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
-                  ),
+                  style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
                 );
               },
             ),
@@ -230,22 +199,15 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                 if (value.toInt() % 10 == 0) {
                   return Text(
                     '${value.toInt()}s',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                    style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
                   );
                 }
                 return const SizedBox.shrink();
               },
             ),
           ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         borderData: FlBorderData(show: false),
         minX: 0,
@@ -255,37 +217,23 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
         lineBarsData: [
           // Download speed line
           LineChartBarData(
-            spots: _downloadSpeeds
-                .asMap()
-                .entries
-                .map((e) => FlSpot(e.key.toDouble(), e.value))
-                .toList(),
+            spots: _downloadSpeeds.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
             isCurved: true,
             color: const Color(0xFF2196F3),
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: false),
-            belowBarData: BarAreaData(
-              show: true,
-              color: const Color(0xFF2196F3).withOpacity(0.1),
-            ),
+            belowBarData: BarAreaData(show: true, color: const Color(0xFF2196F3).withValues(alpha: 0.1)),
           ),
           // Upload speed line
           LineChartBarData(
-            spots: _uploadSpeeds
-                .asMap()
-                .entries
-                .map((e) => FlSpot(e.key.toDouble(), e.value))
-                .toList(),
+            spots: _uploadSpeeds.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
             isCurved: true,
             color: const Color(0xFFFF9800),
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: false),
-            belowBarData: BarAreaData(
-              show: true,
-              color: const Color(0xFFFF9800).withOpacity(0.1),
-            ),
+            belowBarData: BarAreaData(show: true, color: const Color(0xFFFF9800).withValues(alpha: 0.1)),
           ),
         ],
         lineTouchData: LineTouchData(
@@ -296,11 +244,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                 final isDownload = spot.barIndex == 0;
                 return LineTooltipItem(
                   '${isDownload ? "DL" : "UP"}: ${ByteFormatter.formatBytesPerSecond(spot.y.toInt())}\n',
-                  TextStyle(
-                    color: theme.colorScheme.onInverseSurface,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
+                  TextStyle(color: theme.colorScheme.onInverseSurface, fontWeight: FontWeight.bold, fontSize: 12),
                 );
               }).toList();
             },
@@ -337,13 +281,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
     );
   }
 
-  Widget _buildSpeedCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-    ThemeData theme,
-  ) {
+  Widget _buildSpeedCard(String label, String value, IconData icon, Color color, ThemeData theme) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -354,7 +292,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
+            colors: [color.withValues(alpha: 0.1), color.withValues(alpha: 0.05)],
           ),
         ),
         child: Column(
@@ -363,17 +301,12 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
             const SizedBox(height: 12),
             Text(
               value,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: color),
             ),
             const SizedBox(height: 4),
             Text(
               label,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
-              ),
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.7)),
             ),
           ],
         ),
@@ -408,9 +341,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
         Expanded(
           child: _buildConnectionCard(
             LocaleKeys.ratio.tr(),
-            details.shareRatio.isNaN || details.shareRatio.isInfinite
-                ? '0.0'
-                : details.shareRatio.toStringAsFixed(1),
+            details.shareRatio.isNaN || details.shareRatio.isInfinite ? '0.0' : details.shareRatio.toStringAsFixed(1),
             Icons.swap_horiz,
             const Color(0xFFFF5722),
             theme,
@@ -420,13 +351,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
     );
   }
 
-  Widget _buildConnectionCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-    ThemeData theme,
-  ) {
+  Widget _buildConnectionCard(String label, String value, IconData icon, Color color, ThemeData theme) {
     return Card(
       elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -436,18 +361,11 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
           children: [
             Icon(icon, size: 28, color: color),
             const SizedBox(height: 8),
-            Text(
-              value,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text(value, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 2),
             Text(
               label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
-              ),
+              style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
             ),
           ],
         ),
@@ -471,9 +389,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
           children: [
             Text(
               LocaleKeys.dataTransfer.tr(),
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Row(
@@ -487,16 +403,10 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                           Container(
                             width: 12,
                             height: 12,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF2196F3),
-                              shape: BoxShape.circle,
-                            ),
+                            decoration: const BoxDecoration(color: Color(0xFF2196F3), shape: BoxShape.circle),
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            LocaleKeys.downloaded.tr(),
-                            style: theme.textTheme.bodyMedium,
-                          ),
+                          Text(LocaleKeys.downloaded.tr(), style: theme.textTheme.bodyMedium),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -519,16 +429,10 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                           Container(
                             width: 12,
                             height: 12,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF4CAF50),
-                              shape: BoxShape.circle,
-                            ),
+                            decoration: const BoxDecoration(color: Color(0xFF4CAF50), shape: BoxShape.circle),
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            LocaleKeys.uploaded.tr(),
-                            style: theme.textTheme.bodyMedium,
-                          ),
+                          Text(LocaleKeys.uploaded.tr(), style: theme.textTheme.bodyMedium),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -583,33 +487,13 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              LocaleKeys.quickStats.tr(),
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text(LocaleKeys.quickStats.tr(), style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildStatRow(
-              LocaleKeys.timeActive.tr(),
-              details.formattedTimeElapsed,
-              Icons.timer_outlined,
-              theme,
-            ),
+            _buildStatRow(LocaleKeys.timeActive.tr(), details.formattedTimeElapsed, Icons.timer_outlined, theme),
             const Divider(height: 24),
-            _buildStatRow(
-              LocaleKeys.seedingTime.tr(),
-              details.formattedSeedingTime,
-              Icons.schedule_outlined,
-              theme,
-            ),
+            _buildStatRow(LocaleKeys.seedingTime.tr(), details.formattedSeedingTime, Icons.schedule_outlined, theme),
             const Divider(height: 24),
-            _buildStatRow(
-              LocaleKeys.connections.tr(),
-              '${details.nbConnections}',
-              Icons.link,
-              theme,
-            ),
+            _buildStatRow(LocaleKeys.connections.tr(), '${details.nbConnections}', Icons.link, theme),
             const Divider(height: 24),
             _buildStatRow(
               LocaleKeys.pieces.tr(),
@@ -623,23 +507,13 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
     );
   }
 
-  Widget _buildStatRow(
-    String label,
-    String value,
-    IconData icon,
-    ThemeData theme,
-  ) {
+  Widget _buildStatRow(String label, String value, IconData icon, ThemeData theme) {
     return Row(
       children: [
-        Icon(icon, size: 24, color: theme.colorScheme.primary.withOpacity(0.7)),
+        Icon(icon, size: 24, color: theme.colorScheme.primary.withValues(alpha: 0.7)),
         const SizedBox(width: 16),
         Expanded(child: Text(label, style: theme.textTheme.bodyLarge)),
-        Text(
-          value,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text(value, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
       ],
     );
   }

@@ -88,7 +88,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
             end: Alignment.bottomRight,
             colors: [
               theme.colorScheme.surface,
-              theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+              theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             ],
           ),
         ),
@@ -126,13 +126,13 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
             gradient: LinearGradient(
               colors: [
                 _getProgressColor(progress),
-                _getProgressColor(progress).withOpacity(0.6),
+                _getProgressColor(progress).withValues(alpha: 0.6),
               ],
             ),
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: _getProgressColor(progress).withOpacity(0.3),
+                color: _getProgressColor(progress).withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -159,7 +159,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
               Text(
                 '${widget.details.piecesHave} / ${widget.details.piecesNum} ${LocaleKeys.pieces.tr()}',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -177,10 +177,10 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: _getProgressColor(progress).withOpacity(0.15),
+                  color: _getProgressColor(progress).withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: _getProgressColor(progress).withOpacity(0.3),
+                    color: _getProgressColor(progress).withValues(alpha: 0.3),
                     width: 2,
                   ),
                 ),
@@ -222,7 +222,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         color: theme.colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.2),
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
           width: 2,
         ),
       ),
@@ -291,7 +291,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         borderRadius: BorderRadius.circular(2),
         boxShadow: [
           BoxShadow(
-            color: blockColor.withOpacity(0.8),
+            color: blockColor.withValues(alpha: 0.8),
             blurRadius: 8,
             spreadRadius: 2,
           ),
@@ -299,7 +299,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
       );
     } else if (isDownloaded) {
       // Downloaded piece
-      blockColor = _getProgressColor(progress).withOpacity(0.8);
+      blockColor = _getProgressColor(progress).withValues(alpha: 0.8);
       decoration = BoxDecoration(
         color: blockColor,
         borderRadius: BorderRadius.circular(2),
@@ -316,7 +316,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
           end: Alignment(1 + gradientPosition, 1 + gradientPosition),
           colors: [
             theme.colorScheme.surfaceContainerHighest,
-            _getProgressColor(progress).withOpacity(0.4),
+            _getProgressColor(progress).withValues(alpha: 0.4),
             theme.colorScheme.surfaceContainerHighest,
           ],
           stops: const [0.0, 0.5, 1.0],
@@ -329,7 +329,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         color: blockColor,
         borderRadius: BorderRadius.circular(2),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.3),
+          color: theme.colorScheme.outline.withValues(alpha: 0.3),
           width: 0.5,
         ),
       );
@@ -370,7 +370,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
             color: color,
             borderRadius: BorderRadius.circular(3),
             border: Border.all(
-              color: theme.colorScheme.outline.withOpacity(0.3),
+              color: theme.colorScheme.outline.withValues(alpha: 0.3),
               width: 0.5,
             ),
           ),
@@ -379,7 +379,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         Text(
           label,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -433,9 +433,9 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         children: [
@@ -454,7 +454,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.6),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 10,
             ),
           ),
