@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 
 import '../state/app_state_manager.dart';
 import '../state/batch_selection_state.dart';
@@ -15,7 +17,6 @@ import '../widgets/torrent_card_with_selection.dart';
 import '../widgets/torrent_actions_sheet.dart';
 import '../widgets/batch_actions_bar.dart';
 import '../widgets/reusable_widgets.dart';
-import '../constants/app_strings.dart';
 import '../services/deep_link_handler.dart';
 import '../core/app_widget.dart';
 import 'torrent_details_screen.dart';
@@ -200,7 +201,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                   ),
                 );
               },
-              tooltip: AppStrings.settings,
+              tooltip: LocaleKeys.settings.tr(),
             ),
             title: GestureDetector(
               onTap: () => _showServerSwitcher(context, appState),
@@ -250,7 +251,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                   if (_getFilteredTorrents(appState).isEmpty) {
                     return AnimatedReloadButton(
                       onPressed: () => context.read<AppState>().refreshNow(),
-                      tooltip: AppStrings.refreshTorrents,
+                      tooltip: LocaleKeys.refreshTorrents.tr(),
                       iconSize: 22,
                       uniqueId: 'empty_state',
                     );
@@ -268,7 +269,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                   } else {
                     return AnimatedReloadButton(
                       onPressed: () => context.read<AppState>().refreshNow(),
-                      tooltip: AppStrings.refreshTorrents,
+                      tooltip: LocaleKeys.refreshTorrents.tr(),
                       iconSize: 22,
                       uniqueId: 'normal_state',
                     );
@@ -329,8 +330,8 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                                 const SizedBox(height: 16),
                                 Text(
                                   _searchQuery.isNotEmpty
-                                      ? AppStrings.noTorrentsMatchSearch
-                                      : AppStrings.noTorrentsFound,
+                                      ? LocaleKeys.noTorrentsMatchSearch.tr()
+                                      : LocaleKeys.noTorrentsFound.tr(),
                                   style: Theme.of(
                                     context,
                                   ).textTheme.titleMedium,
@@ -339,7 +340,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                                 if (_searchQuery.isEmpty) ...[
                                   const SizedBox(height: 8),
                                   Text(
-                                    '${AppStrings.currentFilter}: ${_formatFilterName(appState.activeFilter)}',
+                                    '${LocaleKeys.currentFilter.tr()}: ${_formatFilterName(appState.activeFilter)}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
@@ -358,7 +359,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                                   AnimatedReloadElevatedButton(
                                     onPressed: () =>
                                         context.read<AppState>().refreshNow(),
-                                    label: AppStrings.reload,
+                                    label: LocaleKeys.reload.tr(),
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 24,

@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../models/torrent_add_options.dart';
-import '../constants/app_strings.dart';
 import '../services/firebase_service.dart';
 
 class AddTorrentUrlScreen extends StatefulWidget {
@@ -355,7 +354,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
             const SizedBox(width: 16),
             Expanded(
               child: _buildCheckboxOption(
-                'Skip hash check',
+                LocaleKeys.skipHashCheck.tr(),
                 _skipHashCheck,
                 (value) => setState(() => _skipHashCheck = value!),
               ),

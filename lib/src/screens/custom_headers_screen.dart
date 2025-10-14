@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import '../constants/app_strings.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import '../services/firebase_service.dart';
 
 class CustomHeadersScreen extends StatefulWidget {
@@ -110,13 +111,13 @@ class _CustomHeadersScreenState extends State<CustomHeadersScreen>
       top: false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(AppStrings.customHeaders),
+          title: Text(LocaleKeys.customHeaders.tr()),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context, _formatHeaders());
               },
-              child: const Text(AppStrings.save),
+              child: Text(LocaleKeys.save.tr()),
             ),
           ],
         ),
@@ -151,7 +152,7 @@ class _CustomHeadersScreenState extends State<CustomHeadersScreen>
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          AppStrings.headersPreview,
+                          LocaleKeys.headersPreview.tr(),
                           style: Theme.of(context).textTheme.titleSmall
                               ?.copyWith(fontWeight: FontWeight.w600),
                         ),
@@ -181,7 +182,7 @@ class _CustomHeadersScreenState extends State<CustomHeadersScreen>
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            AppStrings.noCustomHeadersAdded,
+                            LocaleKeys.noCustomHeadersAdded.tr(),
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   color: Theme.of(context).colorScheme.outline,
@@ -290,7 +291,9 @@ class _HeaderDialogState extends State<_HeaderDialog> {
     final isEditing = widget.initialKey != null;
 
     return AlertDialog(
-      title: Text(isEditing ? AppStrings.editHeader : AppStrings.addHeader),
+      title: Text(
+        isEditing ? LocaleKeys.editHeader.tr() : LocaleKeys.addHeader.tr(),
+      ),
       content: Form(
         key: _formKey,
         child: Column(
@@ -298,17 +301,17 @@ class _HeaderDialogState extends State<_HeaderDialog> {
           children: [
             TextFormField(
               controller: _keyController,
-              decoration: const InputDecoration(
-                labelText: AppStrings.headerKey,
+              decoration: InputDecoration(
+                labelText: LocaleKeys.headerKey.tr(),
                 hintText: 'e.g., Authorization, User-Agent',
                 helperText: 'The header name (case-insensitive)',
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppStrings.headerKeyRequired;
+                  return LocaleKeys.headerKeyRequired.tr();
                 }
                 if (value.contains(':')) {
-                  return AppStrings.headerKeyCannotContainColons;
+                  return LocaleKeys.headerKeyCannotContainColons.tr();
                 }
                 return null;
               },
@@ -316,14 +319,14 @@ class _HeaderDialogState extends State<_HeaderDialog> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _valueController,
-              decoration: const InputDecoration(
-                labelText: AppStrings.headerValue,
+              decoration: InputDecoration(
+                labelText: LocaleKeys.headerValue.tr(),
                 hintText: 'e.g., Bearer token123, MyApp/1.0',
                 helperText: 'The header value',
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppStrings.headerValueRequired;
+                  return LocaleKeys.headerValueRequired.tr();
                 }
                 return null;
               },
@@ -334,11 +337,11 @@ class _HeaderDialogState extends State<_HeaderDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text(AppStrings.cancel),
+          child: Text(LocaleKeys.cancel.tr()),
         ),
         ElevatedButton(
           onPressed: _save,
-          child: Text(isEditing ? AppStrings.update : AppStrings.add),
+          child: Text(isEditing ? LocaleKeys.update.tr() : LocaleKeys.add.tr()),
         ),
       ],
     );

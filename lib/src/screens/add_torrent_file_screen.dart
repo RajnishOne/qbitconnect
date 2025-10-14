@@ -444,7 +444,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
             const SizedBox(width: 16),
             Expanded(
               child: _buildCheckboxOption(
-                'Skip hash check',
+                LocaleKeys.skipHashCheck.tr(),
                 _skipHashCheck,
                 (value) => setState(() => _skipHashCheck = value!),
               ),
