@@ -111,8 +111,7 @@ class LocaleKeys {
   static const String savePassword = 'savePassword';
   static const String showPassword = 'showPassword';
   static const String hidePassword = 'hidePassword';
-  static const String rememberPasswordForFutureConnections =
-      'rememberPasswordForFutureConnections';
+  static const String rememberPasswordForFutureConnections = 'rememberPasswordForFutureConnections';
 
   // Torrent options
   static const String torrentOptions = 'torrentOptions';
@@ -140,8 +139,7 @@ class LocaleKeys {
   static const String addHeader = 'addHeader';
   static const String headerKey = 'headerKey';
   static const String headerKeyRequired = 'headerKeyRequired';
-  static const String headerKeyCannotContainColons =
-      'headerKeyCannotContainColons';
+  static const String headerKeyCannotContainColons = 'headerKeyCannotContainColons';
   static const String headerValue = 'headerValue';
   static const String headerValueRequired = 'headerValueRequired';
 
@@ -197,8 +195,7 @@ class LocaleKeys {
 
   // Auto refresh
   static const String enableAutoRefresh = 'enableAutoRefresh';
-  static const String automaticallyRefreshTorrentList =
-      'automaticallyRefreshTorrentList';
+  static const String automaticallyRefreshTorrentList = 'automaticallyRefreshTorrentList';
   static const String refreshInterval = 'refreshInterval';
 
   // Legal and info
@@ -234,17 +231,14 @@ class LocaleKeys {
   static const String areYouSureDeleteServer = 'areYouSureDeleteServer';
   static const String willRemoveServerConfig = 'willRemoveServerConfig';
   static const String lastServerNeedToAddNew = 'lastServerNeedToAddNew';
-  static const String serverDeletedReplacementSet =
-      'serverDeletedReplacementSet';
+  static const String serverDeletedReplacementSet = 'serverDeletedReplacementSet';
   static const String serverDeleted = 'serverDeleted';
-  static const String failedToDeleteServerTryAgain =
-      'failedToDeleteServerTryAgain';
+  static const String failedToDeleteServerTryAgain = 'failedToDeleteServerTryAgain';
   static const String disconnectFirstToDelete = 'disconnectFirstToDelete';
   static const String checkingConnection = 'checkingConnection';
   static const String lastConnected = 'lastConnected';
   static const String qbittorrentVersion = 'qbittorrentVersion';
-  static const String tapToConnectLongPressOptions =
-      'tapToConnectLongPressOptions';
+  static const String tapToConnectLongPressOptions = 'tapToConnectLongPressOptions';
   static const String tapAddServerBelowToConnect = 'tapAddServerBelowToConnect';
 
   // Connection screen specific keys
@@ -252,8 +246,7 @@ class LocaleKeys {
   static const String serverNameHint = 'serverNameHint';
   static const String hostIpAddress = 'hostIpAddress';
   static const String hostIpAddressHint = 'hostIpAddressHint';
-  static const String protocolDetectedAutomatically =
-      'protocolDetectedAutomatically';
+  static const String protocolDetectedAutomatically = 'protocolDetectedAutomatically';
   static const String portHint = 'portHint';
   static const String invalidPort = 'invalidPort';
   static const String pathOptional = 'pathOptional';
@@ -261,16 +254,12 @@ class LocaleKeys {
   static const String noNetworkConnection = 'noNetworkConnection';
   static const String connectionTimeout = 'connectionTimeout';
   static const String authenticationRequired = 'authenticationRequired';
-  static const String usernamePasswordRequiredRemote =
-      'usernamePasswordRequiredRemote';
-  static const String usernamePasswordRequiredRemoteMessage =
-      'usernamePasswordRequiredRemoteMessage';
-  static const String authenticationRequiredMessage =
-      'authenticationRequiredMessage';
+  static const String usernamePasswordRequiredRemote = 'usernamePasswordRequiredRemote';
+  static const String usernamePasswordRequiredRemoteMessage = 'usernamePasswordRequiredRemoteMessage';
+  static const String authenticationRequiredMessage = 'authenticationRequiredMessage';
   static const String invalidCredentials = 'invalidCredentials';
   static const String cannotConnectToQBittorrent = 'cannotConnectToQBittorrent';
-  static const String failedToConnectToQBittorrent =
-      'failedToConnectToQBittorrent';
+  static const String failedToConnectToQBittorrent = 'failedToConnectToQBittorrent';
 
   // Statistics screen specific keys
   static const String notConnectedToQBittorrent = 'notConnectedToQBittorrent';
@@ -325,22 +314,19 @@ class LocaleKeys {
   static const String everyMinutes = 'everyMinutes';
 
   // Torrent card display settings screen specific keys
-  static const String maximumOptionsCanBeSelected =
-      'maximumOptionsCanBeSelected';
+  static const String maximumOptionsCanBeSelected = 'maximumOptionsCanBeSelected';
   static const String customizeTorrentCardInfo = 'customizeTorrentCardInfo';
   static const String selectUpToOptionsToDisplay = 'selectUpToOptionsToDisplay';
   static const String currentlySelected = 'currentlySelected';
   static const String preview = 'preview';
   static const String availableOptions = 'availableOptions';
   static const String noOptionsSelected = 'noOptionsSelected';
-  static const String showsDownloadProgressPercentage =
-      'showsDownloadProgressPercentage';
+  static const String showsDownloadProgressPercentage = 'showsDownloadProgressPercentage';
   static const String showsTotalTorrentSize = 'showsTotalTorrentSize';
   static const String showsCurrentDownloadSpeed = 'showsCurrentDownloadSpeed';
   static const String showsCurrentUploadSpeed = 'showsCurrentUploadSpeed';
   static const String showsUploadDownloadRatio = 'showsUploadDownloadRatio';
-  static const String showsEstimatedTimeToCompletion =
-      'showsEstimatedTimeToCompletion';
+  static const String showsEstimatedTimeToCompletion = 'showsEstimatedTimeToCompletion';
   static const String showsNumberOfSeeders = 'showsNumberOfSeeders';
   static const String showsNumberOfLeechers = 'showsNumberOfLeechers';
   static const String showsTotalUploadedData = 'showsTotalUploadedData';
@@ -352,11 +338,9 @@ class LocaleKeys {
   static const String oledThemeDescription = 'oledThemeDescription';
   static const String systemThemeDescription = 'systemThemeDescription';
   static const String highContrastLightTheme = 'highContrastLightTheme';
-  static const String highContrastLightThemeDescription =
-      'highContrastLightThemeDescription';
+  static const String highContrastLightThemeDescription = 'highContrastLightThemeDescription';
   static const String highContrastDarkTheme = 'highContrastDarkTheme';
-  static const String highContrastDarkThemeDescription =
-      'highContrastDarkThemeDescription';
+  static const String highContrastDarkThemeDescription = 'highContrastDarkThemeDescription';
 
   // Torrent details screen specific keys
   static const String stats = 'stats';
@@ -401,10 +385,8 @@ class LocaleKeys {
   static const String torrentAndFiles = 'torrentAndFiles';
   static const String torrentRenamedSuccessfully = 'torrentRenamedSuccessfully';
   static const String torrentDeletedSuccessfully = 'torrentDeletedSuccessfully';
-  static const String torrentAndFilesDeletedSuccessfully =
-      'torrentAndFilesDeletedSuccessfully';
-  static const String torrentLocationChangedSuccessfully =
-      'torrentLocationChangedSuccessfully';
+  static const String torrentAndFilesDeletedSuccessfully = 'torrentAndFilesDeletedSuccessfully';
+  static const String torrentLocationChangedSuccessfully = 'torrentLocationChangedSuccessfully';
   static const String failedToRename = 'failedToRename';
   static const String failedToChangeLocation = 'failedToChangeLocation';
   static const String failedToDeleteTorrent = 'failedToDeleteTorrent';
@@ -424,8 +406,7 @@ class LocaleKeys {
   static const String torrentMovedUpInQueue = 'torrentMovedUpInQueue';
   static const String torrentMovedDownInQueue = 'torrentMovedDownInQueue';
   static const String torrentMovedToTopOfQueue = 'torrentMovedToTopOfQueue';
-  static const String torrentMovedToBottomOfQueue =
-      'torrentMovedToBottomOfQueue';
+  static const String torrentMovedToBottomOfQueue = 'torrentMovedToBottomOfQueue';
   static const String failedToMoveTorrent = 'failedToMoveTorrent';
 
   // Search filter bar specific keys
@@ -480,13 +461,11 @@ class LocaleKeys {
   static const String noTorrentsCanBePaused = 'noTorrentsCanBePaused';
   static const String noTorrentsCanBeResumed = 'noTorrentsCanBeResumed';
   static const String failedToReadTorrentFile = 'failedToReadTorrentFile';
-  static const String pleaseSelectValidTorrentFile =
-      'pleaseSelectValidTorrentFile';
+  static const String pleaseSelectValidTorrentFile = 'pleaseSelectValidTorrentFile';
   static const String torrentFilePreselected = 'torrentFilePreselected';
   static const String torrentFileDetected = 'torrentFileDetected';
   static const String failedToSwitchServer = 'failedToSwitchServer';
   static const String allApiCallsFailed = 'allApiCallsFailed';
   static const String unableToLoadStatisticsData = 'unableToLoadStatisticsData';
-  static const String pleaseCheckInternetConnection =
-      'pleaseCheckInternetConnection';
+  static const String pleaseCheckInternetConnection = 'pleaseCheckInternetConnection';
 }
