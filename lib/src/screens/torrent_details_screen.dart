@@ -271,7 +271,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   end: Alignment.bottomCenter,
                   colors: [
                     Theme.of(context).colorScheme.surface,
-                    Theme.of(context).colorScheme.surface.withOpacity(0.95),
+                    Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
                   ],
                 ),
               ),
@@ -286,7 +286,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                     ],
                   ),
                 ),
@@ -297,7 +297,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                 labelColor: Theme.of(context).colorScheme.onPrimary,
                 unselectedLabelColor: Theme.of(
                   context,
-                ).colorScheme.onSurface.withOpacity(0.7),
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
                 labelStyle: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
