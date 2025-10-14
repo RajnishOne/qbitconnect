@@ -225,20 +225,39 @@ class Statistics {
 
     // All-time statistics should come from server state, not transfer info
     // Transfer info contains session data, server state contains all-time data
-    final allTimeDownloaded = _safeToInt(serverState?['alltime_dl']);
-    final allTimeUploaded = _safeToInt(serverState?['alltime_ul']);
+    // Try multiple possible field names for different qBittorrent versions
+    final allTimeDownloaded = _safeToInt(serverState?['alltime_dl']) > 0
+        ? _safeToInt(serverState?['alltime_dl'])
+        : _safeToInt(serverState?['all_time_dl']) > 0
+        ? _safeToInt(serverState?['all_time_dl'])
+        : _safeToInt(serverState?['total_dl']);
 
-    // If server state doesn't have all-time data, fall back to transfer info or base stats
-    final finalAllTimeDownloaded = allTimeDownloaded > 0
-        ? allTimeDownloaded
-        : (transferInfo != null
-              ? _safeToInt(transferInfo['dl_info_data'])
-              : baseStats.totalDownloaded);
-    final finalAllTimeUploaded = allTimeUploaded > 0
-        ? allTimeUploaded
-        : (transferInfo != null
-              ? _safeToInt(transferInfo['up_info_data'])
-              : baseStats.totalUploaded);
+    final allTimeUploaded = _safeToInt(serverState?['alltime_ul']) > 0
+        ? _safeToInt(serverState?['alltime_ul'])
+        : _safeToInt(serverState?['all_time_ul']) > 0
+        ? _safeToInt(serverState?['all_time_ul'])
+        : _safeToInt(serverState?['total_ul']);
+
+    // Comprehensive data source prioritization
+    // 1. Server state all-time data (most accurate)
+    // 2. Transfer info data (session data, but better than base stats)
+    // 3. Base stats (calculated from individual torrents - least accurate)
+    int finalAllTimeDownloaded;
+    int finalAllTimeUploaded;
+
+    // Check if we have valid server state data
+    if (serverState != null && (allTimeDownloaded > 0 || allTimeUploaded > 0)) {
+      finalAllTimeDownloaded = allTimeDownloaded;
+      finalAllTimeUploaded = allTimeUploaded;
+    } else if (transferInfo != null) {
+      // Fall back to transfer info if server state is not available
+      finalAllTimeDownloaded = _safeToInt(transferInfo['dl_info_data']);
+      finalAllTimeUploaded = _safeToInt(transferInfo['up_info_data']);
+    } else {
+      // Last resort: use base stats (calculated from individual torrents)
+      finalAllTimeDownloaded = baseStats.totalDownloaded;
+      finalAllTimeUploaded = baseStats.totalUploaded;
+    }
 
     // Session waste - this is the amount of data wasted during the current session
     // Use the total_wasted_session field from server state
@@ -321,11 +340,29 @@ class Statistics {
   }
 
   /// Safe conversion to int with fallback to 0
+  /// Handles large numbers properly for all-time statistics
   static int _safeToInt(dynamic value) {
     if (value == null) return 0;
     if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value) ?? 0;
+    if (value is double) {
+      // Handle potential overflow for very large numbers
+      if (value.isInfinite || value.isNaN) return 0;
+      return value.toInt();
+    }
+    if (value is String) {
+      // Handle large number strings that might be in scientific notation
+      final parsed = int.tryParse(value);
+      if (parsed != null) return parsed;
+
+      // Try parsing as double first, then convert to int
+      final doubleValue = double.tryParse(value);
+      if (doubleValue != null &&
+          !doubleValue.isInfinite &&
+          !doubleValue.isNaN) {
+        return doubleValue.toInt();
+      }
+      return 0;
+    }
     return 0;
   }
 
