@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../models/torrent.dart';
 import '../state/app_state_manager.dart';
 import '../state/batch_selection_state.dart';
+import '../constants/locale_keys.dart';
 
 // Delete dialog choices (must be top-level)
 enum DeleteChoice { torrentOnly, withFiles }
@@ -42,7 +44,7 @@ class TorrentActionsSheet extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: const Icon(Icons.check_box_outlined),
-                    title: const Text('Select'),
+                    title: Text(LocaleKeys.select.tr()),
                     onTap: () {
                       Navigator.pop(context);
                       final batchState = context.read<BatchSelectionState>();
@@ -58,7 +60,7 @@ class TorrentActionsSheet extends StatelessWidget {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.pause),
-                    title: const Text('Pause'),
+                    title: Text(LocaleKeys.pause.tr()),
                     onTap: isLoading
                         ? null
                         : () async {
@@ -76,7 +78,7 @@ class TorrentActionsSheet extends StatelessWidget {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.play_arrow),
-                    title: const Text('Resume'),
+                    title: Text(LocaleKeys.resume.tr()),
                     onTap: isLoading
                         ? null
                         : () async {
@@ -88,7 +90,7 @@ class TorrentActionsSheet extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(Icons.keyboard_arrow_up),
-                    title: const Text('Move Up'),
+                    title: Text(LocaleKeys.moveUp.tr()),
                     onTap: () async {
                       Navigator.pop(context);
                       try {
@@ -98,7 +100,9 @@ class TorrentActionsSheet extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text('Torrent moved up in queue'),
+                              content: Text(
+                                LocaleKeys.torrentMovedUpInQueue.tr(),
+                              ),
                               backgroundColor: Colors.green,
                             ),
                           );
@@ -107,7 +111,9 @@ class TorrentActionsSheet extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Failed to move torrent'),
+                              content: Text(
+                                LocaleKeys.failedToMoveTorrent.tr(),
+                              ),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -117,7 +123,7 @@ class TorrentActionsSheet extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(Icons.keyboard_arrow_down),
-                    title: const Text('Move Down'),
+                    title: Text(LocaleKeys.moveDown.tr()),
                     onTap: () async {
                       Navigator.pop(context);
                       try {
@@ -127,8 +133,8 @@ class TorrentActionsSheet extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text(
-                                'Torrent moved down in queue',
+                              content: Text(
+                                LocaleKeys.torrentMovedDownInQueue.tr(),
                               ),
                               backgroundColor: Colors.green,
                             ),
@@ -138,7 +144,9 @@ class TorrentActionsSheet extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Failed to move torrent'),
+                              content: Text(
+                                LocaleKeys.failedToMoveTorrent.tr(),
+                              ),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -148,7 +156,7 @@ class TorrentActionsSheet extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(Icons.vertical_align_top),
-                    title: const Text('Move to Top'),
+                    title: Text(LocaleKeys.moveToTop.tr()),
                     onTap: () async {
                       Navigator.pop(context);
                       try {
@@ -158,8 +166,8 @@ class TorrentActionsSheet extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text(
-                                'Torrent moved to top of queue',
+                              content: Text(
+                                LocaleKeys.torrentMovedToTopOfQueue.tr(),
                               ),
                               backgroundColor: Colors.green,
                             ),
@@ -169,7 +177,9 @@ class TorrentActionsSheet extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Failed to move torrent'),
+                              content: Text(
+                                LocaleKeys.failedToMoveTorrent.tr(),
+                              ),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -179,7 +189,7 @@ class TorrentActionsSheet extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(Icons.vertical_align_bottom),
-                    title: const Text('Move to Bottom'),
+                    title: Text(LocaleKeys.moveToBottom.tr()),
                     onTap: () async {
                       Navigator.pop(context);
                       try {
@@ -189,8 +199,8 @@ class TorrentActionsSheet extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text(
-                                'Torrent moved to bottom of queue',
+                              content: Text(
+                                LocaleKeys.torrentMovedToBottomOfQueue.tr(),
                               ),
                               backgroundColor: Colors.green,
                             ),
@@ -200,7 +210,9 @@ class TorrentActionsSheet extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Failed to move torrent'),
+                              content: Text(
+                                LocaleKeys.failedToMoveTorrent.tr(),
+                              ),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -214,9 +226,9 @@ class TorrentActionsSheet extends StatelessWidget {
                       Icons.delete_outline,
                       color: Colors.red,
                     ),
-                    title: const Text(
-                      'Delete',
-                      style: TextStyle(color: Colors.red),
+                    title: Text(
+                      LocaleKeys.delete.tr(),
+                      style: const TextStyle(color: Colors.red),
                     ),
                     onTap: () {
                       _confirmDelete(context, torrent.hash);
@@ -238,26 +250,26 @@ class TorrentActionsSheet extends StatelessWidget {
     final choice = await showDialog<DeleteChoice>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete torrent?'),
-        content: const Text('Choose what to delete.'),
+        title: Text(LocaleKeys.deleteTorrent.tr()),
+        content: Text(LocaleKeys.chooseWhatToDelete.tr()),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(dialogContext);
             },
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.cancel.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(dialogContext, DeleteChoice.torrentOnly);
             },
-            child: const Text('Torrent only'),
+            child: Text(LocaleKeys.torrentOnly.tr()),
           ),
           FilledButton(
             onPressed: () {
               Navigator.pop(dialogContext, DeleteChoice.withFiles);
             },
-            child: const Text('Torrent + files'),
+            child: Text(LocaleKeys.torrentAndFiles.tr()),
           ),
         ],
       ),
@@ -281,7 +293,7 @@ class TorrentActionsSheet extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Torrent deleted successfully'),
+            content: Text(LocaleKeys.torrentDeletedSuccessfully.tr()),
             backgroundColor: Colors.green,
           ),
         );
@@ -291,7 +303,7 @@ class TorrentActionsSheet extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete torrent'),
+            content: Text(LocaleKeys.failedToDeleteTorrent.tr()),
             backgroundColor: Colors.red,
           ),
         );

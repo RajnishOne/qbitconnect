@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../models/torrent_details.dart';
+import '../constants/locale_keys.dart';
 
 class AnimatedPiecesWidget extends StatefulWidget {
   final TorrentDetails details;
@@ -148,14 +150,14 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Download Progress',
+                LocaleKeys.downloadProgress.tr(),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
-                '${widget.details.piecesHave} / ${widget.details.piecesNum} pieces',
+                '${widget.details.piecesHave} / ${widget.details.piecesNum} ${LocaleKeys.pieces.tr()}',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurface.withOpacity(0.7),
                 ),
@@ -349,7 +351,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         _buildLegendItem('Downloaded', _getProgressColor(progress), theme),
         const SizedBox(width: 16),
         _buildLegendItem(
-          'Pending',
+          LocaleKeys.pending.tr(),
           theme.colorScheme.surfaceContainerHighest,
           theme,
         ),
@@ -390,7 +392,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
       children: [
         Expanded(
           child: _buildInfoChip(
-            'Downloaded',
+            LocaleKeys.downloaded.tr(),
             widget.details.formattedSize,
             Icons.download_rounded,
             const Color(0xFF2196F3),
@@ -400,7 +402,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         const SizedBox(width: 12),
         Expanded(
           child: _buildInfoChip(
-            'Piece Size',
+            LocaleKeys.pieceSize.tr(),
             widget.details.formattedPieceSize,
             Icons.apps_rounded,
             const Color(0xFF9C27B0),
@@ -410,7 +412,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         const SizedBox(width: 12),
         Expanded(
           child: _buildInfoChip(
-            'ETA',
+            LocaleKeys.eta.tr(),
             widget.details.formattedEta,
             Icons.schedule_rounded,
             const Color(0xFF4CAF50),

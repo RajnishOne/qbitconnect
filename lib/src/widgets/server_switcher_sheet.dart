@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../models/server_config.dart';
 import '../services/server_storage.dart';
 import '../api/qbittorrent_api.dart';
+import '../constants/locale_keys.dart';
 
 /// Server switcher bottom sheet widget
 class ServerSwitcherSheet extends StatefulWidget {
@@ -127,7 +129,7 @@ class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
                 Icon(Icons.dns, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(width: 12),
                 Text(
-                  'Switch Server',
+                  LocaleKeys.switchServer.tr(),
                   style: Theme.of(
                     context,
                   ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -147,7 +149,7 @@ class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
             Padding(
               padding: const EdgeInsets.all(32),
               child: Text(
-                'No servers available',
+                LocaleKeys.noServersAvailable.tr(),
                 style: TextStyle(
                   color: Theme.of(context).textTheme.bodySmall?.color,
                 ),
@@ -198,16 +200,18 @@ class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
                       ),
                     ),
                     subtitle: Text(
-                      isChecking ? 'Checking connection...' : server.baseUrl,
+                      isChecking
+                          ? LocaleKeys.checkingConnection.tr()
+                          : server.baseUrl,
                       style: const TextStyle(fontSize: 12),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     trailing: isActive
                         ? Chip(
-                            label: const Text(
-                              'Active',
-                              style: TextStyle(fontSize: 10),
+                            label: Text(
+                              LocaleKeys.active.tr(),
+                              style: const TextStyle(fontSize: 10),
                             ),
                             backgroundColor: Colors.green.withValues(
                               alpha: 0.2,
@@ -235,7 +239,7 @@ class _ServerSwitcherSheetState extends State<ServerSwitcherSheet> {
               child: OutlinedButton.icon(
                 onPressed: widget.onManageServers,
                 icon: const Icon(Icons.settings),
-                label: const Text('Manage Servers'),
+                label: Text(LocaleKeys.manageServers.tr()),
               ),
             ),
           ),

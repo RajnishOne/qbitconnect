@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../models/server_config.dart';
+import '../constants/locale_keys.dart';
 
 /// Bottom sheet for selecting replacement auto-connect server before deletion
 class AutoConnectReplacementSheet extends StatefulWidget {
@@ -67,10 +69,10 @@ class _AutoConnectReplacementSheetState
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Select Replacement Server',
+                    LocaleKeys.selectReplacementServer.tr(),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -79,7 +81,7 @@ class _AutoConnectReplacementSheetState
 
             // Explanation
             Text(
-              '"${widget.serverToDelete.name}" is set as auto-connect. Please select a replacement server before deleting:',
+              '"${widget.serverToDelete.name}" ${LocaleKeys.serverSetAsAutoConnect.tr()}',
               style: TextStyle(
                 color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
@@ -152,8 +154,10 @@ class _AutoConnectReplacementSheetState
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: _isDeleting ? null : () => Navigator.pop(context),
-                    child: const Text('Skip'),
+                    onPressed: _isDeleting
+                        ? null
+                        : () => Navigator.pop(context),
+                    child: Text(LocaleKeys.skip.tr()),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -162,9 +166,9 @@ class _AutoConnectReplacementSheetState
                     onPressed: _isDeleting
                         ? null
                         : (_selectedReplacement != null ||
-                                widget.availableServers.length == 1)
-                            ? _handleDelete
-                            : null,
+                              widget.availableServers.length == 1)
+                        ? _handleDelete
+                        : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -175,11 +179,12 @@ class _AutoConnectReplacementSheetState
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
-                        : const Text('Delete'),
+                        : Text(LocaleKeys.delete.tr()),
                   ),
                 ),
               ],
@@ -190,4 +195,3 @@ class _AutoConnectReplacementSheetState
     );
   }
 }
-

@@ -429,4 +429,44 @@ class LocaleKeys {
 
   // Add torrent FAB specific keys
   static const String addViaUrl = 'addViaUrl';
+
+  // Auto connect warning card specific keys
+  static const String selectedServerNotAvailable = 'selectedServerNotAvailable';
+
+  // Auto connect replacement sheet specific keys
+  static const String selectReplacementServer = 'selectReplacementServer';
+  static const String serverSetAsAutoConnect = 'serverSetAsAutoConnect';
+  static const String skip = 'skip';
+
+  // Server switcher sheet specific keys
+  static const String switchServer = 'switchServer';
+  static const String noServersAvailable = 'noServersAvailable';
+
+  // Batch actions bar specific keys
+  static const String performingOperation = 'performingOperation';
+  static const String successfullyPaused = 'successfullyPaused';
+  static const String successfullyResumed = 'successfullyResumed';
+  static const String operationFailed = 'operationFailed';
+  static const String deleteTorrents = 'deleteTorrents';
+  static const String areYouSureDeleteTorrents = 'areYouSureDeleteTorrents';
+  static const String thisActionCannotBeUndone = 'thisActionCannotBeUndone';
+  static const String deleteOptions = 'deleteOptions';
+  static const String deletingTorrents = 'deletingTorrents';
+  static const String successfullyDeleted = 'successfullyDeleted';
+  static const String andFiles = 'andFiles';
+  static const String deleteOperationFailed = 'deleteOperationFailed';
+
+  // Torrent actions sheet specific keys
+
+  // Torrent stats tab specific keys
+  static const String noStatsDataAvailable = 'noStatsDataAvailable';
+  static const String transferInfo = 'transferInfo';
+  static const String download = 'download';
+  static const String upload = 'upload';
+  static const String collectingData = 'collectingData';
+  static const String dataTransfer = 'dataTransfer';
+  static const String quickStats = 'quickStats';
+  static const String timeActive = 'timeActive';
+  static const String downloadProgress = 'downloadProgress';
+  static const String pending = 'pending';
 }

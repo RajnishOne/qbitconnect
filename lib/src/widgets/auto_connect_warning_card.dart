@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 
 /// Warning card that auto-dismisses after 3 seconds
 class AutoConnectWarningCard extends StatefulWidget {
@@ -42,7 +44,7 @@ class _AutoConnectWarningCardState extends State<AutoConnectWarningCard> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Selected server is not available. Please select another server.',
+                    LocaleKeys.selectedServerNotAvailable.tr(),
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 13,

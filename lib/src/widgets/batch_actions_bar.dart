@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../state/batch_selection_state.dart';
 import '../state/app_state_manager.dart';
 import '../services/batch_operations_service.dart';
+import '../constants/locale_keys.dart';
 
 /// Floating action bar for batch operations
 /// This widget appears when torrents are selected and provides
@@ -144,21 +146,21 @@ class _BatchActionsBarState extends State<BatchActionsBar>
           _buildActionButton(
             context,
             icon: Icons.pause,
-            label: 'Pause',
+            label: LocaleKeys.pause.tr(),
             color: Colors.orange,
             onPressed: () => _performBatchOperation(context, 'pause'),
           ),
           _buildActionButton(
             context,
             icon: Icons.play_arrow,
-            label: 'Resume',
+            label: LocaleKeys.resume.tr(),
             color: Colors.green,
             onPressed: () => _performBatchOperation(context, 'resume'),
           ),
           _buildActionButton(
             context,
             icon: Icons.delete,
-            label: 'Delete',
+            label: LocaleKeys.delete.tr(),
             color: Colors.red,
             onPressed: () => _showDeleteDialog(context),
           ),
@@ -227,7 +229,11 @@ class _BatchActionsBarState extends State<BatchActionsBar>
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
             const SizedBox(width: 12),
-            Text('Performing $operation operation...'),
+            Text(
+              LocaleKeys.performingOperation.tr(
+                namedArgs: {'operation': operation},
+              ),
+            ),
           ],
         ),
         duration: const Duration(seconds: 2),
@@ -255,7 +261,13 @@ class _BatchActionsBarState extends State<BatchActionsBar>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Successfully ${operation}d ${result.affectedCount} torrents',
+                operation == 'pause'
+                    ? LocaleKeys.successfullyPaused.tr(
+                        namedArgs: {'count': result.affectedCount.toString()},
+                      )
+                    : LocaleKeys.successfullyResumed.tr(
+                        namedArgs: {'count': result.affectedCount.toString()},
+                      ),
               ),
               backgroundColor: Colors.green,
             ),
@@ -268,7 +280,7 @@ class _BatchActionsBarState extends State<BatchActionsBar>
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Operation failed'),
+              content: Text(LocaleKeys.operationFailed.tr()),
               backgroundColor: Colors.red,
             ),
           );
@@ -286,15 +298,15 @@ class _BatchActionsBarState extends State<BatchActionsBar>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Torrents'),
+        title: Text(LocaleKeys.deleteTorrents.tr()),
         content: Text(
-          'Are you sure you want to delete ${selectedHashes.length} torrent(s)?\n\n'
-          'This action cannot be undone.',
+          '${LocaleKeys.areYouSureDeleteTorrents.tr(namedArgs: {'count': selectedHashes.length.toString()})}\n\n'
+          '${LocaleKeys.thisActionCannotBeUndone.tr()}',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.cancel.tr()),
           ),
           TextButton(
             onPressed: () {
@@ -302,7 +314,7 @@ class _BatchActionsBarState extends State<BatchActionsBar>
               _showDeleteOptionsDialog(context, selectedHashes);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(LocaleKeys.delete.tr()),
           ),
         ],
       ),
@@ -316,19 +328,19 @@ class _BatchActionsBarState extends State<BatchActionsBar>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Options'),
-        content: const Text('Choose what to delete:'),
+        title: Text(LocaleKeys.deleteOptions.tr()),
+        content: Text(LocaleKeys.chooseWhatToDelete.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.cancel.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               _performDeleteOperation(context, selectedHashes, false);
             },
-            child: const Text('Torrent Only'),
+            child: Text(LocaleKeys.torrentOnly.tr()),
           ),
           TextButton(
             onPressed: () {
@@ -336,7 +348,7 @@ class _BatchActionsBarState extends State<BatchActionsBar>
               _performDeleteOperation(context, selectedHashes, true);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Torrent + Files'),
+            child: Text(LocaleKeys.torrentAndFiles.tr()),
           ),
         ],
       ),
@@ -362,7 +374,7 @@ class _BatchActionsBarState extends State<BatchActionsBar>
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
             const SizedBox(width: 12),
-            Text('Deleting torrents...'),
+            Text(LocaleKeys.deletingTorrents.tr()),
           ],
         ),
         duration: const Duration(seconds: 2),
@@ -381,8 +393,8 @@ class _BatchActionsBarState extends State<BatchActionsBar>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Successfully deleted ${result.affectedCount} torrents'
-                '${deleteFiles ? ' and files' : ''}',
+                '${LocaleKeys.successfullyDeleted.tr(namedArgs: {'count': result.affectedCount.toString()})}'
+                '${deleteFiles ? LocaleKeys.andFiles.tr() : ''}',
               ),
               backgroundColor: Colors.green,
             ),
@@ -395,7 +407,7 @@ class _BatchActionsBarState extends State<BatchActionsBar>
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Delete operation failed'),
+              content: Text(LocaleKeys.deleteOperationFailed.tr()),
               backgroundColor: Colors.red,
             ),
           );

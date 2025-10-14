@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../models/torrent.dart';
 import '../models/torrent_details.dart';
 import '../utils/byte_formatter.dart';
+import '../constants/locale_keys.dart';
 import 'animated_pieces_widget.dart';
 
 class TorrentStatsTab extends StatefulWidget {
@@ -68,7 +70,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
     super.build(context); // Required for AutomaticKeepAliveClientMixin
 
     if (widget.details == null) {
-      return const Center(child: Text('No stats data available'));
+      return Center(child: Text(LocaleKeys.noStatsDataAvailable.tr()));
     }
 
     final details = widget.details!;
@@ -116,14 +118,6 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
           children: [
             Row(
               children: [
-                Text(
-                  'Transfer Info',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                // Legend
                 Row(
                   children: [
                     Container(
@@ -135,7 +129,10 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text('Download', style: theme.textTheme.bodySmall),
+                    Text(
+                      LocaleKeys.download.tr(),
+                      style: theme.textTheme.bodySmall,
+                    ),
                     const SizedBox(width: 16),
                     Container(
                       width: 12,
@@ -146,7 +143,10 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text('Upload', style: theme.textTheme.bodySmall),
+                    Text(
+                      LocaleKeys.upload.tr(),
+                      style: theme.textTheme.bodySmall,
+                    ),
                   ],
                 ),
               ],
@@ -167,7 +167,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'Collecting data...',
+                            LocaleKeys.collectingData.tr(),
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: theme.colorScheme.onSurface.withOpacity(
                                 0.6,
@@ -316,7 +316,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
       children: [
         Expanded(
           child: _buildSpeedCard(
-            'Download',
+            LocaleKeys.download.tr(),
             ByteFormatter.formatBytesPerSecond(details.dlSpeed),
             Icons.download,
             const Color(0xFF2196F3),
@@ -326,7 +326,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
         const SizedBox(width: 12),
         Expanded(
           child: _buildSpeedCard(
-            'Upload',
+            LocaleKeys.upload.tr(),
             ByteFormatter.formatBytesPerSecond(details.upSpeed),
             Icons.upload,
             const Color(0xFFFF9800),
@@ -387,7 +387,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
       children: [
         Expanded(
           child: _buildConnectionCard(
-            'Seeds',
+            LocaleKeys.seeds.tr(),
             details.seeds.toString(),
             Icons.cloud_upload,
             const Color(0xFF4CAF50),
@@ -397,7 +397,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
         const SizedBox(width: 12),
         Expanded(
           child: _buildConnectionCard(
-            'Peers',
+            LocaleKeys.peers.tr(),
             details.leeches.toString(),
             Icons.people,
             const Color(0xFF9C27B0),
@@ -407,7 +407,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
         const SizedBox(width: 12),
         Expanded(
           child: _buildConnectionCard(
-            'Ratio',
+            LocaleKeys.ratio.tr(),
             details.shareRatio.isNaN || details.shareRatio.isInfinite
                 ? '0.0'
                 : details.shareRatio.toStringAsFixed(1),
@@ -470,7 +470,7 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Data Transfer',
+              LocaleKeys.dataTransfer.tr(),
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -493,7 +493,10 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Text('Downloaded', style: theme.textTheme.bodyMedium),
+                          Text(
+                            LocaleKeys.downloaded.tr(),
+                            style: theme.textTheme.bodyMedium,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -522,7 +525,10 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Text('Uploaded', style: theme.textTheme.bodyMedium),
+                          Text(
+                            LocaleKeys.uploaded.tr(),
+                            style: theme.textTheme.bodyMedium,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -578,35 +584,35 @@ class _TorrentStatsTabState extends State<TorrentStatsTab>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Quick Stats',
+              LocaleKeys.quickStats.tr(),
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 16),
             _buildStatRow(
-              'Time Active',
+              LocaleKeys.timeActive.tr(),
               details.formattedTimeElapsed,
               Icons.timer_outlined,
               theme,
             ),
             const Divider(height: 24),
             _buildStatRow(
-              'Seeding Time',
+              LocaleKeys.seedingTime.tr(),
               details.formattedSeedingTime,
               Icons.schedule_outlined,
               theme,
             ),
             const Divider(height: 24),
             _buildStatRow(
-              'Connections',
+              LocaleKeys.connections.tr(),
               '${details.nbConnections}',
               Icons.link,
               theme,
             ),
             const Divider(height: 24),
             _buildStatRow(
-              'Pieces',
+              LocaleKeys.pieces.tr(),
               '${details.piecesHave} / ${details.piecesNum}',
               Icons.extension_outlined,
               theme,
