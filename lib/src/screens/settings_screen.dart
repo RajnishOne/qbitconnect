@@ -109,8 +109,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     if (mounted) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const WebViewScreen(
-            title: 'Privacy Policy',
+          builder: (context) => WebViewScreen(
+            title: LocaleKeys.privacyPolicy.tr(),
             url: 'https://sites.google.com/view/qbitconnecttnc/privacy-policy',
           ),
         ),
@@ -122,8 +122,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     if (mounted) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const WebViewScreen(
-            title: 'Terms & Conditions',
+          builder: (context) => WebViewScreen(
+            title: LocaleKeys.termsConditions.tr(),
             url:
                 'https://sites.google.com/view/qbitconnecttnc/terms-conditions',
           ),
@@ -134,11 +134,13 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   String _getIntervalDisplayText(int seconds) {
     if (seconds < 60) {
-      return 'Every $seconds seconds';
+      return LocaleKeys.everySeconds.tr(
+        namedArgs: {'seconds': seconds.toString()},
+      );
     } else if (seconds == 60) {
-      return 'Every 1 minute';
+      return LocaleKeys.everyMinute.tr();
     } else {
-      return 'Every 15 minutes';
+      return LocaleKeys.everyMinutes.tr();
     }
   }
 
@@ -245,21 +247,21 @@ class _SettingsScreenState extends State<SettingsScreen>
                           children: [
                             if (appState.serverName != null) ...[
                               _buildInfoRow(
-                                'Server Name',
+                                LocaleKeys.serverName.tr(),
                                 appState.serverName!,
                               ),
                               const SizedBox(height: 8),
                             ],
                             if (appState.qbittorrentVersion != null) ...[
                               _buildInfoRow(
-                                'Version',
+                                LocaleKeys.version.tr(),
                                 appState.qbittorrentVersion!,
                               ),
                               const SizedBox(height: 8),
                             ],
                             if (appState.baseUrl != null) ...[
                               _buildInfoRow(
-                                'Connection URL',
+                                LocaleKeys.connectionUrl.tr(),
                                 appState.baseUrl!,
                               ),
                               const SizedBox(height: 8),
@@ -268,9 +270,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                               const SizedBox(height: 8),
                               const Divider(height: 1),
                               const SizedBox(height: 8),
-                              const Text(
-                                'Transfer Speeds',
-                                style: TextStyle(
+                              Text(
+                                LocaleKeys.transferSpeeds.tr(),
+                                style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -403,15 +405,15 @@ class _SettingsScreenState extends State<SettingsScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        Icon(Icons.filter_list),
-                        SizedBox(width: 12),
+                        const Icon(Icons.filter_list),
+                        const SizedBox(width: 12),
                         Text(
-                          'Default Status Filter',
-                          style: TextStyle(
+                          LocaleKeys.defaultStatusFilter.tr(),
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
@@ -496,15 +498,15 @@ class _SettingsScreenState extends State<SettingsScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        Icon(Icons.sync),
-                        SizedBox(width: 12),
+                        const Icon(Icons.sync),
+                        const SizedBox(width: 12),
                         Text(
-                          'Auto-Refresh Settings',
-                          style: TextStyle(
+                          LocaleKeys.autoRefreshSettings.tr(),
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),

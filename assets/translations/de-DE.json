@@ -245,5 +245,13 @@
   "totalBufferSize": "Gesamtpuffergröße",
   "timeline": "Zeitlinie",
   "firstTorrentAdded": "Erster Torrent hinzugefügt",
-  "lastTorrentAdded": "Letzter Torrent hinzugefügt"
+  "lastTorrentAdded": "Letzter Torrent hinzugefügt",
+  "serverName": "Servername",
+  "connectionUrl": "Verbindungs-URL",
+  "transferSpeeds": "Übertragungsgeschwindigkeiten",
+  "defaultStatusFilter": "Standard-Statusfilter",
+  "autoRefreshSettings": "Auto-Aktualisierungs-Einstellungen",
+  "everySeconds": "Alle {seconds} Sekunden",
+  "everyMinute": "Alle 1 Minute",
+  "everyMinutes": "Alle 15 Minuten"
 }
