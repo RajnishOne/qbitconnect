@@ -273,4 +273,42 @@ class LocaleKeys {
   static const String cannotConnectToQBittorrent = 'cannotConnectToQBittorrent';
   static const String failedToConnectToQBittorrent =
       'failedToConnectToQBittorrent';
+
+  // Statistics screen specific keys
+  static const String notConnectedToQBittorrent = 'notConnectedToQBittorrent';
+  static const String failedToLoadStatistics = 'failedToLoadStatistics';
+  static const String overview = 'overview';
+  static const String totalTorrents = 'totalTorrents';
+  static const String activeTorrents = 'activeTorrents';
+  static const String completedTorrents = 'completedTorrents';
+  static const String pausedTorrents = 'pausedTorrents';
+  static const String erroredTorrents = 'erroredTorrents';
+  static const String transferStatistics = 'transferStatistics';
+  static const String allTimeUpload = 'allTimeUpload';
+  static const String allTimeDownload = 'allTimeDownload';
+  static const String allTimeShareRatio = 'allTimeShareRatio';
+  static const String sessionWaste = 'sessionWaste';
+  static const String notAvailable = 'notAvailable';
+  static const String totalSize = 'totalSize';
+  static const String totalWasted = 'totalWasted';
+  static const String torrentStatus = 'torrentStatus';
+  static const String peersConnected = 'peersConnected';
+  static const String totalSeeds = 'totalSeeds';
+  static const String totalLeechers = 'totalLeechers';
+  static const String performanceMetrics = 'performanceMetrics';
+  static const String averageDownloadSpeed = 'averageDownloadSpeed';
+  static const String averageUploadSpeed = 'averageUploadSpeed';
+  static const String peakDownloadSpeed = 'peakDownloadSpeed';
+  static const String peakUploadSpeed = 'peakUploadSpeed';
+  static const String writeCacheOverload = 'writeCacheOverload';
+  static const String readCacheOverload = 'readCacheOverload';
+  static const String queuedIoJobs = 'queuedIoJobs';
+  static const String averageTimeInQueue = 'averageTimeInQueue';
+  static const String totalQueuedSize = 'totalQueuedSize';
+  static const String cacheStatistics = 'cacheStatistics';
+  static const String readCacheHits = 'readCacheHits';
+  static const String totalBufferSize = 'totalBufferSize';
+  static const String timeline = 'timeline';
+  static const String firstTorrentAdded = 'firstTorrentAdded';
+  static const String lastTorrentAdded = 'lastTorrentAdded';
 }

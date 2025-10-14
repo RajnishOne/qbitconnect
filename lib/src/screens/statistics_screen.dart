@@ -9,7 +9,6 @@ import '../models/statistics.dart';
 import '../models/sync_data.dart';
 import '../utils/format_utils.dart';
 import '../widgets/animated_reload_button.dart';
-import '../constants/app_strings.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -69,13 +68,13 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         });
       } else {
         setState(() {
-          _error = 'Not connected to qBittorrent';
+          _error = LocaleKeys.notConnectedToQBittorrent.tr();
           _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        _error = 'Failed to load statistics: $e';
+        _error = '${LocaleKeys.failedToLoadStatistics.tr()}: $e';
         _isLoading = false;
       });
     }
@@ -164,18 +163,30 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
   Widget _buildOverviewCard() {
     return _buildCard(
-      title: 'Overview',
+      title: LocaleKeys.overview.tr(),
       icon: Icons.analytics,
       child: Column(
         children: [
-          _buildStatRow('Total Torrents', '${_statistics!.totalTorrents}'),
-          _buildStatRow('Active Torrents', '${_statistics!.activeTorrents}'),
           _buildStatRow(
-            'Completed Torrents',
+            LocaleKeys.totalTorrents.tr(),
+            '${_statistics!.totalTorrents}',
+          ),
+          _buildStatRow(
+            LocaleKeys.activeTorrents.tr(),
+            '${_statistics!.activeTorrents}',
+          ),
+          _buildStatRow(
+            LocaleKeys.completedTorrents.tr(),
             '${_statistics!.completedTorrents}',
           ),
-          _buildStatRow('Paused Torrents', '${_statistics!.pausedTorrents}'),
-          _buildStatRow('Errored Torrents', '${_statistics!.erroredTorrents}'),
+          _buildStatRow(
+            LocaleKeys.pausedTorrents.tr(),
+            '${_statistics!.pausedTorrents}',
+          ),
+          _buildStatRow(
+            LocaleKeys.erroredTorrents.tr(),
+            '${_statistics!.erroredTorrents}',
+          ),
         ],
       ),
     );
@@ -183,44 +194,44 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
   Widget _buildTransferStatsCard() {
     return _buildCard(
-      title: 'Transfer Statistics',
+      title: LocaleKeys.transferStatistics.tr(),
       icon: Icons.swap_horiz,
       child: Column(
         children: [
           _buildStatRow(
-            'All-time Upload',
+            LocaleKeys.allTimeUpload.tr(),
             FormatUtils.formatBytes(_statistics!.totalUploaded),
             icon: Icons.upload,
             iconColor: Colors.green,
           ),
           _buildStatRow(
-            'All-time Download',
+            LocaleKeys.allTimeDownload.tr(),
             FormatUtils.formatBytes(_statistics!.totalDownloaded),
             icon: Icons.download,
             iconColor: Colors.blue,
           ),
           _buildStatRow(
-            'All-time Share Ratio',
+            LocaleKeys.allTimeShareRatio.tr(),
             FormatUtils.formatShareRatio(_statistics!.shareRatio),
             icon: Icons.balance,
             iconColor: Colors.purple,
           ),
           _buildStatRow(
-            'Session Waste',
+            LocaleKeys.sessionWaste.tr(),
             _statistics!.sessionWaste > 0
                 ? FormatUtils.formatBytes(_statistics!.sessionWaste)
-                : 'Not available',
+                : LocaleKeys.notAvailable.tr(),
             icon: Icons.warning,
             iconColor: Colors.red,
           ),
           _buildStatRow(
-            'Total Size',
+            LocaleKeys.totalSize.tr(),
             FormatUtils.formatBytes(_statistics!.totalSize),
             icon: Icons.storage,
             iconColor: Colors.orange,
           ),
           _buildStatRow(
-            'Total Wasted',
+            LocaleKeys.totalWasted.tr(),
             FormatUtils.formatBytes(_statistics!.totalWastedSize),
             icon: Icons.warning,
             iconColor: Colors.red,
@@ -232,36 +243,36 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
   Widget _buildTorrentStatusCard() {
     return _buildCard(
-      title: 'Torrent Status',
+      title: LocaleKeys.torrentStatus.tr(),
       icon: Icons.list,
       child: Column(
         children: [
           _buildStatRow(
-            'Downloading',
+            LocaleKeys.downloading.tr(),
             '${_statistics!.downloadingTorrents}',
             icon: Icons.download,
             iconColor: Colors.blue,
           ),
           _buildStatRow(
-            'Seeding',
+            LocaleKeys.seeding.tr(),
             '${_statistics!.seedingTorrents}',
             icon: Icons.upload,
             iconColor: Colors.green,
           ),
           _buildStatRow(
-            'Peers Connected',
+            LocaleKeys.peersConnected.tr(),
             '${_statistics!.totalPeersConnected}',
             icon: Icons.people,
             iconColor: Colors.indigo,
           ),
           _buildStatRow(
-            'Total Seeds',
+            LocaleKeys.totalSeeds.tr(),
             '${_statistics!.totalSeeds}',
             icon: Icons.upload_file,
             iconColor: Colors.green,
           ),
           _buildStatRow(
-            'Total Leechers',
+            LocaleKeys.totalLeechers.tr(),
             '${_statistics!.totalLeeches}',
             icon: Icons.download,
             iconColor: Colors.blue,
@@ -273,60 +284,60 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
   Widget _buildPerformanceCard() {
     return _buildCard(
-      title: 'Performance Metrics',
+      title: LocaleKeys.performanceMetrics.tr(),
       icon: Icons.speed,
       child: Column(
         children: [
           _buildStatRow(
-            'Average Download Speed',
+            LocaleKeys.averageDownloadSpeed.tr(),
             FormatUtils.formatBytesPerSecond(_statistics!.averageDownloadSpeed),
             icon: Icons.download,
             iconColor: Colors.blue,
           ),
           _buildStatRow(
-            'Average Upload Speed',
+            LocaleKeys.averageUploadSpeed.tr(),
             FormatUtils.formatBytesPerSecond(_statistics!.averageUploadSpeed),
             icon: Icons.upload,
             iconColor: Colors.green,
           ),
           _buildStatRow(
-            'Peak Download Speed',
+            LocaleKeys.peakDownloadSpeed.tr(),
             FormatUtils.formatBytesPerSecond(_statistics!.peakDownloadSpeed),
             icon: Icons.trending_up,
             iconColor: Colors.blue,
           ),
           _buildStatRow(
-            'Peak Upload Speed',
+            LocaleKeys.peakUploadSpeed.tr(),
             FormatUtils.formatBytesPerSecond(_statistics!.peakUploadSpeed),
             icon: Icons.trending_up,
             iconColor: Colors.green,
           ),
           _buildStatRow(
-            'Write Cache Overload',
+            LocaleKeys.writeCacheOverload.tr(),
             '${_statistics!.writeCacheOverload.toStringAsFixed(1)}%',
             icon: Icons.storage,
             iconColor: Colors.orange,
           ),
           _buildStatRow(
-            'Read Cache Overload',
+            LocaleKeys.readCacheOverload.tr(),
             '${_statistics!.readCacheOverload.toStringAsFixed(1)}%',
             icon: Icons.storage,
             iconColor: Colors.orange,
           ),
           _buildStatRow(
-            'Queued I/O Jobs',
+            LocaleKeys.queuedIoJobs.tr(),
             '${_statistics!.queuedIoJobs}',
             icon: Icons.queue,
             iconColor: Colors.purple,
           ),
           _buildStatRow(
-            'Average Time in Queue',
+            LocaleKeys.averageTimeInQueue.tr(),
             '${_statistics!.averageTimeInQueue} ms',
             icon: Icons.timer,
             iconColor: Colors.purple,
           ),
           _buildStatRow(
-            'Total Queued Size',
+            LocaleKeys.totalQueuedSize.tr(),
             FormatUtils.formatBytes(_statistics!.totalQueuedSize),
             icon: Icons.data_usage,
             iconColor: Colors.purple,
@@ -338,18 +349,18 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
   Widget _buildCacheStatsCard() {
     return _buildCard(
-      title: 'Cache Statistics',
+      title: LocaleKeys.cacheStatistics.tr(),
       icon: Icons.memory,
       child: Column(
         children: [
           _buildStatRow(
-            'Read Cache Hits',
+            LocaleKeys.readCacheHits.tr(),
             '${_statistics!.readCacheHits}%',
             icon: Icons.cached,
             iconColor: Colors.blue,
           ),
           _buildStatRow(
-            'Total Buffer Size',
+            LocaleKeys.totalBufferSize.tr(),
             FormatUtils.formatBytes(_statistics!.totalBufferSize),
             icon: Icons.storage,
             iconColor: Colors.green,
@@ -361,18 +372,18 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
   Widget _buildTimelineCard() {
     return _buildCard(
-      title: 'Timeline',
+      title: LocaleKeys.timeline.tr(),
       icon: Icons.timeline,
       child: Column(
         children: [
           _buildStatRow(
-            'First Torrent Added',
+            LocaleKeys.firstTorrentAdded.tr(),
             FormatUtils.formatDate(_statistics!.firstTorrentAdded),
             icon: Icons.history,
             iconColor: Colors.grey,
           ),
           _buildStatRow(
-            'Last Torrent Added',
+            LocaleKeys.lastTorrentAdded.tr(),
             FormatUtils.formatDate(_statistics!.lastTorrentAdded),
             icon: Icons.update,
             iconColor: Colors.orange,
