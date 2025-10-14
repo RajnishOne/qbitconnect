@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../api/qbittorrent_api.dart';
 import '../models/torrent.dart';
 import '../models/transfer_info.dart';
@@ -394,20 +395,49 @@ class AppState extends ChangeNotifier {
   Future<void> _updateTorrentDetails(String hash) async {
     if (client == null) return;
 
+    TorrentDetails? details;
+    List<TorrentFile> files = [];
+    List<TorrentTracker> trackers = [];
+    List<TorrentPeer> peers = [];
+
+    // Fetch each API independently to avoid one failure affecting others
     try {
-      final results = await Future.wait([
-        getTorrentDetails(hash),
-        getTorrentFiles(hash),
-        getTorrentTrackers(hash),
-      ]);
+      details = await getTorrentDetails(hash);
+    } catch (e, stackTrace) {
+      // Details fetch failed, continue with other data
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
+    }
 
-      final details = results[0] as TorrentDetails?;
-      final files = results[1] as List<TorrentFile>;
-      final trackers = results[2] as List<TorrentTracker>;
+    try {
+      files = await getTorrentFiles(hash);
+    } catch (e, stackTrace) {
+      // Files fetch failed, continue with other data
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
+    }
 
-      _realtimeState.updateTorrentDetailsData(hash, details, files, trackers);
-    } catch (e) {
-      // Error updating torrent details for $hash: ${ErrorHandler.getShortErrorMessage(e)}
+    try {
+      trackers = await getTorrentTrackers(hash);
+    } catch (e, stackTrace) {
+      // Trackers fetch failed, continue with other data
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
+    }
+
+    try {
+      peers = await getTorrentPeers(hash);
+    } catch (e, stackTrace) {
+      // Peers fetch failed, continue with other data
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
+    }
+
+    // Update with whatever data we successfully fetched
+    if (details != null) {
+      _realtimeState.updateTorrentDetailsData(
+        hash,
+        details,
+        files,
+        trackers,
+        peers,
+      );
     }
   }
 

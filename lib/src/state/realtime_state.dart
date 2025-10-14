@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import '../models/torrent_details.dart';
+import '../models/torrent_peer.dart';
 import '../widgets/torrent_card_with_selection.dart';
 
 // Callback type for real-time updates
@@ -10,6 +11,7 @@ typedef TorrentDetailsUpdateCallback =
       TorrentDetails details,
       List<TorrentFile> files,
       List<TorrentTracker> trackers,
+      List<TorrentPeer> peers,
     );
 
 /// Manages real-time updates, polling, and caching
@@ -136,6 +138,7 @@ class RealTimeState extends ChangeNotifier {
     TorrentDetails? details,
     List<TorrentFile> files,
     List<TorrentTracker> trackers,
+    List<TorrentPeer> peers,
   ) {
     // Multiple safety checks to prevent API calls after cleanup
     if (!_detailsCallbacks.containsKey(hash)) return;
@@ -147,12 +150,13 @@ class RealTimeState extends ChangeNotifier {
         'details': details.toMap(),
         'files': files.map((f) => f.toMap()).toList(),
         'trackers': trackers.map((t) => t.toMap()).toList(),
+        'peers': peers.map((p) => p.toMap()).toList(),
       };
 
       final cachedData = _cachedDetails[hash];
       if (cachedData == null || !_mapsEqual(cachedData, currentData)) {
         _cachedDetails[hash] = currentData;
-        _detailsCallbacks[hash]?.call(details, files, trackers);
+        _detailsCallbacks[hash]?.call(details, files, trackers, peers);
       }
     }
   }

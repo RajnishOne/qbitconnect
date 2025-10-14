@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../models/torrent.dart';
@@ -68,12 +69,14 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
     TorrentDetails details,
     List<TorrentFile> files,
     List<TorrentTracker> trackers,
+    List<TorrentPeer> peers,
   ) {
     if (mounted) {
       setState(() {
         _details = details;
         _files = files;
         _trackers = trackers;
+        _peers = peers;
         _isLoading = false;
       });
     }
@@ -89,29 +92,48 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
     // Get AppState reference if not already stored
     _appState ??= context.read<AppState>();
 
-    try {
-      final results = await Future.wait([
-        _appState!.getTorrentDetails(widget.torrent.hash),
-        _appState!.getTorrentFiles(widget.torrent.hash),
-        _appState!.getTorrentTrackers(widget.torrent.hash),
-        _appState!.getTorrentPeers(widget.torrent.hash),
-      ]);
+    TorrentDetails? details;
+    List<TorrentFile> files = [];
+    List<TorrentTracker> trackers = [];
+    List<TorrentPeer> peers = [];
 
-      if (mounted) {
-        setState(() {
-          _details = results[0] as TorrentDetails?;
-          _files = results[1] as List<TorrentFile>;
-          _trackers = results[2] as List<TorrentTracker>;
-          _peers = results[3] as List<TorrentPeer>;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+    // Fetch each API independently to avoid one failure affecting others
+    try {
+      details = await _appState!.getTorrentDetails(widget.torrent.hash);
+    } catch (e, stackTrace) {
+      // Details fetch failed, continue with other data
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
+    }
+
+    try {
+      files = await _appState!.getTorrentFiles(widget.torrent.hash);
+    } catch (e, stackTrace) {
+      // Files fetch failed, continue with other data
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
+    }
+
+    try {
+      trackers = await _appState!.getTorrentTrackers(widget.torrent.hash);
+    } catch (e, stackTrace) {
+      // Trackers fetch failed, continue with other data
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
+    }
+
+    try {
+      peers = await _appState!.getTorrentPeers(widget.torrent.hash);
+    } catch (e, stackTrace) {
+      // Peers fetch failed, continue with other data
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
+    }
+
+    if (mounted) {
+      setState(() {
+        _details = details;
+        _files = files;
+        _trackers = trackers;
+        _peers = peers;
+        _isLoading = false;
+      });
     }
   }
 
@@ -148,7 +170,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           _isRefreshing = false;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
       if (mounted) {
         setState(() {
           _isRefreshing = false;
@@ -174,7 +197,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           _isRefreshing = false;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
       if (mounted) {
         setState(() {
           _isRefreshing = false;
@@ -200,7 +224,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           _isRefreshing = false;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
       if (mounted) {
         setState(() {
           _isRefreshing = false;
@@ -226,7 +251,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           _isRefreshing = false;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
       if (mounted) {
         setState(() {
           _isRefreshing = false;
@@ -992,7 +1018,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           _showDeleteDialog();
           break;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(e, stackTrace, fatal: false);
       scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text(
@@ -1039,7 +1066,12 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                     ),
                   );
                 }
-              } catch (e) {
+              } catch (e, stackTrace) {
+                FirebaseCrashlytics.instance.recordError(
+                  e,
+                  stackTrace,
+                  fatal: false,
+                );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -1181,7 +1213,12 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                     ),
                   );
                 }
-              } catch (e) {
+              } catch (e, stackTrace) {
+                FirebaseCrashlytics.instance.recordError(
+                  e,
+                  stackTrace,
+                  fatal: false,
+                );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -1230,7 +1267,12 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                     ),
                   );
                 }
-              } catch (e) {
+              } catch (e, stackTrace) {
+                FirebaseCrashlytics.instance.recordError(
+                  e,
+                  stackTrace,
+                  fatal: false,
+                );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -1265,7 +1307,12 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                     ),
                   );
                 }
-              } catch (e) {
+              } catch (e, stackTrace) {
+                FirebaseCrashlytics.instance.recordError(
+                  e,
+                  stackTrace,
+                  fatal: false,
+                );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
