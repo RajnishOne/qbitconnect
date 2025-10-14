@@ -111,8 +111,7 @@ class LocaleKeys {
   static const String savePassword = 'savePassword';
   static const String showPassword = 'showPassword';
   static const String hidePassword = 'hidePassword';
-  static const String rememberPasswordForFutureConnections =
-      'rememberPasswordForFutureConnections';
+  static const String rememberPasswordForFutureConnections = 'rememberPasswordForFutureConnections';
 
   // Torrent options
   static const String torrentOptions = 'torrentOptions';
@@ -140,8 +139,7 @@ class LocaleKeys {
   static const String addHeader = 'addHeader';
   static const String headerKey = 'headerKey';
   static const String headerKeyRequired = 'headerKeyRequired';
-  static const String headerKeyCannotContainColons =
-      'headerKeyCannotContainColons';
+  static const String headerKeyCannotContainColons = 'headerKeyCannotContainColons';
   static const String headerValue = 'headerValue';
   static const String headerValueRequired = 'headerValueRequired';
 
@@ -197,8 +195,7 @@ class LocaleKeys {
 
   // Auto refresh
   static const String enableAutoRefresh = 'enableAutoRefresh';
-  static const String automaticallyRefreshTorrentList =
-      'automaticallyRefreshTorrentList';
+  static const String automaticallyRefreshTorrentList = 'automaticallyRefreshTorrentList';
   static const String refreshInterval = 'refreshInterval';
 
   // Legal and info
@@ -236,17 +233,14 @@ class LocaleKeys {
   static const String areYouSureDeleteServer = 'areYouSureDeleteServer';
   static const String willRemoveServerConfig = 'willRemoveServerConfig';
   static const String lastServerNeedToAddNew = 'lastServerNeedToAddNew';
-  static const String serverDeletedReplacementSet =
-      'serverDeletedReplacementSet';
+  static const String serverDeletedReplacementSet = 'serverDeletedReplacementSet';
   static const String serverDeleted = 'serverDeleted';
-  static const String failedToDeleteServerTryAgain =
-      'failedToDeleteServerTryAgain';
+  static const String failedToDeleteServerTryAgain = 'failedToDeleteServerTryAgain';
   static const String disconnectFirstToDelete = 'disconnectFirstToDelete';
   static const String checkingConnection = 'checkingConnection';
   static const String lastConnected = 'lastConnected';
   static const String qbittorrentVersion = 'qbittorrentVersion';
-  static const String tapToConnectLongPressOptions =
-      'tapToConnectLongPressOptions';
+  static const String tapToConnectLongPressOptions = 'tapToConnectLongPressOptions';
   static const String tapAddServerBelowToConnect = 'tapAddServerBelowToConnect';
 
   // Connection screen specific keys
@@ -254,8 +248,7 @@ class LocaleKeys {
   static const String serverNameHint = 'serverNameHint';
   static const String hostIpAddress = 'hostIpAddress';
   static const String hostIpAddressHint = 'hostIpAddressHint';
-  static const String protocolDetectedAutomatically =
-      'protocolDetectedAutomatically';
+  static const String protocolDetectedAutomatically = 'protocolDetectedAutomatically';
   static const String portHint = 'portHint';
   static const String invalidPort = 'invalidPort';
   static const String pathOptional = 'pathOptional';
@@ -263,16 +256,12 @@ class LocaleKeys {
   static const String noNetworkConnection = 'noNetworkConnection';
   static const String connectionTimeout = 'connectionTimeout';
   static const String authenticationRequired = 'authenticationRequired';
-  static const String usernamePasswordRequiredRemote =
-      'usernamePasswordRequiredRemote';
-  static const String usernamePasswordRequiredRemoteMessage =
-      'usernamePasswordRequiredRemoteMessage';
-  static const String authenticationRequiredMessage =
-      'authenticationRequiredMessage';
+  static const String usernamePasswordRequiredRemote = 'usernamePasswordRequiredRemote';
+  static const String usernamePasswordRequiredRemoteMessage = 'usernamePasswordRequiredRemoteMessage';
+  static const String authenticationRequiredMessage = 'authenticationRequiredMessage';
   static const String invalidCredentials = 'invalidCredentials';
   static const String cannotConnectToQBittorrent = 'cannotConnectToQBittorrent';
-  static const String failedToConnectToQBittorrent =
-      'failedToConnectToQBittorrent';
+  static const String failedToConnectToQBittorrent = 'failedToConnectToQBittorrent';
 
   // Statistics screen specific keys
   static const String notConnectedToQBittorrent = 'notConnectedToQBittorrent';
