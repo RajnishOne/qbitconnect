@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,8 +8,11 @@ import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../models/statistics.dart';
 import '../models/sync_data.dart';
+import '../models/torrent.dart';
+import '../models/transfer_info.dart';
 import '../utils/format_utils.dart';
 import '../widgets/animated_reload_button.dart';
+import '../services/firebase_service.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -32,6 +36,59 @@ class _StatisticsScreenState extends State<StatisticsScreen>
     _loadStatistics();
   }
 
+  @override
+  void dispose() {
+    // Cancel any ongoing operations if needed
+    super.dispose();
+  }
+
+  /// Categorize error and return user-friendly message
+  String _getUserFriendlyErrorMessage(dynamic error, String context) {
+    final errorString = error.toString().toLowerCase();
+
+    // Log technical error to Crashlytics
+    FirebaseService.instance.recordError(error, StackTrace.current);
+
+    // Categorize error and return friendly message
+    if (errorString.contains('timeout') || errorString.contains('timed out')) {
+      return LocaleKeys.statisticsTimeoutError.tr();
+    } else if (errorString.contains('network') ||
+        errorString.contains('connection') ||
+        errorString.contains('unreachable') ||
+        errorString.contains('refused')) {
+      return LocaleKeys.statisticsNetworkError.tr();
+    } else if (errorString.contains('parse') ||
+        errorString.contains('format') ||
+        errorString.contains('unexpected data')) {
+      return LocaleKeys.statisticsDataError.tr();
+    } else if (errorString.contains('partial') ||
+        errorString.contains('incomplete')) {
+      return LocaleKeys.statisticsPartialDataError.tr();
+    } else {
+      return LocaleKeys.statisticsLoadError.tr();
+    }
+  }
+
+  /// Log error with context for debugging
+  void _logError(dynamic error, String context, [StackTrace? stackTrace]) {
+    FirebaseService.instance.recordError(
+      'Statistics Screen - $context: $error',
+      stackTrace ?? StackTrace.current,
+    );
+
+    // Log analytics event for error tracking
+    FirebaseService.instance.logEvent(
+      name: 'statistics_error',
+      parameters: {
+        'error_context': context,
+        'error_type': error.runtimeType.toString(),
+        'error_message': error.toString(),
+      },
+    );
+
+    debugPrint('Statistics Screen Error [$context]: $error');
+  }
+
   Future<void> _loadStatistics() async {
     if (!mounted) return;
 
@@ -43,38 +100,145 @@ class _StatisticsScreenState extends State<StatisticsScreen>
     try {
       final appState = context.read<AppState>();
       if (appState.client != null) {
-        // Get torrents data, server state, and transfer info to calculate comprehensive statistics
-        final results = await Future.wait([
-          appState.client!.torrents.fetchTorrents(),
-          appState.client!.statistics.fetchMainData(),
-          appState.client!.torrents.fetchTransferInfo(),
-        ]);
+        // Handle each API call separately to avoid complete failure if one fails
+        List<Torrent>? torrents;
+        SyncData? syncData;
+        TransferInfo? transferInfo;
 
-        final torrents = results[0] as List;
-        final syncData = results[1] as SyncData;
-        final transferInfo = results[2];
-        final torrentsData = torrents
-            .cast<dynamic>()
-            .map((t) => t.toMap() as Map<String, dynamic>)
-            .toList();
-
-        setState(() {
-          _statistics = Statistics.fromTorrentsAndServerState(
-            torrentsData,
-            syncData.serverState,
-            (transferInfo as dynamic).toMap(),
+        // Try to fetch torrents data with timeout
+        try {
+          torrents = await appState.client!.torrents.fetchTorrents().timeout(
+            const Duration(seconds: 30),
+            onTimeout: () {
+              throw Exception('Torrents fetch timed out after 30 seconds');
+            },
           );
-          _isLoading = false;
-        });
+        } catch (torrentError) {
+          _logError(torrentError, 'Torrents Fetch');
+          // Continue without torrents data - will use empty list
+        }
+
+        // Try to fetch sync data with timeout
+        try {
+          syncData = await appState.client!.statistics.fetchMainData().timeout(
+            const Duration(seconds: 30),
+            onTimeout: () {
+              throw Exception('Sync data fetch timed out after 30 seconds');
+            },
+          );
+        } catch (syncError) {
+          _logError(syncError, 'Sync Data Fetch');
+          // Continue without sync data - will use null
+        }
+
+        // Try to fetch transfer info with timeout
+        try {
+          transferInfo = await appState.client!.torrents
+              .fetchTransferInfo()
+              .timeout(
+                const Duration(seconds: 30),
+                onTimeout: () {
+                  throw Exception(
+                    'Transfer info fetch timed out after 30 seconds',
+                  );
+                },
+              );
+        } catch (transferError) {
+          _logError(transferError, 'Transfer Info Fetch');
+          // Continue without transfer info - will use null
+        }
+
+        // Check if we have at least some data to work with
+        if (torrents == null && syncData == null && transferInfo == null) {
+          _logError('All API calls failed', 'Data Availability Check');
+          throw Exception(
+            'All API calls failed - unable to load any statistics data',
+          );
+        }
+
+        if (!mounted) return; // Check if widget is still mounted
+
+        try {
+          // Safely convert torrents to maps, handling potential null values
+          // Limit processing to prevent memory issues with very large torrent lists
+          final maxTorrents =
+              10000; // Reasonable limit for statistics calculation
+          final torrentsToProcess =
+              torrents?.take(maxTorrents).toList() ?? <Torrent>[];
+
+          if (torrents != null && torrents.length > maxTorrents) {
+            debugPrint(
+              'Warning: Limiting statistics to first $maxTorrents torrents out of ${torrents.length}',
+            );
+          }
+
+          final torrentsData = torrentsToProcess.map((t) {
+            try {
+              return t.toMap();
+            } catch (e) {
+              _logError(e, 'Torrent Map Conversion');
+              return <String, dynamic>{}; // Return empty map as fallback
+            }
+          }).toList();
+
+          // Validate that we have some meaningful data
+          if (torrentsData.isEmpty &&
+              syncData == null &&
+              transferInfo == null) {
+            _logError(
+              'No data available to generate statistics',
+              'Data Validation',
+            );
+            throw Exception('No data available to generate statistics');
+          }
+
+          setState(() {
+            try {
+              _statistics = Statistics.fromTorrentsAndServerState(
+                torrentsData,
+                syncData?.serverState,
+                transferInfo?.toMap(),
+              );
+
+              // Log successful statistics load
+              FirebaseService.instance.logEvent(
+                name: 'statistics_loaded',
+                parameters: {
+                  'torrents_count': torrentsData.length,
+                  'has_sync_data': syncData != null,
+                  'has_transfer_info': transferInfo != null,
+                },
+              );
+            } catch (statsError) {
+              _logError(statsError, 'Statistics Object Creation');
+              // Fall back to empty statistics
+              _statistics = Statistics.empty();
+            }
+            _isLoading = false;
+          });
+        } catch (parseError) {
+          if (!mounted) return;
+          _logError(parseError, 'Data Processing');
+          setState(() {
+            _error = _getUserFriendlyErrorMessage(
+              parseError,
+              'Data Processing',
+            );
+            _isLoading = false;
+          });
+        }
       } else {
+        if (!mounted) return;
         setState(() {
           _error = LocaleKeys.notConnectedToQBittorrent.tr();
           _isLoading = false;
         });
       }
     } catch (e) {
+      if (!mounted) return;
+      _logError(e, 'Main Statistics Load');
       setState(() {
-        _error = '${LocaleKeys.failedToLoadStatistics.tr()}: $e';
+        _error = _getUserFriendlyErrorMessage(e, 'Main Statistics Load');
         _isLoading = false;
       });
     }

@@ -275,6 +275,11 @@ class LocaleKeys {
   // Statistics screen specific keys
   static const String notConnectedToQBittorrent = 'notConnectedToQBittorrent';
   static const String failedToLoadStatistics = 'failedToLoadStatistics';
+  static const String statisticsLoadError = 'statisticsLoadError';
+  static const String statisticsNetworkError = 'statisticsNetworkError';
+  static const String statisticsDataError = 'statisticsDataError';
+  static const String statisticsTimeoutError = 'statisticsTimeoutError';
+  static const String statisticsPartialDataError = 'statisticsPartialDataError';
   static const String overview = 'overview';
   static const String totalTorrents = 'totalTorrents';
   static const String activeTorrents = 'activeTorrents';
