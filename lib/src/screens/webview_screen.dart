@@ -154,7 +154,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   _controller.reload();
                 },
                 icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
+                label: Text(LocaleKeys.retry.tr()),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.colorScheme.primary,
                   foregroundColor: theme.colorScheme.onPrimary,

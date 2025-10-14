@@ -149,7 +149,9 @@ class _TorrentsScreenState extends State<TorrentsScreen>
           // Show loading
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Switching to ${server.name}...'),
+              content: Text(
+                '${LocaleKeys.switchingToServer.tr()} ${server.name}...',
+              ),
               duration: const Duration(seconds: 1),
             ),
           );

@@ -113,7 +113,7 @@ class DeepLinkHandler {
         try {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error handling torrent link: $e'),
+              content: Text('${LocaleKeys.errorHandlingTorrentLink.tr()}: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -174,8 +174,8 @@ class DeepLinkHandler {
     } else if (context.mounted) {
       try {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to process torrent file'),
+          SnackBar(
+            content: Text(LocaleKeys.failedToProcessTorrentFile.tr()),
             backgroundColor: Colors.red,
           ),
         );

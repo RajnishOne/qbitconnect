@@ -103,19 +103,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     child: Column(
                       children: [
                         FilterTypeItem(
-                          title: 'Status',
+                          title: LocaleKeys.statusFilter.tr(),
                           isSelected: selectedFilterType == 'Status',
                           onTap: () =>
                               setState(() => selectedFilterType = 'Status'),
                         ),
                         FilterTypeItem(
-                          title: 'Category',
+                          title: LocaleKeys.categoryFilter.tr(),
                           isSelected: selectedFilterType == 'Category',
                           onTap: () =>
                               setState(() => selectedFilterType = 'Category'),
                         ),
                         FilterTypeItem(
-                          title: 'Sort',
+                          title: LocaleKeys.sortFilter.tr(),
                           isSelected: selectedFilterType == 'Sort',
                           onTap: () =>
                               setState(() => selectedFilterType = 'Sort'),

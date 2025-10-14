@@ -807,7 +807,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Torrent added successfully'),
+          content: Text(LocaleKeys.torrentAddedSuccessfully.tr()),
           backgroundColor: Colors.green,
         ),
       );
@@ -816,7 +816,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error adding torrent: $e'),
+          content: Text('${LocaleKeys.errorAddingTorrent.tr()}: $e'),
           backgroundColor: Colors.red,
         ),
       );

@@ -393,5 +393,12 @@
   "limitDownloadRateHint": "Limitar velocidad de descarga:",
   "limitUploadRateHint": "Limitar velocidad de subida:",
   "saveFilesToLocationHint": "Guardar archivos en ubicación:",
-  "uncategorized": "Sin categorizar"
+  "uncategorized": "Sin categorizar",
+  "torrentAddedSuccessfully": "Torrent agregado exitosamente",
+  "statusFilter": "Estado",
+  "categoryFilter": "Categoría",
+  "sortFilter": "Ordenar",
+  "errorHandlingTorrentLink": "Error al manejar el enlace torrent",
+  "failedToProcessTorrentFile": "Error al procesar el archivo torrent",
+  "switchingToServer": "Cambiando a"
 }

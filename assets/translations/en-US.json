@@ -393,5 +393,12 @@
   "limitDownloadRateHint": "Limit download rate:",
   "limitUploadRateHint": "Limit upload rate:",
   "saveFilesToLocationHint": "Save files to location:",
-  "uncategorized": "Uncategorized"
+  "uncategorized": "Uncategorized",
+  "torrentAddedSuccessfully": "Torrent added successfully",
+  "statusFilter": "Status",
+  "categoryFilter": "Category",
+  "sortFilter": "Sort",
+  "errorHandlingTorrentLink": "Error handling torrent link",
+  "failedToProcessTorrentFile": "Failed to process torrent file",
+  "switchingToServer": "Switching to"
 }
