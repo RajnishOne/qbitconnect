@@ -267,5 +267,13 @@
   "showsNumberOfSeeders": "Affiche le nombre de seeders",
   "showsNumberOfLeechers": "Affiche le nombre de leechers",
   "showsTotalUploadedData": "Affiche les données totales téléversées",
-  "showsTotalDownloadedData": "Affiche les données totales téléchargées"
+  "showsTotalDownloadedData": "Affiche les données totales téléchargées",
+  "lightThemeDescription": "Thème clair propre et lumineux",
+  "darkThemeDescription": "Thème sombre confortable avec un bon contraste",
+  "oledThemeDescription": "Thème noir véritable pour les écrans OLED",
+  "systemThemeDescription": "Suit le thème système de votre appareil",
+  "highContrastLightTheme": "Contraste Élevé Clair",
+  "highContrastLightThemeDescription": "Thème clair à contraste élevé pour une meilleure accessibilité",
+  "highContrastDarkTheme": "Contraste Élevé Sombre",
+  "highContrastDarkThemeDescription": "Thème sombre à contraste élevé pour une meilleure accessibilité"
 }

@@ -340,4 +340,16 @@ class LocaleKeys {
   static const String showsNumberOfLeechers = 'showsNumberOfLeechers';
   static const String showsTotalUploadedData = 'showsTotalUploadedData';
   static const String showsTotalDownloadedData = 'showsTotalDownloadedData';
+
+  // Theme selection screen specific keys
+  static const String lightThemeDescription = 'lightThemeDescription';
+  static const String darkThemeDescription = 'darkThemeDescription';
+  static const String oledThemeDescription = 'oledThemeDescription';
+  static const String systemThemeDescription = 'systemThemeDescription';
+  static const String highContrastLightTheme = 'highContrastLightTheme';
+  static const String highContrastLightThemeDescription =
+      'highContrastLightThemeDescription';
+  static const String highContrastDarkTheme = 'highContrastDarkTheme';
+  static const String highContrastDarkThemeDescription =
+      'highContrastDarkThemeDescription';
 }

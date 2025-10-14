@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'theme_variants.dart';
+import '../constants/locale_keys.dart';
 
 /// Theme manager for handling multiple theme options
 class ThemeManager {
@@ -51,12 +53,42 @@ class ThemeManager {
 
   /// Get theme display name
   static String getThemeDisplayName(AppThemeVariant theme) {
-    return theme.displayName;
+    switch (theme.name) {
+      case 'light':
+        return LocaleKeys.lightTheme.tr();
+      case 'dark':
+        return LocaleKeys.darkTheme.tr();
+      case 'oled':
+        return LocaleKeys.oledTheme.tr();
+      case 'system':
+        return LocaleKeys.systemTheme.tr();
+      case 'high_contrast_light':
+        return LocaleKeys.highContrastLightTheme.tr();
+      case 'high_contrast_dark':
+        return LocaleKeys.highContrastDarkTheme.tr();
+      default:
+        return theme.displayName;
+    }
   }
 
   /// Get theme description
   static String getThemeDescription(AppThemeVariant theme) {
-    return theme.description;
+    switch (theme.name) {
+      case 'light':
+        return LocaleKeys.lightThemeDescription.tr();
+      case 'dark':
+        return LocaleKeys.darkThemeDescription.tr();
+      case 'oled':
+        return LocaleKeys.oledThemeDescription.tr();
+      case 'system':
+        return LocaleKeys.systemThemeDescription.tr();
+      case 'high_contrast_light':
+        return LocaleKeys.highContrastLightThemeDescription.tr();
+      case 'high_contrast_dark':
+        return LocaleKeys.highContrastDarkThemeDescription.tr();
+      default:
+        return theme.description;
+    }
   }
 
   /// Get theme preview colors

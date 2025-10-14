@@ -267,5 +267,13 @@
   "showsNumberOfSeeders": "Shows number of seeders",
   "showsNumberOfLeechers": "Shows number of leechers",
   "showsTotalUploadedData": "Shows total uploaded data",
-  "showsTotalDownloadedData": "Shows total downloaded data"
+  "showsTotalDownloadedData": "Shows total downloaded data",
+  "lightThemeDescription": "Clean and bright light theme",
+  "darkThemeDescription": "Comfortable dark theme with good contrast",
+  "oledThemeDescription": "True black theme for OLED displays",
+  "systemThemeDescription": "Follows your device's system theme",
+  "highContrastLightTheme": "High Contrast Light",
+  "highContrastLightThemeDescription": "High contrast light theme for better accessibility",
+  "highContrastDarkTheme": "High Contrast Dark",
+  "highContrastDarkThemeDescription": "High contrast dark theme for better accessibility"
 }

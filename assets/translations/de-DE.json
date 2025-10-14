@@ -267,5 +267,13 @@
   "showsNumberOfSeeders": "Zeigt Anzahl der Seeder",
   "showsNumberOfLeechers": "Zeigt Anzahl der Leecher",
   "showsTotalUploadedData": "Zeigt insgesamt hochgeladene Daten",
-  "showsTotalDownloadedData": "Zeigt insgesamt heruntergeladene Daten"
+  "showsTotalDownloadedData": "Zeigt insgesamt heruntergeladene Daten",
+  "lightThemeDescription": "Sauberes und helles Lichtdesign",
+  "darkThemeDescription": "Komfortables dunkles Design mit gutem Kontrast",
+  "oledThemeDescription": "Echtes schwarzes Design für OLED-Displays",
+  "systemThemeDescription": "Folgt dem Systemdesign Ihres Geräts",
+  "highContrastLightTheme": "Hochkontrast Hell",
+  "highContrastLightThemeDescription": "Hochkontrast helles Design für bessere Zugänglichkeit",
+  "highContrastDarkTheme": "Hochkontrast Dunkel",
+  "highContrastDarkThemeDescription": "Hochkontrast dunkles Design für bessere Zugänglichkeit"
 }

@@ -8,7 +8,6 @@ import '../state/app_state_manager.dart';
 import '../theme/theme_manager.dart';
 import '../theme/theme_variants.dart';
 import '../services/firebase_service.dart';
-import '../constants/app_strings.dart';
 
 class ThemeSelectionScreen extends StatefulWidget {
   const ThemeSelectionScreen({super.key});
