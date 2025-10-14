@@ -222,7 +222,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           actions: [
             PopupMenuButton<String>(
               onSelected: _handleAction,
-              itemBuilder: (context) => const [
+              itemBuilder: (context) => [
                 ReusableWidgets.pauseMenuItem,
                 ReusableWidgets.resumeMenuItem,
                 ReusableWidgets.recheckMenuItem,

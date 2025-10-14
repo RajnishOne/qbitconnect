@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'filter_bottom_sheet.dart';
+import '../constants/locale_keys.dart';
 
 class SearchFilterBar extends StatelessWidget {
   final TextEditingController searchController;
@@ -31,7 +33,7 @@ class SearchFilterBar extends StatelessWidget {
               focusNode: searchFocusNode,
               onChanged: onSearchChanged,
               decoration: InputDecoration(
-                hintText: 'Search torrents...',
+                hintText: LocaleKeys.searchTorrents.tr(),
                 prefixIcon: Icon(
                   Icons.search,
                   color: Theme.of(
@@ -76,7 +78,7 @@ class SearchFilterBar extends StatelessWidget {
                 Icons.filter_list,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
-              tooltip: 'Filters',
+              tooltip: LocaleKeys.filters.tr(),
             ),
           ),
         ],

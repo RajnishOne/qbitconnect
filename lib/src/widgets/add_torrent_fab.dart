@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'expandable_fab.dart';
 import '../screens/add_torrent_url_screen.dart';
 import '../screens/add_torrent_file_screen.dart';
+import '../constants/locale_keys.dart';
 
 class AddTorrentFab extends StatelessWidget {
   final FocusNode? searchFocusNode;
@@ -16,7 +18,7 @@ class AddTorrentFab extends StatelessWidget {
       children: [
         FloatingActionButton.small(
           heroTag: 'add_url',
-          tooltip: 'Add via URL',
+          tooltip: LocaleKeys.addViaUrl.tr(),
           onPressed: () {
             // Unfocus search field when opening add torrent screen
             searchFocusNode?.unfocus();
@@ -30,7 +32,7 @@ class AddTorrentFab extends StatelessWidget {
         ),
         FloatingActionButton.small(
           heroTag: 'add_file',
-          tooltip: 'Add .torrent file',
+          tooltip: LocaleKeys.addTorrentFile.tr(),
           onPressed: () {
             // Unfocus search field when opening add torrent screen
             searchFocusNode?.unfocus();

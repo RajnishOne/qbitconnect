@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:qbitconnect/src/utils/local_extensions.dart';
 
 import '../state/app_state_manager.dart';
+import '../constants/locale_keys.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({super.key});
@@ -71,7 +73,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Sort & Filter',
+                    LocaleKeys.sortAndFilter.tr(),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -160,7 +162,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _applyFilters,
-                  child: Text('Apply Filter'),
+                  child: Text(LocaleKeys.applyFilter.tr()),
                 ),
               ),
             ),
@@ -429,19 +431,19 @@ class SortOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sortOptions = [
-      {'value': 'name', 'label': 'Name'},
-      {'value': 'size', 'label': 'Size'},
-      {'value': 'progress', 'label': 'Progress'},
-      {'value': 'dlspeed', 'label': 'Download Speed'},
-      {'value': 'upspeed', 'label': 'Upload Speed'},
-      {'value': 'priority', 'label': 'Priority'},
-      {'value': 'num_seeds', 'label': 'Seeds'},
-      {'value': 'num_leechs', 'label': 'Peers'},
-      {'value': 'ratio', 'label': 'Ratio'},
-      {'value': 'eta', 'label': 'ETA'},
-      {'value': 'state', 'label': 'State'},
-      {'value': 'added_on', 'label': 'Added Date'},
-      {'value': 'completion_on', 'label': 'Completion Date'},
+      {'value': 'name', 'label': LocaleKeys.name.tr()},
+      {'value': 'size', 'label': LocaleKeys.size.tr()},
+      {'value': 'progress', 'label': LocaleKeys.progress.tr()},
+      {'value': 'dlspeed', 'label': LocaleKeys.downloadSpeed.tr()},
+      {'value': 'upspeed', 'label': LocaleKeys.uploadSpeed.tr()},
+      {'value': 'priority', 'label': LocaleKeys.priority.tr()},
+      {'value': 'num_seeds', 'label': LocaleKeys.seeds.tr()},
+      {'value': 'num_leechs', 'label': LocaleKeys.peers.tr()},
+      {'value': 'ratio', 'label': LocaleKeys.ratio.tr()},
+      {'value': 'eta', 'label': LocaleKeys.eta.tr()},
+      {'value': 'state', 'label': LocaleKeys.state.tr()},
+      {'value': 'added_on', 'label': LocaleKeys.addedDate.tr()},
+      {'value': 'completion_on', 'label': LocaleKeys.completionDate.tr()},
     ];
 
     final currentSort = tempSort ?? appState.activeSort;
@@ -513,7 +515,7 @@ class SortOptions extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Sort By:',
+            LocaleKeys.sortBy.tr(),
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),

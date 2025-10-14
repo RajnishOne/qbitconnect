@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants/app_strings.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 
 /// Reusable widgets with const constructors for optimal performance.
 ///
@@ -45,117 +46,93 @@ class ReusableWidgets {
   static const Widget uploadIcon = Icon(Icons.upload, size: 20);
 
   // Common text widgets
-  static const Widget pauseText = Text(AppStrings.pause);
-  static const Widget resumeText = Text(AppStrings.resume);
-  static const Widget recheckText = Text(AppStrings.recheck);
-  static const Widget renameText = Text(AppStrings.rename);
-  static const Widget changeLocationText = Text(AppStrings.changeLocation);
-  static const Widget deleteText = Text(
-    AppStrings.delete,
-    style: TextStyle(color: Colors.red),
-  );
-  static const Widget selectAllText = Text(AppStrings.selectAll);
-  static const Widget cancelText = Text(AppStrings.cancel);
-  static const Widget refreshText = Text(AppStrings.refresh);
+  static Widget get pauseText => Text(LocaleKeys.pause.tr());
+  static Widget get resumeText => Text(LocaleKeys.resume.tr());
+  static Widget get recheckText => Text(LocaleKeys.recheck.tr());
+  static Widget get renameText => Text(LocaleKeys.rename.tr());
+  static Widget get changeLocationText => Text(LocaleKeys.changeLocation.tr());
+  static Widget get deleteText =>
+      Text(LocaleKeys.delete.tr(), style: const TextStyle(color: Colors.red));
+  static Widget get selectAllText => Text(LocaleKeys.selectAll.tr());
+  static Widget get cancelText => Text(LocaleKeys.cancel.tr());
+  static Widget get refreshText => Text(LocaleKeys.refreshTorrents.tr());
 
   // Common action rows for popup menus
-  static const Widget pauseActionRow = Row(
-    children: [pauseIcon, smallHorizontalSpacing, pauseText],
-  );
+  static Widget get pauseActionRow =>
+      Row(children: [pauseIcon, smallHorizontalSpacing, pauseText]);
 
-  static const Widget resumeActionRow = Row(
-    children: [playIcon, smallHorizontalSpacing, resumeText],
-  );
+  static Widget get resumeActionRow =>
+      Row(children: [playIcon, smallHorizontalSpacing, resumeText]);
 
-  static const Widget recheckActionRow = Row(
-    children: [recheckIcon, smallHorizontalSpacing, recheckText],
-  );
+  static Widget get recheckActionRow =>
+      Row(children: [recheckIcon, smallHorizontalSpacing, recheckText]);
 
-  static const Widget renameActionRow = Row(
-    children: [editIcon, smallHorizontalSpacing, renameText],
-  );
+  static Widget get renameActionRow =>
+      Row(children: [editIcon, smallHorizontalSpacing, renameText]);
 
-  static const Widget changeLocationActionRow = Row(
-    children: [folderIcon, smallHorizontalSpacing, changeLocationText],
-  );
+  static Widget get changeLocationActionRow =>
+      Row(children: [folderIcon, smallHorizontalSpacing, changeLocationText]);
 
-  static const Widget deleteActionRow = Row(
-    children: [deleteIcon, smallHorizontalSpacing, deleteText],
-  );
+  static Widget get deleteActionRow =>
+      Row(children: [deleteIcon, smallHorizontalSpacing, deleteText]);
 
   // Common popup menu items
-  static const PopupMenuItem<String> pauseMenuItem = PopupMenuItem(
-    value: 'pause',
-    child: pauseActionRow,
-  );
+  static PopupMenuItem<String> get pauseMenuItem =>
+      PopupMenuItem(value: 'pause', child: pauseActionRow);
 
-  static const PopupMenuItem<String> resumeMenuItem = PopupMenuItem(
-    value: 'resume',
-    child: resumeActionRow,
-  );
+  static PopupMenuItem<String> get resumeMenuItem =>
+      PopupMenuItem(value: 'resume', child: resumeActionRow);
 
-  static const PopupMenuItem<String> recheckMenuItem = PopupMenuItem(
-    value: 'recheck',
-    child: recheckActionRow,
-  );
+  static PopupMenuItem<String> get recheckMenuItem =>
+      PopupMenuItem(value: 'recheck', child: recheckActionRow);
 
-  static const PopupMenuItem<String> renameMenuItem = PopupMenuItem(
-    value: 'rename',
-    child: renameActionRow,
-  );
+  static PopupMenuItem<String> get renameMenuItem =>
+      PopupMenuItem(value: 'rename', child: renameActionRow);
 
-  static const PopupMenuItem<String> changeLocationMenuItem = PopupMenuItem(
-    value: 'location',
-    child: changeLocationActionRow,
-  );
+  static PopupMenuItem<String> get changeLocationMenuItem =>
+      PopupMenuItem(value: 'location', child: changeLocationActionRow);
 
-  static const PopupMenuItem<String> deleteMenuItem = PopupMenuItem(
-    value: 'delete',
-    child: deleteActionRow,
-  );
+  static PopupMenuItem<String> get deleteMenuItem =>
+      PopupMenuItem(value: 'delete', child: deleteActionRow);
 
   // Common tab widgets
-  static const Tab infoTab = Tab(text: AppStrings.info, icon: infoIcon);
+  static Tab get infoTab => Tab(text: LocaleKeys.info.tr(), icon: infoIcon);
 
-  static const Tab filesTab = Tab(text: AppStrings.files, icon: filesIcon);
+  static Tab get filesTab => Tab(text: LocaleKeys.files.tr(), icon: filesIcon);
 
-  static const Tab trackersTab = Tab(
-    text: AppStrings.trackers,
-    icon: trackersIcon,
-  );
+  static Tab get trackersTab =>
+      Tab(text: LocaleKeys.trackers.tr(), icon: trackersIcon);
 
   // Common loading and error widgets
   static const Widget loadingIndicator = Center(
     child: CircularProgressIndicator(),
   );
 
-  static const Widget noDataMessage = Center(
-    child: Text(AppStrings.noDataAvailable),
-  );
+  static Widget get noDataMessage =>
+      Center(child: Text(LocaleKeys.noDataAvailable.tr()));
 
-  static const Widget errorMessage = Center(
-    child: Text(AppStrings.anErrorOccurred),
-  );
+  static Widget get errorMessage =>
+      Center(child: Text(LocaleKeys.anErrorOccurred.tr()));
 
   // Common button widgets (these need to be functions since they need callbacks)
   static Widget selectAllButton(VoidCallback onPressed) => IconButton(
     onPressed: onPressed,
     icon: selectAllIcon,
-    tooltip: AppStrings.selectAll,
+    tooltip: LocaleKeys.selectAll.tr(),
     iconSize: 20,
   );
 
   static Widget cancelButton(VoidCallback onPressed) => IconButton(
     onPressed: onPressed,
     icon: closeIcon,
-    tooltip: AppStrings.cancel,
+    tooltip: LocaleKeys.cancel.tr(),
     iconSize: 20,
   );
 
   static Widget refreshButton(VoidCallback onPressed) => IconButton(
     onPressed: onPressed,
     icon: refreshIcon,
-    tooltip: AppStrings.refreshTorrents,
+    tooltip: LocaleKeys.refreshTorrents.tr(),
     iconSize: 20,
   );
 

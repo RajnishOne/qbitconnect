@@ -404,4 +404,29 @@ class LocaleKeys {
   static const String failedToChangeLocation = 'failedToChangeLocation';
   static const String failedToDeleteTorrent = 'failedToDeleteTorrent';
   static const String actionFailed = 'actionFailed';
+
+  // Filter bottom sheet specific keys
+  static const String sortAndFilter = 'sortAndFilter';
+  static const String applyFilter = 'applyFilter';
+  static const String sortBy = 'sortBy';
+  static const String priority = 'priority';
+  static const String addedDate = 'addedDate';
+  static const String completionDate = 'completionDate';
+  static const String moveUp = 'moveUp';
+  static const String moveDown = 'moveDown';
+  static const String moveToTop = 'moveToTop';
+  static const String moveToBottom = 'moveToBottom';
+  static const String torrentMovedUpInQueue = 'torrentMovedUpInQueue';
+  static const String torrentMovedDownInQueue = 'torrentMovedDownInQueue';
+  static const String torrentMovedToTopOfQueue = 'torrentMovedToTopOfQueue';
+  static const String torrentMovedToBottomOfQueue =
+      'torrentMovedToBottomOfQueue';
+  static const String failedToMoveTorrent = 'failedToMoveTorrent';
+
+  // Search filter bar specific keys
+  static const String searchTorrents = 'searchTorrents';
+  static const String filters = 'filters';
+
+  // Add torrent FAB specific keys
+  static const String addViaUrl = 'addViaUrl';
 }
