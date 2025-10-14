@@ -262,15 +262,141 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
               ],
             ),
           ],
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(text: LocaleKeys.stats.tr(), icon: Icon(Icons.bar_chart)),
-              ReusableWidgets.infoTab,
-              ReusableWidgets.filesTab,
-              ReusableWidgets.trackersTab,
-              Tab(text: LocaleKeys.peers.tr(), icon: Icon(Icons.people)),
-            ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(60),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).colorScheme.surface,
+                    Theme.of(context).colorScheme.surface.withOpacity(0.95),
+                  ],
+                ),
+              ),
+              child: TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorWeight: 0,
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                    ],
+                  ),
+                ),
+                indicatorPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 8,
+                ),
+                labelColor: Theme.of(context).colorScheme.onPrimary,
+                unselectedLabelColor: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withOpacity(0.7),
+                labelStyle: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.3,
+                ),
+                tabs: [
+                  Tab(
+                    height: 56,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.analytics_outlined, size: 20),
+                          const SizedBox(width: 8),
+                          Text(LocaleKeys.stats.tr()),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    height: 56,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.info_outline_rounded, size: 20),
+                          const SizedBox(width: 8),
+                          Text(LocaleKeys.info.tr()),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    height: 56,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.folder_open_outlined, size: 20),
+                          const SizedBox(width: 8),
+                          Text(LocaleKeys.files.tr()),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    height: 56,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.radar_outlined, size: 20),
+                          const SizedBox(width: 8),
+                          Text(LocaleKeys.trackers.tr()),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    height: 56,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.groups_outlined, size: 20),
+                          const SizedBox(width: 8),
+                          Text(LocaleKeys.peers.tr()),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         body: _isLoading
