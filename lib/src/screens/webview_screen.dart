@@ -70,7 +70,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             onPressed: () {
               _controller.reload();
             },
-            tooltip: 'Refresh',
+            tooltip: LocaleKeys.refresh.tr(),
           ),
         ],
       ),

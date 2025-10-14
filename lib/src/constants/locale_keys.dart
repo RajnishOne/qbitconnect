@@ -13,6 +13,7 @@ class LocaleKeys {
   static const String addTorrent = 'addTorrent';
 
   // Language selection
+  static const String chooseLanguage = 'chooseLanguage';
   static const String chooseTheme = 'chooseTheme';
 
   // Themes
@@ -474,6 +475,15 @@ class LocaleKeys {
   static const String errorHandlingTorrentLink = 'errorHandlingTorrentLink';
   static const String failedToProcessTorrentFile = 'failedToProcessTorrentFile';
   static const String switchingToServer = 'switchingToServer';
+
+  // Custom headers helper texts
+  static const String headerKeyHint = 'headerKeyHint';
+  static const String headerKeyHelperText = 'headerKeyHelperText';
+  static const String headerValueHint = 'headerValueHint';
+  static const String headerValueHelperText = 'headerValueHelperText';
+
+  // Common UI elements
+  static const String refresh = 'refresh';
 
   // Error handler messages
   static const String unknownErrorOccurred = 'unknownErrorOccurred';

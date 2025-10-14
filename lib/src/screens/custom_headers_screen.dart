@@ -303,8 +303,8 @@ class _HeaderDialogState extends State<_HeaderDialog> {
               controller: _keyController,
               decoration: InputDecoration(
                 labelText: LocaleKeys.headerKey.tr(),
-                hintText: 'e.g., Authorization, User-Agent',
-                helperText: 'The header name (case-insensitive)',
+                hintText: LocaleKeys.headerKeyHint.tr(),
+                helperText: LocaleKeys.headerKeyHelperText.tr(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
@@ -321,8 +321,8 @@ class _HeaderDialogState extends State<_HeaderDialog> {
               controller: _valueController,
               decoration: InputDecoration(
                 labelText: LocaleKeys.headerValue.tr(),
-                hintText: 'e.g., Bearer token123, MyApp/1.0',
-                helperText: 'The header value',
+                hintText: LocaleKeys.headerValueHint.tr(),
+                helperText: LocaleKeys.headerValueHelperText.tr(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {

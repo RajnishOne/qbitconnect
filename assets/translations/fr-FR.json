@@ -39,6 +39,7 @@
   "changeLocation": "Changer l'Emplacement",
   "changeSaveLocation": "Changer l'Emplacement de Sauvegarde",
   "checkingConnection": "Vérification de la connexion...",
+  "chooseLanguage": "Choisir la Langue",
   "chooseTheme": "Choisir le Thème",
   "chooseWhatToDelete": "Choisissez quoi supprimer.",
   "collectingData": "Collecte de données...",
@@ -374,5 +375,10 @@
   "serverNotFound": "Serveur non trouvé",
   "networkError": "Erreur réseau",
   "cannotFindServer": "Impossible de trouver le serveur",
-  "requestTimedOut": "Demande expirée"
+  "requestTimedOut": "Demande expirée",
+  "headerKeyHint": "ex., Authorization, User-Agent",
+  "headerKeyHelperText": "Le nom de l'en-tête (insensible à la casse)",
+  "headerValueHint": "ex., Bearer token123, MyApp/1.0",
+  "headerValueHelperText": "La valeur de l'en-tête",
+  "refresh": "Actualiser"
 }

@@ -11,7 +11,7 @@ class AnimatedReloadButton extends StatefulWidget {
   const AnimatedReloadButton({
     super.key,
     required this.onPressed,
-    this.tooltip = 'Refresh',
+    required this.tooltip,
     this.iconSize = 22,
     this.uniqueId,
   });

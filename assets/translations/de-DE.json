@@ -39,6 +39,7 @@
   "changeLocation": "Speicherort ändern",
   "changeSaveLocation": "Speicherort ändern",
   "checkingConnection": "Verbindung wird überprüft...",
+  "chooseLanguage": "Sprache wählen",
   "chooseTheme": "Design wählen",
   "chooseWhatToDelete": "Wählen Sie aus, was gelöscht werden soll:",
   "collectingData": "Daten werden gesammelt...",
@@ -374,5 +375,10 @@
   "serverNotFound": "Server nicht gefunden",
   "networkError": "Netzwerkfehler",
   "cannotFindServer": "Server kann nicht gefunden werden",
-  "requestTimedOut": "Anfrage-Zeitüberschreitung"
+  "requestTimedOut": "Anfrage-Zeitüberschreitung",
+  "headerKeyHint": "z.B., Authorization, User-Agent",
+  "headerKeyHelperText": "Der Header-Name (groß-/kleinschreibung wird ignoriert)",
+  "headerValueHint": "z.B., Bearer token123, MyApp/1.0",
+  "headerValueHelperText": "Der Header-Wert",
+  "refresh": "Aktualisieren"
 }

@@ -45,7 +45,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
       bottom: Platform.isAndroid,
       top: false,
       child: Scaffold(
-        appBar: AppBar(title: Text('chooseLanguage'.tr())),
+        appBar: AppBar(title: Text(LocaleKeys.chooseLanguage.tr())),
         body: ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: LanguageManager.availableLanguages.length,

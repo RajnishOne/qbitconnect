@@ -39,6 +39,7 @@
   "changeLocation": "Change Location",
   "changeSaveLocation": "Change Save Location",
   "checkingConnection": "Checking connection...",
+  "chooseLanguage": "Choose Language",
   "chooseTheme": "Choose Theme",
   "chooseWhatToDelete": "Choose what to delete.",
   "collectingData": "Collecting data...",
@@ -374,5 +375,10 @@
   "serverNotFound": "Server not found",
   "networkError": "Network error",
   "cannotFindServer": "Cannot find server",
-  "requestTimedOut": "Request timed out"
+  "requestTimedOut": "Request timed out",
+  "headerKeyHint": "e.g., Authorization, User-Agent",
+  "headerKeyHelperText": "The header name (case-insensitive)",
+  "headerValueHint": "e.g., Bearer token123, MyApp/1.0",
+  "headerValueHelperText": "The header value",
+  "refresh": "Refresh"
 }

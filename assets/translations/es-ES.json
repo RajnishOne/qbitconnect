@@ -39,6 +39,7 @@
   "changeLocation": "Cambiar Ubicación",
   "changeSaveLocation": "Cambiar Ubicación de Guardado",
   "checkingConnection": "Verificando conexión...",
+  "chooseLanguage": "Elegir Idioma",
   "chooseTheme": "Elegir Tema",
   "chooseWhatToDelete": "Elige qué eliminar:",
   "collectingData": "Recolectando datos...",
@@ -374,5 +375,10 @@
   "serverNotFound": "Servidor no encontrado",
   "networkError": "Error de red",
   "cannotFindServer": "No se puede encontrar el servidor",
-  "requestTimedOut": "Solicitud agotada"
+  "requestTimedOut": "Solicitud agotada",
+  "headerKeyHint": "ej., Authorization, User-Agent",
+  "headerKeyHelperText": "El nombre del encabezado (no distingue mayúsculas)",
+  "headerValueHint": "ej., Bearer token123, MyApp/1.0",
+  "headerValueHelperText": "El valor del encabezado",
+  "refresh": "Actualizar"
 }
