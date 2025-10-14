@@ -318,4 +318,26 @@ class LocaleKeys {
   static const String everySeconds = 'everySeconds';
   static const String everyMinute = 'everyMinute';
   static const String everyMinutes = 'everyMinutes';
+
+  // Torrent card display settings screen specific keys
+  static const String maximumOptionsCanBeSelected =
+      'maximumOptionsCanBeSelected';
+  static const String customizeTorrentCardInfo = 'customizeTorrentCardInfo';
+  static const String selectUpToOptionsToDisplay = 'selectUpToOptionsToDisplay';
+  static const String currentlySelected = 'currentlySelected';
+  static const String preview = 'preview';
+  static const String availableOptions = 'availableOptions';
+  static const String noOptionsSelected = 'noOptionsSelected';
+  static const String showsDownloadProgressPercentage =
+      'showsDownloadProgressPercentage';
+  static const String showsTotalTorrentSize = 'showsTotalTorrentSize';
+  static const String showsCurrentDownloadSpeed = 'showsCurrentDownloadSpeed';
+  static const String showsCurrentUploadSpeed = 'showsCurrentUploadSpeed';
+  static const String showsUploadDownloadRatio = 'showsUploadDownloadRatio';
+  static const String showsEstimatedTimeToCompletion =
+      'showsEstimatedTimeToCompletion';
+  static const String showsNumberOfSeeders = 'showsNumberOfSeeders';
+  static const String showsNumberOfLeechers = 'showsNumberOfLeechers';
+  static const String showsTotalUploadedData = 'showsTotalUploadedData';
+  static const String showsTotalDownloadedData = 'showsTotalDownloadedData';
 }

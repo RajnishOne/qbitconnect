@@ -70,7 +70,11 @@ class _TorrentCardDisplaySettingsScreenState
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Maximum ${TorrentCardDisplayOption.maxSelections} options can be selected',
+                LocaleKeys.maximumOptionsCanBeSelected.tr(
+                  namedArgs: {
+                    'max': TorrentCardDisplayOption.maxSelections.toString(),
+                  },
+                ),
               ),
               duration: const Duration(seconds: 2),
             ),
@@ -127,16 +131,24 @@ class _TorrentCardDisplaySettingsScreenState
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         const SizedBox(width: 8),
-                        Text(
-                          'Customize Torrent Card Info',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
+                        Expanded(
+                          child: Text(
+                            LocaleKeys.customizeTorrentCardInfo.tr(),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Select up to ${TorrentCardDisplayOption.maxSelections} options to display in torrent cards. Currently selected: ${_selectedOptions.length}/${TorrentCardDisplayOption.maxSelections}',
+                      LocaleKeys.selectUpToOptionsToDisplay.tr(
+                        namedArgs: {
+                          'max': TorrentCardDisplayOption.maxSelections
+                              .toString(),
+                          'current': _selectedOptions.length.toString(),
+                        },
+                      ),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(
                           context,
@@ -158,7 +170,7 @@ class _TorrentCardDisplaySettingsScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Preview',
+                      LocaleKeys.preview.tr(),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -201,7 +213,7 @@ class _TorrentCardDisplaySettingsScreenState
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Available Options',
+                          LocaleKeys.availableOptions.tr(),
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w600),
                         ),
@@ -251,7 +263,7 @@ class _TorrentCardDisplaySettingsScreenState
 
   String _buildPreviewText() {
     if (_selectedOptions.isEmpty) {
-      return 'No options selected';
+      return LocaleKeys.noOptionsSelected.tr();
     }
 
     final List<String> previewParts = [];
@@ -334,25 +346,25 @@ class _OptionTile extends StatelessWidget {
   String _getOptionDescription(TorrentCardDisplayOption option) {
     switch (option) {
       case TorrentCardDisplayOption.percentage:
-        return 'Shows download progress percentage';
+        return LocaleKeys.showsDownloadProgressPercentage.tr();
       case TorrentCardDisplayOption.size:
-        return 'Shows total torrent size';
+        return LocaleKeys.showsTotalTorrentSize.tr();
       case TorrentCardDisplayOption.downloadSpeed:
-        return 'Shows current download speed';
+        return LocaleKeys.showsCurrentDownloadSpeed.tr();
       case TorrentCardDisplayOption.uploadSpeed:
-        return 'Shows current upload speed';
+        return LocaleKeys.showsCurrentUploadSpeed.tr();
       case TorrentCardDisplayOption.ratio:
-        return 'Shows upload/download ratio';
+        return LocaleKeys.showsUploadDownloadRatio.tr();
       case TorrentCardDisplayOption.eta:
-        return 'Shows estimated time to completion';
+        return LocaleKeys.showsEstimatedTimeToCompletion.tr();
       case TorrentCardDisplayOption.seeds:
-        return 'Shows number of seeders';
+        return LocaleKeys.showsNumberOfSeeders.tr();
       case TorrentCardDisplayOption.leeches:
-        return 'Shows number of leechers';
+        return LocaleKeys.showsNumberOfLeechers.tr();
       case TorrentCardDisplayOption.uploaded:
-        return 'Shows total uploaded data';
+        return LocaleKeys.showsTotalUploadedData.tr();
       case TorrentCardDisplayOption.downloaded:
-        return 'Shows total downloaded data';
+        return LocaleKeys.showsTotalDownloadedData.tr();
     }
   }
 }

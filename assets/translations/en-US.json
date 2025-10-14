@@ -250,5 +250,22 @@
   "defaultStatusFilter": "Default Status Filter",
   "everySeconds": "Every {seconds} seconds",
   "everyMinute": "Every 1 minute",
-  "everyMinutes": "Every 15 minutes"
+  "everyMinutes": "Every 15 minutes",
+  "maximumOptionsCanBeSelected": "Maximum {max} options can be selected",
+  "customizeTorrentCardInfo": "Customize Torrent Card Info",
+  "selectUpToOptionsToDisplay": "Select up to {max} options to display in torrent cards. Currently selected: {current}/{max}",
+  "currentlySelected": "Currently selected",
+  "preview": "Preview",
+  "availableOptions": "Available Options",
+  "noOptionsSelected": "No options selected",
+  "showsDownloadProgressPercentage": "Shows download progress percentage",
+  "showsTotalTorrentSize": "Shows total torrent size",
+  "showsCurrentDownloadSpeed": "Shows current download speed",
+  "showsCurrentUploadSpeed": "Shows current upload speed",
+  "showsUploadDownloadRatio": "Shows upload/download ratio",
+  "showsEstimatedTimeToCompletion": "Shows estimated time to completion",
+  "showsNumberOfSeeders": "Shows number of seeders",
+  "showsNumberOfLeechers": "Shows number of leechers",
+  "showsTotalUploadedData": "Shows total uploaded data",
+  "showsTotalDownloadedData": "Shows total downloaded data"
 }
