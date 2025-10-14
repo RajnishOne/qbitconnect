@@ -101,14 +101,13 @@ jobs:
           echo "${{ secrets.FIREBASE_OPTIONS_DART }}" > lib/firebase_options.dart
           echo "${{ secrets.IOS_FIREBASE_CONFIG }}" > ios/Runner/GoogleService-Info.plist
 
-      - name: Install Flutter dependencies
-        run: flutter pub get
-
       - name: Clean iOS build artifacts
         run: |
           rm -rf ios/Podfile.lock
           rm -rf ios/Pods
-          flutter clean
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
 
       - name: Update CocoaPods repository
         run: pod repo update
