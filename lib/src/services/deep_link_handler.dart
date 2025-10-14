@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 import 'torrent_file_handler.dart';
 import '../screens/add_torrent_url_screen.dart';
 import '../screens/add_torrent_file_screen.dart';
@@ -161,7 +163,7 @@ class DeepLinkHandler {
         // Show a success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Torrent file detected and pre-selected'),
+            content: Text(LocaleKeys.torrentFileDetected.tr()),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 2),
           ),

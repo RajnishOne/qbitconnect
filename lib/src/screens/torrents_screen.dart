@@ -160,7 +160,7 @@ class _TorrentsScreenState extends State<TorrentsScreen>
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('Failed to switch server'),
+                  content: Text(LocaleKeys.failedToSwitchServer.tr()),
                   backgroundColor: Colors.red,
                 ),
               );

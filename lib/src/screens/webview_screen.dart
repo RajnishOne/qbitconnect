@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 
 class WebViewScreen extends StatefulWidget {
   final String title;
@@ -136,7 +138,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Please check your internet connection and try again.',
+                LocaleKeys.pleaseCheckInternetConnection.tr(),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),

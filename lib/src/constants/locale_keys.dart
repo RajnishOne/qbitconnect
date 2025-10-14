@@ -474,4 +474,19 @@ class LocaleKeys {
   static const String timeActive = 'timeActive';
   static const String downloadProgress = 'downloadProgress';
   static const String pending = 'pending';
+
+  // Error messages and user feedback
+  static const String noTorrentsSelected = 'noTorrentsSelected';
+  static const String noTorrentsCanBePaused = 'noTorrentsCanBePaused';
+  static const String noTorrentsCanBeResumed = 'noTorrentsCanBeResumed';
+  static const String failedToReadTorrentFile = 'failedToReadTorrentFile';
+  static const String pleaseSelectValidTorrentFile =
+      'pleaseSelectValidTorrentFile';
+  static const String torrentFilePreselected = 'torrentFilePreselected';
+  static const String torrentFileDetected = 'torrentFileDetected';
+  static const String failedToSwitchServer = 'failedToSwitchServer';
+  static const String allApiCallsFailed = 'allApiCallsFailed';
+  static const String unableToLoadStatisticsData = 'unableToLoadStatisticsData';
+  static const String pleaseCheckInternetConnection =
+      'pleaseCheckInternetConnection';
 }

@@ -1,6 +1,8 @@
 import '../api/qbittorrent_api.dart';
 import '../models/torrent.dart';
 import '../utils/error_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../constants/locale_keys.dart';
 
 /// Batch operation result
 class BatchOperationResult {
@@ -44,7 +46,7 @@ class BatchOperationsService {
   /// Pause multiple torrents
   Future<BatchOperationResult> pauseTorrents(List<String> hashes) async {
     if (hashes.isEmpty) {
-      return BatchOperationResult.failure('No torrents selected');
+      return BatchOperationResult.failure(LocaleKeys.noTorrentsSelected.tr());
     }
 
     try {
@@ -62,7 +64,7 @@ class BatchOperationsService {
   /// Resume multiple torrents
   Future<BatchOperationResult> resumeTorrents(List<String> hashes) async {
     if (hashes.isEmpty) {
-      return BatchOperationResult.failure('No torrents selected');
+      return BatchOperationResult.failure(LocaleKeys.noTorrentsSelected.tr());
     }
 
     try {
@@ -83,7 +85,7 @@ class BatchOperationsService {
     bool deleteFiles = false,
   }) async {
     if (hashes.isEmpty) {
-      return BatchOperationResult.failure('No torrents selected');
+      return BatchOperationResult.failure(LocaleKeys.noTorrentsSelected.tr());
     }
 
     try {
@@ -157,7 +159,7 @@ class BatchOperationsService {
     List<Torrent> allTorrents,
   ) {
     if (selectedHashes.isEmpty) {
-      return {'valid': false, 'message': 'No torrents selected'};
+      return {'valid': false, 'message': LocaleKeys.noTorrentsSelected.tr()};
     }
 
     final selectedTorrents = allTorrents
@@ -171,7 +173,7 @@ class BatchOperationsService {
         );
         return {
           'valid': canPause,
-          'message': canPause ? null : 'No torrents can be paused',
+          'message': canPause ? null : LocaleKeys.noTorrentsCanBePaused.tr(),
           'count': selectedTorrents
               .where((t) => !t.isPaused && !t.isStopped)
               .length,
@@ -183,7 +185,7 @@ class BatchOperationsService {
         );
         return {
           'valid': canResume,
-          'message': canResume ? null : 'No torrents can be resumed',
+          'message': canResume ? null : LocaleKeys.noTorrentsCanBeResumed.tr(),
           'count': selectedTorrents
               .where((t) => t.isPaused || t.isStopped)
               .length,

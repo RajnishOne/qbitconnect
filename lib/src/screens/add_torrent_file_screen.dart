@@ -86,7 +86,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Torrent file pre-selected from Files app'),
+              content: Text(LocaleKeys.torrentFilePreselected.tr()),
               backgroundColor: Colors.green,
               duration: Duration(seconds: 2),
             ),
@@ -725,7 +725,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
   Future<void> _addTorrent() async {
     if (_selectedFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: const Text('Please select a valid torrent file')),
+        SnackBar(content: Text(LocaleKeys.pleaseSelectValidTorrentFile.tr())),
       );
       return;
     }
@@ -751,9 +751,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
         if (result == null ||
             result.files.isEmpty ||
             result.files.first.bytes == null) {
-          throw Exception(
-            'Failed to read torrent file. Please try selecting the file again.',
-          );
+          throw Exception(LocaleKeys.failedToReadTorrentFile.tr());
         }
 
         fileBytes = result.files.first.bytes!;
