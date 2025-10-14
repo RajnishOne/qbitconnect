@@ -203,9 +203,7 @@ class LocaleKeys {
 
   // Legal and info
   static const String privacyPolicy = 'privacyPolicy';
-  static const String readOurPrivacyPolicy = 'readOurPrivacyPolicy';
   static const String termsConditions = 'termsConditions';
-  static const String readOurTermsAndConditions = 'readOurTermsAndConditions';
   static const String logs = 'logs';
   static const String version = 'version';
 
@@ -317,7 +315,6 @@ class LocaleKeys {
   static const String connectionUrl = 'connectionUrl';
   static const String transferSpeeds = 'transferSpeeds';
   static const String defaultStatusFilter = 'defaultStatusFilter';
-  static const String autoRefreshSettings = 'autoRefreshSettings';
   static const String everySeconds = 'everySeconds';
   static const String everyMinute = 'everyMinute';
   static const String everyMinutes = 'everyMinutes';

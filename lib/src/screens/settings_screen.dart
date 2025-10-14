@@ -498,22 +498,6 @@ class _SettingsScreenState extends State<SettingsScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.sync),
-                        const SizedBox(width: 12),
-                        Text(
-                          LocaleKeys.autoRefreshSettings.tr(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   SwitchListTile(
                     title: Text(LocaleKeys.enableAutoRefresh.tr()),
                     subtitle: Text(
@@ -565,14 +549,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                 children: [
                   ListTile(
                     title: Text(LocaleKeys.privacyPolicy.tr()),
-                    subtitle: Text(LocaleKeys.readOurPrivacyPolicy.tr()),
                     leading: const Icon(Icons.privacy_tip_outlined),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: _openPrivacyPolicy,
                   ),
                   ListTile(
                     title: Text(LocaleKeys.termsConditions.tr()),
-                    subtitle: Text(LocaleKeys.readOurTermsAndConditions.tr()),
                     leading: const Icon(Icons.description_outlined),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: _openTermsAndConditions,

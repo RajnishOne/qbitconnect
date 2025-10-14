@@ -148,9 +148,7 @@
   "automaticallyRefreshTorrentList": "Torrent-Liste automatisch aktualisieren",
   "refreshInterval": "Aktualisierungsintervall",
   "privacyPolicy": "Datenschutzrichtlinie",
-  "readOurPrivacyPolicy": "Unsere Datenschutzrichtlinie lesen",
   "termsConditions": "Geschäftsbedingungen",
-  "readOurTermsAndConditions": "Unsere Geschäftsbedingungen lesen",
   "logs": "Protokolle",
   "version": "Version",
   "pleaseEnterAtLeastOneUrl": "Bitte geben Sie mindestens eine URL ein",
@@ -250,7 +248,6 @@
   "connectionUrl": "Verbindungs-URL",
   "transferSpeeds": "Übertragungsgeschwindigkeiten",
   "defaultStatusFilter": "Standard-Statusfilter",
-  "autoRefreshSettings": "Auto-Aktualisierungs-Einstellungen",
   "everySeconds": "Alle {seconds} Sekunden",
   "everyMinute": "Alle 1 Minute",
   "everyMinutes": "Alle 15 Minuten"

@@ -149,9 +149,7 @@
   "automaticallyRefreshTorrentList": "Automatically refresh torrent list",
   "refreshInterval": "Refresh Interval",
   "privacyPolicy": "Privacy Policy",
-  "readOurPrivacyPolicy": "Read our privacy policy",
   "termsConditions": "Terms & Conditions",
-  "readOurTermsAndConditions": "Read our terms and conditions",
   "logs": "Logs",
   "version": "Version",
   "pleaseEnterAtLeastOneUrl": "Please enter at least one URL",
@@ -250,7 +248,6 @@
   "connectionUrl": "Connection URL",
   "transferSpeeds": "Transfer Speeds",
   "defaultStatusFilter": "Default Status Filter",
-  "autoRefreshSettings": "Auto-Refresh Settings",
   "everySeconds": "Every {seconds} seconds",
   "everyMinute": "Every 1 minute",
   "everyMinutes": "Every 15 minutes"
