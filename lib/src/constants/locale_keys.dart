@@ -352,4 +352,56 @@ class LocaleKeys {
   static const String highContrastDarkTheme = 'highContrastDarkTheme';
   static const String highContrastDarkThemeDescription =
       'highContrastDarkThemeDescription';
+
+  // Torrent details screen specific keys
+  static const String stats = 'stats';
+  static const String generalInformation = 'generalInformation';
+  static const String transferInformation = 'transferInformation';
+  static const String connectionInformation = 'connectionInformation';
+  static const String technicalInformation = 'technicalInformation';
+  static const String savePath = 'savePath';
+  static const String additionDate = 'additionDate';
+  static const String comment = 'comment';
+  static const String createdBy = 'createdBy';
+  static const String wasted = 'wasted';
+  static const String downloadSpeed = 'downloadSpeed';
+  static const String uploadSpeed = 'uploadSpeed';
+  static const String downloadSpeedAvg = 'downloadSpeedAvg';
+  static const String uploadSpeedAvg = 'uploadSpeedAvg';
+  static const String shareRatio = 'shareRatio';
+  static const String seeds = 'seeds';
+  static const String leeches = 'leeches';
+  static const String connections = 'connections';
+  static const String timeElapsed = 'timeElapsed';
+  static const String seedingTime = 'seedingTime';
+  static const String pieces = 'pieces';
+  static const String pieceSize = 'pieceSize';
+  static const String downloadLimit = 'downloadLimit';
+  static const String uploadLimit = 'uploadLimit';
+  static const String unlimited = 'unlimited';
+  static const String private = 'private';
+  static const String sequentialDownload = 'sequentialDownload';
+  static const String forceStart = 'forceStart';
+  static const String autoTmm = 'autoTmm';
+  static const String yes = 'yes';
+  static const String no = 'no';
+  static const String total = 'total';
+  static const String changeSaveLocation = 'changeSaveLocation';
+  static const String newLocation = 'newLocation';
+  static const String typeOrSelectDirectory = 'typeOrSelectDirectory';
+  static const String change = 'change';
+  static const String deleteTorrent = 'deleteTorrent';
+  static const String chooseWhatToDelete = 'chooseWhatToDelete';
+  static const String torrentOnly = 'torrentOnly';
+  static const String torrentAndFiles = 'torrentAndFiles';
+  static const String torrentRenamedSuccessfully = 'torrentRenamedSuccessfully';
+  static const String torrentDeletedSuccessfully = 'torrentDeletedSuccessfully';
+  static const String torrentAndFilesDeletedSuccessfully =
+      'torrentAndFilesDeletedSuccessfully';
+  static const String torrentLocationChangedSuccessfully =
+      'torrentLocationChangedSuccessfully';
+  static const String failedToRename = 'failedToRename';
+  static const String failedToChangeLocation = 'failedToChangeLocation';
+  static const String failedToDeleteTorrent = 'failedToDeleteTorrent';
+  static const String actionFailed = 'actionFailed';
 }

@@ -11,7 +11,6 @@ import '../utils/byte_formatter.dart';
 import '../utils/file_extension_cache.dart';
 import '../widgets/reusable_widgets.dart';
 import '../widgets/torrent_stats_tab.dart';
-import '../constants/app_strings.dart';
 
 class TorrentDetailsScreen extends StatefulWidget {
   final Torrent torrent;
@@ -235,8 +234,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           ],
           bottom: TabBar(
             controller: _tabController,
-            tabs: const [
-              Tab(text: 'Stats', icon: Icon(Icons.bar_chart)),
+            tabs: [
+              Tab(text: LocaleKeys.stats.tr(), icon: Icon(Icons.bar_chart)),
               ReusableWidgets.infoTab,
               ReusableWidgets.filesTab,
               ReusableWidgets.trackersTab,
@@ -292,40 +291,52 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       children: [
-        _buildInfoCard('General Information', [
-          _buildInfoRow('Name', details.name),
-          _buildInfoRow('State', details.state),
+        _buildInfoCard(LocaleKeys.generalInformation.tr(), [
+          _buildInfoRow(LocaleKeys.name.tr(), details.name),
+          _buildInfoRow(LocaleKeys.state.tr(), details.state),
           _buildInfoRow(
-            'Progress',
+            LocaleKeys.progress.tr(),
             details.progress.isNaN || details.progress.isInfinite
                 ? '0%'
                 : _formatProgress(details.progress),
           ),
-          _buildInfoRow('Save Path', details.savePath),
-          _buildInfoRow('Addition Date', _formatDate(details.additionDate)),
+          _buildInfoRow(LocaleKeys.savePath.tr(), details.savePath),
           _buildInfoRow(
-            'Comment',
+            LocaleKeys.additionDate.tr(),
+            _formatDate(details.additionDate),
+          ),
+          _buildInfoRow(
+            LocaleKeys.comment.tr(),
             details.comment.isNotEmpty ? details.comment : 'N/A',
           ),
           _buildInfoRow(
-            'Created By',
+            LocaleKeys.createdBy.tr(),
             details.createdBy.isNotEmpty ? details.createdBy : 'N/A',
           ),
         ]),
 
         ReusableWidgets.mediumSpacing,
 
-        _buildInfoCard('Transfer Information', [
-          _buildInfoRow('Downloaded', details.formattedSize),
-          _buildInfoRow('Uploaded', details.formattedUploaded),
-          _buildInfoRow('Wasted', details.formattedWasted),
-          _buildInfoRow('Download Speed', details.formattedDlSpeed),
-          _buildInfoRow('Upload Speed', details.formattedUpSpeed),
-          _buildInfoRow('Download Speed (Avg)', details.formattedDlSpeedAvg),
-          _buildInfoRow('Upload Speed (Avg)', details.formattedUpSpeedAvg),
-          _buildInfoRow('ETA', details.formattedEta),
+        _buildInfoCard(LocaleKeys.transferInformation.tr(), [
+          _buildInfoRow(LocaleKeys.downloaded.tr(), details.formattedSize),
+          _buildInfoRow(LocaleKeys.uploaded.tr(), details.formattedUploaded),
+          _buildInfoRow(LocaleKeys.wasted.tr(), details.formattedWasted),
           _buildInfoRow(
-            'Share Ratio',
+            LocaleKeys.downloadSpeed.tr(),
+            details.formattedDlSpeed,
+          ),
+          _buildInfoRow(LocaleKeys.uploadSpeed.tr(), details.formattedUpSpeed),
+          _buildInfoRow(
+            LocaleKeys.downloadSpeedAvg.tr(),
+            details.formattedDlSpeedAvg,
+          ),
+          _buildInfoRow(
+            LocaleKeys.uploadSpeedAvg.tr(),
+            details.formattedUpSpeedAvg,
+          ),
+          _buildInfoRow(LocaleKeys.eta.tr(), details.formattedEta),
+          _buildInfoRow(
+            LocaleKeys.shareRatio.tr(),
             details.shareRatio.isNaN || details.shareRatio.isInfinite
                 ? '0.00'
                 : details.shareRatio.toStringAsFixed(2),
@@ -334,37 +345,61 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
 
         ReusableWidgets.mediumSpacing,
 
-        _buildInfoCard('Connection Information', [
-          _buildInfoRow('Seeds', '${details.seeds}'),
-          _buildInfoRow('Leeches', '${details.leeches}'),
+        _buildInfoCard(LocaleKeys.connectionInformation.tr(), [
+          _buildInfoRow(LocaleKeys.seeds.tr(), '${details.seeds}'),
+          _buildInfoRow(LocaleKeys.leeches.tr(), '${details.leeches}'),
           _buildInfoRow(
-            'Connections',
+            LocaleKeys.connections.tr(),
             '${details.nbConnections}/${details.nbConnectionsLimit}',
           ),
-          _buildInfoRow('Time Elapsed', details.formattedTimeElapsed),
-          _buildInfoRow('Seeding Time', details.formattedSeedingTime),
+          _buildInfoRow(
+            LocaleKeys.timeElapsed.tr(),
+            details.formattedTimeElapsed,
+          ),
+          _buildInfoRow(
+            LocaleKeys.seedingTime.tr(),
+            details.formattedSeedingTime,
+          ),
         ]),
 
         ReusableWidgets.mediumSpacing,
 
-        _buildInfoCard('Technical Information', [
-          _buildInfoRow('Pieces', '${details.piecesHave}/${details.piecesNum}'),
-          _buildInfoRow('Piece Size', details.formattedPieceSize),
+        _buildInfoCard(LocaleKeys.technicalInformation.tr(), [
           _buildInfoRow(
-            'Download Limit',
-            details.dlLimit > 0 ? '${details.dlLimit} B/s' : 'Unlimited',
+            LocaleKeys.pieces.tr(),
+            '${details.piecesHave}/${details.piecesNum}',
+          ),
+          _buildInfoRow(LocaleKeys.pieceSize.tr(), details.formattedPieceSize),
+          _buildInfoRow(
+            LocaleKeys.downloadLimit.tr(),
+            details.dlLimit > 0
+                ? '${details.dlLimit} B/s'
+                : LocaleKeys.unlimited.tr(),
           ),
           _buildInfoRow(
-            'Upload Limit',
-            details.upLimit > 0 ? '${details.upLimit} B/s' : 'Unlimited',
+            LocaleKeys.uploadLimit.tr(),
+            details.upLimit > 0
+                ? '${details.upLimit} B/s'
+                : LocaleKeys.unlimited.tr(),
           ),
-          _buildInfoRow('Private', details.isPrivate ? 'Yes' : 'No'),
           _buildInfoRow(
-            'Sequential Download',
-            details.sequentialDownload ? 'Yes' : 'No',
+            LocaleKeys.private.tr(),
+            details.isPrivate ? LocaleKeys.yes.tr() : LocaleKeys.no.tr(),
           ),
-          _buildInfoRow('Force Start', details.forceStart ? 'Yes' : 'No'),
-          _buildInfoRow('Auto TMM', details.autoTmm ? 'Yes' : 'No'),
+          _buildInfoRow(
+            LocaleKeys.sequentialDownload.tr(),
+            details.sequentialDownload
+                ? LocaleKeys.yes.tr()
+                : LocaleKeys.no.tr(),
+          ),
+          _buildInfoRow(
+            LocaleKeys.forceStart.tr(),
+            details.forceStart ? LocaleKeys.yes.tr() : LocaleKeys.no.tr(),
+          ),
+          _buildInfoRow(
+            LocaleKeys.autoTmm.tr(),
+            details.autoTmm ? LocaleKeys.yes.tr() : LocaleKeys.no.tr(),
+          ),
         ]),
       ],
     );
@@ -379,12 +414,12 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           child: Row(
             children: [
               Text(
-                'Files (${_files.length})',
+                '${LocaleKeys.files.tr()} (${_files.length})',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const Spacer(),
               Text(
-                'Total: ${ByteFormatter.formatBytes(_files.fold<int>(0, (sum, file) => sum + file.size))}',
+                '${LocaleKeys.total.tr()}: ${ByteFormatter.formatBytes(_files.fold<int>(0, (sum, file) => sum + file.size))}',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
@@ -453,7 +488,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           child: Row(
             children: [
               Text(
-                'Trackers (${_trackers.length})',
+                '${LocaleKeys.trackers.tr()} (${_trackers.length})',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ],
@@ -564,18 +599,18 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
   String _formatDate(DateTime date) {
     // Check if this is a Unix epoch date (January 1, 1970)
     if (date.year == 1970 && date.month == 1 && date.day == 1) {
-      return 'Unknown';
+      return LocaleKeys.unknown.tr();
     }
 
     // Check if the date is too far in the past (before 1980)
     if (date.year < 1980) {
-      return 'Unknown';
+      return LocaleKeys.unknown.tr();
     }
 
     // Check if the date is in the future (more than 1 year from now)
     final now = DateTime.now();
     if (date.isAfter(now.add(const Duration(days: 365)))) {
-      return 'Unknown';
+      return LocaleKeys.unknown.tr();
     }
 
     // Format the date properly
@@ -706,7 +741,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
       scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text(
-            'Action failed: ${ErrorHandler.getShortErrorMessage(e)}',
+            '${LocaleKeys.actionFailed.tr()}: ${ErrorHandler.getShortErrorMessage(e)}',
           ),
           backgroundColor: Colors.red,
         ),
@@ -719,18 +754,18 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(AppStrings.renameTorrent),
+        title: Text(LocaleKeys.renameTorrent.tr()),
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(
-            labelText: AppStrings.name,
+          decoration: InputDecoration(
+            labelText: LocaleKeys.name.tr(),
             border: OutlineInputBorder(),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.cancel.tr()),
           ),
           TextButton(
             onPressed: () async {
@@ -744,7 +779,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('Torrent renamed successfully'),
+                      content: Text(LocaleKeys.torrentRenamedSuccessfully.tr()),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -754,7 +789,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Failed to rename: ${ErrorHandler.getShortErrorMessage(e)}',
+                        '${LocaleKeys.failedToRename.tr()}: ${ErrorHandler.getShortErrorMessage(e)}',
                       ),
                       backgroundColor: Colors.red,
                     ),
@@ -762,7 +797,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                 }
               }
             },
-            child: const Text('Rename'),
+            child: Text(LocaleKeys.rename.tr()),
           ),
         ],
       ),
@@ -782,7 +817,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Change Save Location'),
+        title: Text(LocaleKeys.changeSaveLocation.tr()),
         content: SizedBox(
           width: double.maxFinite,
           child: Autocomplete<String>(
@@ -816,10 +851,10 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   return TextField(
                     controller: textEditingController,
                     focusNode: focusNode,
-                    decoration: const InputDecoration(
-                      labelText: 'New Location',
+                    decoration: InputDecoration(
+                      labelText: LocaleKeys.newLocation.tr(),
                       border: OutlineInputBorder(),
-                      hintText: 'Type or select a directory',
+                      hintText: LocaleKeys.typeOrSelectDirectory.tr(),
                     ),
                     onSubmitted: (String value) {
                       onFieldSubmitted();
@@ -870,7 +905,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.cancel.tr()),
           ),
           TextButton(
             onPressed: () async {
@@ -884,8 +919,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text(
-                        'Torrent location changed successfully',
+                      content: Text(
+                        LocaleKeys.torrentLocationChangedSuccessfully.tr(),
                       ),
                       backgroundColor: Colors.green,
                     ),
@@ -896,7 +931,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Failed to change location: ${ErrorHandler.getShortErrorMessage(e)}',
+                        '${LocaleKeys.failedToChangeLocation.tr()}: ${ErrorHandler.getShortErrorMessage(e)}',
                       ),
                       backgroundColor: Colors.red,
                     ),
@@ -904,7 +939,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                 }
               }
             },
-            child: const Text('Change'),
+            child: Text(LocaleKeys.change.tr()),
           ),
         ],
       ),
@@ -915,12 +950,12 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Torrent'),
-        content: const Text('Choose what to delete.'),
+        title: Text(LocaleKeys.deleteTorrent.tr()),
+        content: Text(LocaleKeys.chooseWhatToDelete.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.cancel.tr()),
           ),
           TextButton(
             onPressed: () async {
@@ -935,7 +970,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   Navigator.of(context).pop(); // Close details screen
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('Torrent deleted successfully'),
+                      content: Text(LocaleKeys.torrentDeletedSuccessfully.tr()),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -945,7 +980,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Failed to delete torrent: ${ErrorHandler.getShortErrorMessage(e)}',
+                        '${LocaleKeys.failedToDeleteTorrent.tr()}: ${ErrorHandler.getShortErrorMessage(e)}',
                       ),
                       backgroundColor: Colors.red,
                     ),
@@ -953,7 +988,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                 }
               }
             },
-            child: const Text('Torrent only'),
+            child: Text(LocaleKeys.torrentOnly.tr()),
           ),
           FilledButton(
             onPressed: () async {
@@ -968,8 +1003,8 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   Navigator.of(context).pop(); // Close details screen
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text(
-                        'Torrent and files deleted successfully',
+                      content: Text(
+                        LocaleKeys.torrentAndFilesDeletedSuccessfully.tr(),
                       ),
                       backgroundColor: Colors.green,
                     ),
@@ -980,7 +1015,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Failed to delete torrent: ${ErrorHandler.getShortErrorMessage(e)}',
+                        '${LocaleKeys.failedToDeleteTorrent.tr()}: ${ErrorHandler.getShortErrorMessage(e)}',
                       ),
                       backgroundColor: Colors.red,
                     ),
@@ -989,7 +1024,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
               }
             },
             style: FilledButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Torrent + files'),
+            child: Text(LocaleKeys.torrentAndFiles.tr()),
           ),
         ],
       ),
