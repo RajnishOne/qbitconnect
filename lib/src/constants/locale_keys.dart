@@ -248,4 +248,29 @@ class LocaleKeys {
   static const String tapToConnectLongPressOptions =
       'tapToConnectLongPressOptions';
   static const String tapAddServerBelowToConnect = 'tapAddServerBelowToConnect';
+
+  // Connection screen specific keys
+  static const String serverNameOptional = 'serverNameOptional';
+  static const String serverNameHint = 'serverNameHint';
+  static const String hostIpAddress = 'hostIpAddress';
+  static const String hostIpAddressHint = 'hostIpAddressHint';
+  static const String protocolDetectedAutomatically =
+      'protocolDetectedAutomatically';
+  static const String portHint = 'portHint';
+  static const String invalidPort = 'invalidPort';
+  static const String pathOptional = 'pathOptional';
+  static const String pathHint = 'pathHint';
+  static const String noNetworkConnection = 'noNetworkConnection';
+  static const String connectionTimeout = 'connectionTimeout';
+  static const String authenticationRequired = 'authenticationRequired';
+  static const String usernamePasswordRequiredRemote =
+      'usernamePasswordRequiredRemote';
+  static const String usernamePasswordRequiredRemoteMessage =
+      'usernamePasswordRequiredRemoteMessage';
+  static const String authenticationRequiredMessage =
+      'authenticationRequiredMessage';
+  static const String invalidCredentials = 'invalidCredentials';
+  static const String cannotConnectToQBittorrent = 'cannotConnectToQBittorrent';
+  static const String failedToConnectToQBittorrent =
+      'failedToConnectToQBittorrent';
 }

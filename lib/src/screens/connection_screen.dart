@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../services/firebase_service.dart';
 import '../api/qbittorrent_api.dart';
 import '../utils/error_handler.dart';
 import '../utils/network_utils.dart';
-import '../constants/app_strings.dart';
+import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import 'custom_headers_screen.dart';
 
@@ -147,8 +148,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     final hasNetwork = await _checkNetworkConnectivity();
     if (!hasNetwork) {
       setState(() {
-        _error =
-            'No network connection available. Please check your internet connection and try again.';
+        _error = LocaleKeys.noNetworkConnection.tr();
       });
       _scrollToBottom();
       return;
@@ -214,9 +214,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
               password: _passwordController.text,
             ),
             Future.delayed(const Duration(seconds: 10), () {
-              throw Exception(
-                'Connection timeout - server did not respond within 10 seconds',
-              );
+              throw Exception(LocaleKeys.connectionTimeout.tr());
             }),
           ]);
         } else if (isLocal) {
@@ -225,25 +223,19 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
             await Future.any([
               tempApiClient.loginWithoutAuth(),
               Future.delayed(const Duration(seconds: 10), () {
-                throw Exception(
-                  'Connection timeout - server did not respond within 10 seconds',
-                );
+                throw Exception(LocaleKeys.connectionTimeout.tr());
               }),
             ]);
           } catch (e) {
             // If no-auth fails on local network, provide helpful message
             if (e.toString().contains('Authentication required') ||
                 e.toString().contains('403')) {
-              throw Exception(
-                'This qBittorrent instance requires authentication. Please provide username and password.',
-              );
+              throw Exception(LocaleKeys.authenticationRequiredMessage.tr());
             }
             rethrow;
           }
         } else {
-          throw Exception(
-            'Username and password are required for remote connections',
-          );
+          throw Exception(LocaleKeys.usernamePasswordRequiredRemote.tr());
         }
 
         // Logout from the test connection if we used authentication
@@ -257,27 +249,22 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         // Determine error message
         String errorMessage;
         if (e.toString().contains('Username and password are required')) {
-          errorMessage =
-              'Username and password are required for remote connections.';
+          errorMessage = LocaleKeys.usernamePasswordRequiredRemoteMessage.tr();
         } else if (e.toString().contains('Authentication required') ||
             e.toString().contains('403')) {
-          errorMessage =
-              'This qBittorrent instance requires authentication. Please provide username and password.';
+          errorMessage = LocaleKeys.authenticationRequiredMessage.tr();
         } else if (e.toString().contains('Login failed') ||
             e.toString().contains('Fails.') ||
             e.toString().contains('401') ||
             e.toString().contains('403')) {
-          errorMessage =
-              'Invalid username or password. Please check your credentials and try again.';
+          errorMessage = LocaleKeys.invalidCredentials.tr();
         } else if (e.toString().contains('Connection refused') ||
             e.toString().contains('timeout') ||
             e.toString().contains('Network is unreachable') ||
             e.toString().contains('Connection timeout')) {
-          errorMessage =
-              'Cannot connect to qBittorrent. Please check the address and port, and ensure qBittorrent is running.';
+          errorMessage = LocaleKeys.cannotConnectToQBittorrent.tr();
         } else {
-          errorMessage =
-              'Failed to connect to qBittorrent: ${e.toString()}. Please check your connection details and try again.';
+          errorMessage = LocaleKeys.failedToConnectToQBittorrent.tr();
         }
 
         // Update state once with error message and loading state
@@ -362,7 +349,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         bottom: Platform.isAndroid,
         top: false,
         child: Scaffold(
-          appBar: AppBar(title: const Text('Connect to qBittorrent')),
+          appBar: AppBar(title: Text(LocaleKeys.connectToQBittorrent.tr())),
           bottomNavigationBar: Padding(
             padding: EdgeInsets.only(
               left: 16,
@@ -375,7 +362,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
               child: ElevatedButton.icon(
                 onPressed: _isLoading ? null : _connect,
                 icon: const Icon(Icons.link),
-                label: Text(_isLoading ? 'Connecting...' : 'Connect'),
+                label: Text(
+                  _isLoading
+                      ? LocaleKeys.connecting.tr()
+                      : LocaleKeys.connect.tr(),
+                ),
               ),
             ),
           ),
@@ -390,9 +381,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                 children: [
                   TextFormField(
                     controller: _serverNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Server name (optional)',
-                      hintText: 'e.g., Home NAS',
+                    decoration: InputDecoration(
+                      labelText: LocaleKeys.serverNameOptional.tr(),
+                      hintText: LocaleKeys.serverNameHint.tr(),
                     ),
                     textInputAction: TextInputAction.next,
                   ),
@@ -402,7 +393,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                     children: [
                       Expanded(
                         child: CheckboxListTile(
-                          title: const Text(AppStrings.useHttps),
+                          title: Text(LocaleKeys.useHttps.tr()),
                           value: _useHttps,
                           onChanged: (value) {
                             setState(() {
@@ -420,16 +411,15 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   // Host field
                   TextFormField(
                     controller: _hostController,
-                    decoration: const InputDecoration(
-                      labelText: 'Host/IP Address',
-                      hintText: 'e.g., 192.168.1.100 or nas.local',
-                      helperText:
-                          'Protocol (http:// or https://) will be detected automatically',
+                    decoration: InputDecoration(
+                      labelText: LocaleKeys.hostIpAddress.tr(),
+                      hintText: LocaleKeys.hostIpAddressHint.tr(),
+                      helperText: LocaleKeys.protocolDetectedAutomatically.tr(),
                     ),
                     textInputAction: TextInputAction.next,
                     validator: (v) {
                       final value = v?.trim() ?? '';
-                      if (value.isEmpty) return AppStrings.required;
+                      if (value.isEmpty) return LocaleKeys.required.tr();
 
                       // Check for valid host format (with or without protocol)
                       final cleanValue = value
@@ -438,11 +428,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                           .replaceAll('https://', '');
 
                       if (cleanValue.isEmpty)
-                        return AppStrings.invalidHostAddress;
+                        return LocaleKeys.invalidHostAddress.tr();
 
                       // Basic validation for host format
                       if (cleanValue.contains('://')) {
-                        return AppStrings.invalidProtocolFormat;
+                        return LocaleKeys.invalidProtocolFormat.tr();
                       }
 
                       return null;
@@ -453,18 +443,18 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   // Port field
                   TextFormField(
                     controller: _portController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.port,
-                      hintText: 'e.g., 8080',
+                    decoration: InputDecoration(
+                      labelText: LocaleKeys.port.tr(),
+                      hintText: LocaleKeys.portHint.tr(),
                     ),
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     validator: (v) {
                       final value = v?.trim() ?? '';
-                      if (value.isEmpty) return AppStrings.required;
+                      if (value.isEmpty) return LocaleKeys.required.tr();
                       final port = int.tryParse(value);
                       if (port == null || port <= 0 || port > 65535) {
-                        return 'Invalid port (1-65535)';
+                        return LocaleKeys.invalidPort.tr();
                       }
                       return null;
                     },
@@ -474,9 +464,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   // Path field
                   TextFormField(
                     controller: _pathController,
-                    decoration: const InputDecoration(
-                      labelText: 'Path (optional)',
-                      hintText: 'e.g., /qbittorrent',
+                    decoration: InputDecoration(
+                      labelText: LocaleKeys.pathOptional.tr(),
+                      hintText: LocaleKeys.pathHint.tr(),
                     ),
                     textInputAction: TextInputAction.next,
                   ),
@@ -484,7 +474,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
                   TextFormField(
                     controller: _usernameController,
-                    decoration: InputDecoration(labelText: AppStrings.username),
+                    decoration: InputDecoration(
+                      labelText: LocaleKeys.username.tr(),
+                    ),
                     textInputAction: TextInputAction.next,
                     validator: (v) {
                       final isLocal = _isLocalNetwork();
@@ -493,7 +485,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                         return null;
                       }
                       return (v == null || v.trim().isEmpty)
-                          ? AppStrings.required
+                          ? LocaleKeys.required.tr()
                           : null;
                     },
                   ),
@@ -502,11 +494,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
-                      labelText: AppStrings.password,
+                      labelText: LocaleKeys.password.tr(),
                       suffixIcon: IconButton(
                         tooltip: _obscurePassword
-                            ? AppStrings.showPassword
-                            : AppStrings.hidePassword,
+                            ? LocaleKeys.showPassword.tr()
+                            : LocaleKeys.hidePassword.tr(),
                         icon: Icon(
                           _obscurePassword
                               ? Icons.visibility_outlined
@@ -526,7 +518,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                         return null;
                       }
                       return (v == null || v.isEmpty)
-                          ? AppStrings.required
+                          ? LocaleKeys.required.tr()
                           : null;
                     },
                   ),
@@ -534,9 +526,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
                   // Save Password Checkbox
                   CheckboxListTile(
-                    title: const Text(AppStrings.savePassword),
-                    subtitle: const Text(
-                      AppStrings.rememberPasswordForFutureConnections,
+                    title: Text(LocaleKeys.savePassword.tr()),
+                    subtitle: Text(
+                      LocaleKeys.rememberPasswordForFutureConnections.tr(),
                     ),
                     value: _savePassword,
                     onChanged: (value) {
@@ -574,7 +566,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              AppStrings.customHeaders,
+                              LocaleKeys.customHeaders.tr(),
                               style: Theme.of(context).textTheme.titleSmall
                                   ?.copyWith(fontWeight: FontWeight.w600),
                             ),
@@ -596,7 +588,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                 }
                               },
                               icon: const Icon(Icons.edit, size: 16),
-                              label: const Text(AppStrings.edit),
+                              label: Text(LocaleKeys.edit.tr()),
                             ),
                           ],
                         ),
@@ -634,7 +626,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                             ),
                             child: _headersController.text.isEmpty
                                 ? Text(
-                                    AppStrings.noCustomHeadersAdded,
+                                    LocaleKeys.noCustomHeadersAdded.tr(),
                                     style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
                                           color: Theme.of(
