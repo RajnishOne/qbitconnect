@@ -3,7 +3,6 @@
 
 class LocaleKeys {
   // App info
-  static const String appTitle = 'appTitle';
   static const String appName = 'appName';
 
   // Navigation and main screens
@@ -11,49 +10,26 @@ class LocaleKeys {
   static const String servers = 'servers';
   static const String statistics = 'statistics';
   static const String theme = 'theme';
-  static const String language = 'language';
-  static const String torrents = 'torrents';
   static const String addTorrent = 'addTorrent';
-  static const String downloads = 'downloads';
-  static const String uploads = 'uploads';
 
   // Language selection
-  static const String chooseLanguage = 'chooseLanguage';
   static const String chooseTheme = 'chooseTheme';
-  static const String english = 'english';
-  static const String spanish = 'spanish';
-  static const String french = 'french';
-  static const String german = 'german';
 
   // Themes
   static const String lightTheme = 'lightTheme';
   static const String darkTheme = 'darkTheme';
   static const String oledTheme = 'oledTheme';
-  static const String highContrastLight = 'highContrastLight';
-  static const String highContrastDark = 'highContrastDark';
   static const String systemTheme = 'systemTheme';
 
   // Common actions
   static const String save = 'save';
   static const String cancel = 'cancel';
-  static const String ok = 'ok';
-  static const String error = 'error';
-  static const String success = 'success';
-  static const String loading = 'loading';
   static const String retry = 'retry';
   static const String connect = 'connect';
-  static const String disconnect = 'disconnect';
   static const String pause = 'pause';
   static const String resume = 'resume';
   static const String delete = 'delete';
-  static const String remove = 'remove';
-  static const String start = 'start';
-  static const String stop = 'stop';
-  static const String refresh = 'refresh';
   static const String reload = 'reload';
-  static const String search = 'search';
-  static const String filter = 'filter';
-  static const String sort = 'sort';
   static const String edit = 'edit';
   static const String add = 'add';
   static const String update = 'update';
@@ -64,11 +40,9 @@ class LocaleKeys {
   static const String size = 'size';
   static const String status = 'status';
   static const String progress = 'progress';
-  static const String speed = 'speed';
+
   static const String eta = 'eta';
   static const String category = 'category';
-  static const String tags = 'tags';
-  static const String tracker = 'tracker';
   static const String seeders = 'seeders';
   static const String leechers = 'leechers';
   static const String peers = 'peers';
@@ -81,9 +55,7 @@ class LocaleKeys {
   static const String downloading = 'downloading';
   static const String seeding = 'seeding';
   static const String paused = 'paused';
-  static const String queued = 'queued';
-  static const String checking = 'checking';
-  static const String stalled = 'stalled';
+
   static const String unknown = 'unknown';
   static const String active = 'active';
 
@@ -147,17 +119,16 @@ class LocaleKeys {
 
   // Server management
   static const String manageServers = 'manageServers';
-  static const String serverList = 'serverList';
+
   static const String noServers = 'noServers';
   static const String deleteServer = 'deleteServer';
-  static const String setAsAutoConnect = 'setAsAutoConnect';
+
   static const String selectAll = 'selectAll';
   static const String select = 'select';
   static const String failedToLoadServers = 'failedToLoadServers';
   static const String connectedTo = 'connectedTo';
   static const String deleteLastServer = 'deleteLastServer';
-  static const String deleted = 'deleted';
-  static const String failedToDeleteServer = 'failedToDeleteServer';
+
   static const String addServer = 'addServer';
 
   // Details and info
@@ -224,11 +195,6 @@ class LocaleKeys {
   static const String createSubfolder = 'createSubfolder';
   static const String dontCreateSubfolder = 'dontCreateSubfolder';
   static const String skipHashCheck = 'skipHashCheck';
-  static const String downloadSequential = 'downloadSequential';
-  static const String downloadFirstLast = 'downloadFirstLast';
-  static const String limitDownloadRate = 'limitDownloadRate';
-  static const String limitUploadRate = 'limitUploadRate';
-  static const String saveFilesToLocation = 'saveFilesToLocation';
 
   // Server list screen specific keys
   static const String areYouSureDeleteServer = 'areYouSureDeleteServer';
@@ -260,7 +226,7 @@ class LocaleKeys {
   static const String pathHint = 'pathHint';
   static const String noNetworkConnection = 'noNetworkConnection';
   static const String connectionTimeout = 'connectionTimeout';
-  static const String authenticationRequired = 'authenticationRequired';
+
   static const String usernamePasswordRequiredRemote =
       'usernamePasswordRequiredRemote';
   static const String usernamePasswordRequiredRemoteMessage =
@@ -274,7 +240,7 @@ class LocaleKeys {
 
   // Statistics screen specific keys
   static const String notConnectedToQBittorrent = 'notConnectedToQBittorrent';
-  static const String failedToLoadStatistics = 'failedToLoadStatistics';
+
   static const String statisticsLoadError = 'statisticsLoadError';
   static const String statisticsNetworkError = 'statisticsNetworkError';
   static const String statisticsDataError = 'statisticsDataError';
@@ -329,7 +295,7 @@ class LocaleKeys {
       'maximumOptionsCanBeSelected';
   static const String customizeTorrentCardInfo = 'customizeTorrentCardInfo';
   static const String selectUpToOptionsToDisplay = 'selectUpToOptionsToDisplay';
-  static const String currentlySelected = 'currentlySelected';
+
   static const String preview = 'preview';
   static const String availableOptions = 'availableOptions';
   static const String noOptionsSelected = 'noOptionsSelected';
@@ -465,7 +431,7 @@ class LocaleKeys {
 
   // Torrent stats tab specific keys
   static const String noStatsDataAvailable = 'noStatsDataAvailable';
-  static const String transferInfo = 'transferInfo';
+
   static const String download = 'download';
   static const String upload = 'upload';
   static const String collectingData = 'collectingData';
@@ -485,8 +451,7 @@ class LocaleKeys {
   static const String torrentFilePreselected = 'torrentFilePreselected';
   static const String torrentFileDetected = 'torrentFileDetected';
   static const String failedToSwitchServer = 'failedToSwitchServer';
-  static const String allApiCallsFailed = 'allApiCallsFailed';
-  static const String unableToLoadStatisticsData = 'unableToLoadStatisticsData';
+
   static const String pleaseCheckInternetConnection =
       'pleaseCheckInternetConnection';
 
@@ -509,4 +474,28 @@ class LocaleKeys {
   static const String errorHandlingTorrentLink = 'errorHandlingTorrentLink';
   static const String failedToProcessTorrentFile = 'failedToProcessTorrentFile';
   static const String switchingToServer = 'switchingToServer';
+
+  // Error handler messages
+  static const String unknownErrorOccurred = 'unknownErrorOccurred';
+  static const String connectionTimedOutMessage = 'connectionTimedOutMessage';
+  static const String networkErrorMessage = 'networkErrorMessage';
+  static const String cannotFindServerMessage = 'cannotFindServerMessage';
+  static const String sslTlsErrorMessage = 'sslTlsErrorMessage';
+  static const String authenticationFailedMessage =
+      'authenticationFailedMessage';
+  static const String serverNotFoundMessage = 'serverNotFoundMessage';
+  static const String serverErrorMessage = 'serverErrorMessage';
+  static const String invalidUrlFormatMessage = 'invalidUrlFormatMessage';
+  static const String requestTimedOutMessage = 'requestTimedOutMessage';
+  static const String connectionErrorMessage = 'connectionErrorMessage';
+  static const String connectionFailedMessage = 'connectionFailedMessage';
+
+  // Short error messages
+  static const String connectionFailed = 'connectionFailed';
+  static const String connectionTimedOut = 'connectionTimedOut';
+  static const String authenticationFailed = 'authenticationFailed';
+  static const String serverNotFound = 'serverNotFound';
+  static const String networkError = 'networkError';
+  static const String cannotFindServer = 'cannotFindServer';
+  static const String requestTimedOut = 'requestTimedOut';
 }
