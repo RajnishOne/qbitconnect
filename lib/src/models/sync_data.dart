@@ -26,6 +26,18 @@ class SyncData {
   });
 
   factory SyncData.fromMap(Map<String, dynamic> map) {
+    // Handle tags field - it can be either List<String> or Map<String, dynamic>
+    Map<String, dynamic>? tags;
+    if (map['tags'] != null) {
+      if (map['tags'] is List) {
+        // Convert List<String> to Map<String, dynamic>
+        final tagsList = map['tags'] as List;
+        tags = {for (String tag in tagsList) tag: tag};
+      } else if (map['tags'] is Map) {
+        tags = map['tags'] as Map<String, dynamic>;
+      }
+    }
+
     return SyncData(
       rid: map['rid'] ?? 0,
       fullUpdate: map['full_update'] ?? false,
@@ -33,7 +45,7 @@ class SyncData {
       torrentsRemoved: map['torrents_removed'],
       categories: map['categories'],
       categoriesRemoved: map['categories_removed'],
-      tags: map['tags'],
+      tags: tags,
       tagsRemoved: map['tags_removed'],
       trackers: map['trackers'],
       trackersRemoved: map['trackers_removed'],

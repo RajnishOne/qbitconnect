@@ -226,17 +226,16 @@ class Statistics {
     // All-time statistics should come from server state, not transfer info
     // Transfer info contains session data, server state contains all-time data
     // Try multiple possible field names for different qBittorrent versions
-    final allTimeDownloaded = _safeToInt(serverState?['alltime_dl']) > 0
-        ? _safeToInt(serverState?['alltime_dl'])
-        : _safeToInt(serverState?['all_time_dl']) > 0
-        ? _safeToInt(serverState?['all_time_dl'])
-        : _safeToInt(serverState?['total_dl']);
-
-    final allTimeUploaded = _safeToInt(serverState?['alltime_ul']) > 0
-        ? _safeToInt(serverState?['alltime_ul'])
-        : _safeToInt(serverState?['all_time_ul']) > 0
-        ? _safeToInt(serverState?['all_time_ul'])
-        : _safeToInt(serverState?['total_ul']);
+    final allTimeDownloaded = _getAllTimeValue(serverState, [
+      'alltime_dl',
+      'all_time_dl',
+      'total_dl',
+    ]);
+    final allTimeUploaded = _getAllTimeValue(serverState, [
+      'alltime_ul',
+      'all_time_ul',
+      'total_ul',
+    ]);
 
     // Comprehensive data source prioritization
     // 1. Server state all-time data (most accurate)
@@ -245,16 +244,24 @@ class Statistics {
     int finalAllTimeDownloaded;
     int finalAllTimeUploaded;
 
-    // Check if we have valid server state data
-    if (serverState != null && (allTimeDownloaded > 0 || allTimeUploaded > 0)) {
+    // Prioritize server state all-time data - this is the most accurate source
+    // Server state contains cumulative all-time statistics from qBittorrent
+    // Always use server state data when available, even if values are 0
+    if (serverState != null &&
+        serverState.containsKey('alltime_dl') &&
+        serverState.containsKey('alltime_ul')) {
+      // Use server state all-time data (most accurate)
+      // This includes cases where alltime_dl or alltime_ul might be 0
       finalAllTimeDownloaded = allTimeDownloaded;
       finalAllTimeUploaded = allTimeUploaded;
     } else if (transferInfo != null) {
       // Fall back to transfer info if server state is not available
+      // Transfer info contains session data, not all-time data
       finalAllTimeDownloaded = _safeToInt(transferInfo['dl_info_data']);
       finalAllTimeUploaded = _safeToInt(transferInfo['up_info_data']);
     } else {
       // Last resort: use base stats (calculated from individual torrents)
+      // This is the least accurate as it only includes current torrents
       finalAllTimeDownloaded = baseStats.totalDownloaded;
       finalAllTimeUploaded = baseStats.totalUploaded;
     }
@@ -337,6 +344,24 @@ class Statistics {
   @override
   String toString() {
     return 'Statistics(totalTorrents: $totalTorrents, shareRatio: $shareRatio)';
+  }
+
+  /// Get all-time value from server state, trying multiple field names
+  static int _getAllTimeValue(
+    Map<String, dynamic>? serverState,
+    List<String> fieldNames,
+  ) {
+    if (serverState == null) return 0;
+
+    for (final fieldName in fieldNames) {
+      final value = serverState[fieldName];
+      if (value != null) {
+        final parsedValue = _safeToInt(value);
+        // Return the parsed value even if it's 0, as 0 is a valid all-time value
+        return parsedValue;
+      }
+    }
+    return 0;
   }
 
   /// Safe conversion to int with fallback to 0
