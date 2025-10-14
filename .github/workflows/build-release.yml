@@ -104,12 +104,18 @@ jobs:
       - name: Install Flutter dependencies
         run: flutter pub get
 
+      - name: Clean iOS build artifacts
+        run: |
+          rm -rf ios/Podfile.lock
+          rm -rf ios/Pods
+          flutter clean
+
       - name: Update CocoaPods repository
         run: pod repo update
         working-directory: ios
 
       - name: Install CocoaPods (run pod install)
-        run: pod install
+        run: pod install --repo-update
         working-directory: ios
 
       - name: Create dummy flutterfire command to prevent build script errors
