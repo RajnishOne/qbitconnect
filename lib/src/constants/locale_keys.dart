@@ -468,4 +468,14 @@ class LocaleKeys {
   static const String allApiCallsFailed = 'allApiCallsFailed';
   static const String unableToLoadStatisticsData = 'unableToLoadStatisticsData';
   static const String pleaseCheckInternetConnection = 'pleaseCheckInternetConnection';
+
+  // Placeholder texts and hints
+  static const String enterMagnetLinksHttpUrls = 'enterMagnetLinksHttpUrls';
+  static const String oneLinkPerLineSupported = 'oneLinkPerLineSupported';
+  static const String downloadInSequentialOrder = 'downloadInSequentialOrder';
+  static const String downloadFirstAndLastPiecesFirst = 'downloadFirstAndLastPiecesFirst';
+  static const String limitDownloadRateHint = 'limitDownloadRateHint';
+  static const String limitUploadRateHint = 'limitUploadRateHint';
+  static const String saveFilesToLocationHint = 'saveFilesToLocationHint';
+  static const String uncategorized = 'uncategorized';
 }

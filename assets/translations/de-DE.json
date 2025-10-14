@@ -385,5 +385,13 @@
   "wasted": "Verschwendet",
   "willRemoveServerConfig": "Dies entfernt die Server-Konfiguration und das gespeicherte Passwort.",
   "writeCacheOverload": "Schreib-Cache-Überlastung",
-  "yes": "Ja"
+  "yes": "Ja",
+  "enterMagnetLinksHttpUrls": "Magnet-Links, HTTP-URLs oder Info-Hashes eingeben",
+  "oneLinkPerLineSupported": "Ein Link pro Zeile (HTTP-Links, Magnet-Links und Info-Hashes werden unterstützt)",
+  "downloadInSequentialOrder": "In sequenzieller Reihenfolge herunterladen",
+  "downloadFirstAndLastPiecesFirst": "Erste und letzte Teile zuerst herunterladen",
+  "limitDownloadRateHint": "Download-Geschwindigkeit begrenzen:",
+  "limitUploadRateHint": "Upload-Geschwindigkeit begrenzen:",
+  "saveFilesToLocationHint": "Dateien an Speicherort speichern:",
+  "uncategorized": "Nicht kategorisiert"
 }

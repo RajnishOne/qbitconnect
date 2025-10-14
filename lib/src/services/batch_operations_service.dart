@@ -132,7 +132,7 @@ class BatchOperationsService {
 
       // Count categories
       final category = torrent.category.isEmpty
-          ? 'Uncategorized'
+          ? LocaleKeys.uncategorized.tr()
           : torrent.category;
       categories[category] = (categories[category] ?? 0) + 1;
 

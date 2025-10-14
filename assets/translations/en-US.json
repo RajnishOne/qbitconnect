@@ -385,5 +385,13 @@
   "wasted": "Wasted",
   "willRemoveServerConfig": "This will remove the server configuration and saved password.",
   "writeCacheOverload": "Write Cache Overload",
-  "yes": "Yes"
+  "yes": "Yes",
+  "enterMagnetLinksHttpUrls": "Enter magnet links, HTTP URLs, or info-hashes",
+  "oneLinkPerLineSupported": "One link per line (HTTP links, Magnet links and info-hashes are supported)",
+  "downloadInSequentialOrder": "Download in sequential order",
+  "downloadFirstAndLastPiecesFirst": "Download first and last pieces first",
+  "limitDownloadRateHint": "Limit download rate:",
+  "limitUploadRateHint": "Limit upload rate:",
+  "saveFilesToLocationHint": "Save files to location:",
+  "uncategorized": "Uncategorized"
 }

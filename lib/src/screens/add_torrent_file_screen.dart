@@ -387,7 +387,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
                       .allCategories
                       .where(
                         (category) =>
-                            category != 'Uncategorized' &&
+                            category != LocaleKeys.uncategorized.tr() &&
                             category != LocaleKeys.none.tr(),
                       )
                       .toSet()

@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../models/torrent.dart';
 import '../models/transfer_info.dart';
 import '../models/torrent_details.dart';
 import '../models/torrent_add_options.dart';
 import '../api/qbittorrent_api.dart';
+import '../constants/locale_keys.dart';
 
 /// Manages torrent data, operations, and filtering logic
 class TorrentState extends ChangeNotifier {
@@ -315,7 +317,9 @@ class TorrentState extends ChangeNotifier {
     counts['all'] = all.length;
 
     for (final t in all) {
-      final category = t.category.isEmpty ? 'Uncategorized' : t.category;
+      final category = t.category.isEmpty
+          ? LocaleKeys.uncategorized.tr()
+          : t.category;
       counts[category] = (counts[category] ?? 0) + 1;
     }
 
@@ -370,7 +374,7 @@ class TorrentState extends ChangeNotifier {
       if (t.category.isNotEmpty) {
         categories.add(t.category);
       } else {
-        categories.add('Uncategorized');
+        categories.add(LocaleKeys.uncategorized.tr());
       }
     }
     return categories.toList();
@@ -378,7 +382,9 @@ class TorrentState extends ChangeNotifier {
 
   bool _matchesCategory(Torrent t, String category) {
     if (category == 'all') return true;
-    final torrentCategory = t.category.isEmpty ? 'Uncategorized' : t.category;
+    final torrentCategory = t.category.isEmpty
+        ? LocaleKeys.uncategorized.tr()
+        : t.category;
     return torrentCategory == category;
   }
 

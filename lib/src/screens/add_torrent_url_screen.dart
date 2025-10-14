@@ -210,15 +210,17 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(),
                             alignLabelWithHint: true,
-                            hintText:
-                                'Enter magnet links, HTTP URLs, or info-hashes',
+                            hintText: LocaleKeys.enterMagnetLinksHttpUrls.tr(),
                             labelText: LocaleKeys.torrentUrls.tr(),
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'One link per line (HTTP links, Magnet links and info-hashes are supported)',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        Text(
+                          LocaleKeys.oneLinkPerLineSupported.tr(),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
                         ),
                       ],
                     ),
@@ -297,7 +299,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
                       .allCategories
                       .where(
                         (category) =>
-                            category != 'Uncategorized' &&
+                            category != LocaleKeys.uncategorized.tr() &&
                             category != LocaleKeys.none.tr(),
                       )
                       .toSet()
@@ -381,7 +383,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
             const SizedBox(width: 16),
             Expanded(
               child: _buildCheckboxOption(
-                'Download in sequential order',
+                LocaleKeys.downloadInSequentialOrder.tr(),
                 _sequentialDownload,
                 (value) => setState(() => _sequentialDownload = value!),
               ),
@@ -395,7 +397,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
           children: [
             Expanded(
               child: _buildCheckboxOption(
-                'Download first and last pieces first',
+                LocaleKeys.downloadFirstAndLastPiecesFirst.tr(),
                 _firstLastPiecePriority,
                 (value) => setState(() => _firstLastPiecePriority = value!),
               ),
@@ -409,14 +411,14 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
           children: [
             Expanded(
               child: _buildRateLimitOption(
-                'Limit download rate:',
+                LocaleKeys.limitDownloadRateHint.tr(),
                 _downloadLimitController,
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: _buildRateLimitOption(
-                'Limit upload rate:',
+                LocaleKeys.limitUploadRateHint.tr(),
                 _uploadLimitController,
               ),
             ),
@@ -498,9 +500,9 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Save files to location:',
-              style: TextStyle(fontWeight: FontWeight.w500),
+            Text(
+              LocaleKeys.saveFilesToLocationHint.tr(),
+              style: const TextStyle(fontWeight: FontWeight.w500),
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
