@@ -77,6 +77,7 @@ class LocaleKeys {
 
   // Connection settings
   static const String port = 'port';
+  static const String client = 'client';
   static const String username = 'username';
   static const String password = 'password';
   static const String customHeaders = 'customHeaders';

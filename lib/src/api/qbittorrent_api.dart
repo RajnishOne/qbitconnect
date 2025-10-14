@@ -285,6 +285,11 @@ class QbittorrentApiClient {
     return await _withAutoReauth(() => torrentDetails.getTorrentTrackers(hash));
   }
 
+  Future<Map<String, dynamic>> getTorrentPeers(String hash) async {
+    await _ensureReady();
+    return await _withAutoReauth(() => statistics.fetchTorrentPeers(hash));
+  }
+
   // Queue management methods
   Future<void> increaseTorrentPriority(List<String> hashes) async {
     return await _withAutoReauth(

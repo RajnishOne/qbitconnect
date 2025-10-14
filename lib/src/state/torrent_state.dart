@@ -4,6 +4,7 @@ import '../models/torrent.dart';
 import '../models/transfer_info.dart';
 import '../models/torrent_details.dart';
 import '../models/torrent_add_options.dart';
+import '../models/torrent_peer.dart';
 import '../api/qbittorrent_api.dart';
 import '../constants/locale_keys.dart';
 
@@ -188,6 +189,30 @@ class TorrentState extends ChangeNotifier {
     try {
       final trackers = await client.getTorrentTrackers(hash);
       return trackers.map((t) => TorrentTracker.fromMap(t)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Get torrent peers
+  Future<List<TorrentPeer>> getTorrentPeers(
+    QbittorrentApiClient client,
+    String hash,
+  ) async {
+    try {
+      final peersData = await client.getTorrentPeers(hash);
+      final peersList = <TorrentPeer>[];
+
+      if (peersData['peers'] != null) {
+        final peers = peersData['peers'] as Map<String, dynamic>;
+        for (final entry in peers.entries) {
+          final ip = entry.key;
+          final peerData = entry.value as Map<String, dynamic>;
+          peersList.add(TorrentPeer.fromMap(ip, peerData));
+        }
+      }
+
+      return peersList;
     } catch (e) {
       return [];
     }

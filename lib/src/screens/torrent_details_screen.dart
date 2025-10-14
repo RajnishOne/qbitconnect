@@ -6,6 +6,7 @@ import '../constants/locale_keys.dart';
 import '../state/app_state_manager.dart';
 import '../models/torrent.dart';
 import '../models/torrent_details.dart';
+import '../models/torrent_peer.dart';
 import '../utils/error_handler.dart';
 import '../utils/byte_formatter.dart';
 import '../utils/file_extension_cache.dart';
@@ -27,6 +28,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
   TorrentDetails? _details;
   List<TorrentFile> _files = [];
   List<TorrentTracker> _trackers = [];
+  List<TorrentPeer> _peers = [];
 
   bool _isLoading = true;
   bool _isRefreshing = false;
@@ -38,7 +40,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _loadData();
 
     // Start real-time updates
@@ -92,6 +94,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
         _appState!.getTorrentDetails(widget.torrent.hash),
         _appState!.getTorrentFiles(widget.torrent.hash),
         _appState!.getTorrentTrackers(widget.torrent.hash),
+        _appState!.getTorrentPeers(widget.torrent.hash),
       ]);
 
       if (mounted) {
@@ -99,6 +102,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
           _details = results[0] as TorrentDetails?;
           _files = results[1] as List<TorrentFile>;
           _trackers = results[2] as List<TorrentTracker>;
+          _peers = results[3] as List<TorrentPeer>;
           _isLoading = false;
         });
       }
@@ -205,6 +209,32 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
     }
   }
 
+  Future<void> _refreshPeersTab() async {
+    if (_isRefreshing) return;
+
+    setState(() {
+      _isRefreshing = true;
+    });
+
+    try {
+      _appState ??= context.read<AppState>();
+      final peers = await _appState!.getTorrentPeers(widget.torrent.hash);
+
+      if (mounted) {
+        setState(() {
+          _peers = peers;
+          _isRefreshing = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
@@ -239,6 +269,7 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
               ReusableWidgets.infoTab,
               ReusableWidgets.filesTab,
               ReusableWidgets.trackersTab,
+              Tab(text: LocaleKeys.peers.tr(), icon: Icon(Icons.people)),
             ],
           ),
         ),
@@ -272,6 +303,12 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
                     child: RefreshIndicator(
                       onRefresh: _refreshTrackersTab,
                       child: _buildTrackersTab(),
+                    ),
+                  ),
+                  RepaintBoundary(
+                    child: RefreshIndicator(
+                      onRefresh: _refreshPeersTab,
+                      child: _buildPeersTab(),
                     ),
                   ),
                 ],
@@ -532,6 +569,94 @@ class _TorrentDetailsScreenState extends State<TorrentDetailsScreen>
             ),
           );
         }),
+      ],
+    );
+  }
+
+  Widget _buildPeersTab() {
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Text(
+                '${LocaleKeys.peers.tr()} (${_peers.length})',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
+        ),
+        if (_peers.isEmpty)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Text(
+                LocaleKeys.noDataAvailable.tr(),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
+              ),
+            ),
+          )
+        else
+          ...List.generate(_peers.length, (index) {
+            final peer = _peers[index];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: ListTile(
+                leading: Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: peer.connectionColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                title: Text(
+                  peer.ip,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${LocaleKeys.client.tr()}: ${peer.clientName}'),
+                    Text('${LocaleKeys.port.tr()}: ${peer.port}'),
+                    Text(
+                      '${LocaleKeys.progress.tr()}: ${peer.formattedProgress}',
+                    ),
+                    if (peer.isSeed)
+                      Text(
+                        LocaleKeys.seeders.tr(),
+                        style: TextStyle(
+                          color: Colors.green[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                  ],
+                ),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      peer.formattedDlSpeed,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      peer.formattedUpSpeed,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      peer.connectionType,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
       ],
     );
   }

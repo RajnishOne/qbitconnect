@@ -6,6 +6,7 @@ import '../models/torrent.dart';
 import '../models/transfer_info.dart';
 import '../models/torrent_details.dart';
 import '../models/torrent_add_options.dart';
+import '../models/torrent_peer.dart';
 import '../models/server_config.dart';
 import '../services/server_storage.dart';
 import '../services/directory_suggestion_service.dart';
@@ -285,6 +286,11 @@ class AppState extends ChangeNotifier {
   Future<List<TorrentTracker>> getTorrentTrackers(String hash) async {
     if (client == null) return [];
     return await _torrentState.getTorrentTrackers(client!, hash);
+  }
+
+  Future<List<TorrentPeer>> getTorrentPeers(String hash) async {
+    if (client == null) return [];
+    return await _torrentState.getTorrentPeers(client!, hash);
   }
 
   Future<void> recheckTorrent(String hash) async {
