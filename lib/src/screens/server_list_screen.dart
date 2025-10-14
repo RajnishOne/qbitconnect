@@ -183,18 +183,18 @@ class _ServerListScreenState extends State<ServerListScreen> {
         builder: (context) => AlertDialog(
           title: Text(LocaleKeys.deleteServer.tr()),
           content: Text(
-            'Are you sure you want to delete "${server.name}"?\n\n'
-            'This will remove the server configuration and saved password.',
+            '${LocaleKeys.areYouSureDeleteServer.tr()} "${server.name}"?\n\n'
+            '${LocaleKeys.willRemoveServerConfig.tr()}',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: Text(LocaleKeys.cancel.tr()),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('Delete'),
+              child: Text(LocaleKeys.delete.tr()),
             ),
           ],
         ),
@@ -218,20 +218,20 @@ class _ServerListScreenState extends State<ServerListScreen> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Delete Last Server'),
+          title: Text(LocaleKeys.deleteLastServer.tr()),
           content: Text(
-            'Are you sure you want to delete "${serverToDelete.name}"?\n\n'
-            'This is your last server. You will need to add a new server to continue.',
+            '${LocaleKeys.areYouSureDeleteServer.tr()} "${serverToDelete.name}"?\n\n'
+            '${LocaleKeys.lastServerNeedToAddNew.tr()}',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: Text(LocaleKeys.cancel.tr()),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('Delete'),
+              child: Text(LocaleKeys.delete.tr()),
             ),
           ],
         ),
@@ -273,16 +273,18 @@ class _ServerListScreenState extends State<ServerListScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                '${server.name} deleted. ${replacement.name} set as auto-connect',
+                '${server.name} ${LocaleKeys.serverDeletedReplacementSet.tr()} ${replacement.name}',
               ),
             ),
           );
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('${server.name} deleted')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${server.name} ${LocaleKeys.serverDeleted.tr()}'),
+            ),
+          );
         }
       }
 
@@ -294,7 +296,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Failed to delete server. Please try again.'),
+            content: Text(LocaleKeys.failedToDeleteServerTryAgain.tr()),
             backgroundColor: Colors.red,
           ),
         );
@@ -313,7 +315,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.link),
-              title: const Text('Connect'),
+              title: Text(LocaleKeys.connect.tr()),
               onTap: () {
                 Navigator.pop(context);
                 _connectToServer(server);
@@ -323,21 +325,21 @@ class _ServerListScreenState extends State<ServerListScreen> {
               ListTile(
                 leading: Icon(Icons.delete, color: Colors.grey.shade400),
                 title: Text(
-                  'Delete',
+                  LocaleKeys.delete.tr(),
                   style: TextStyle(color: Colors.grey.shade400),
                 ),
-                subtitle: const Text(
-                  'Disconnect first to delete',
-                  style: TextStyle(fontSize: 12),
+                subtitle: Text(
+                  LocaleKeys.disconnectFirstToDelete.tr(),
+                  style: const TextStyle(fontSize: 12),
                 ),
                 enabled: false,
               )
             else
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text(
-                  'Delete',
-                  style: TextStyle(color: Colors.red),
+                title: Text(
+                  LocaleKeys.delete.tr(),
+                  style: const TextStyle(color: Colors.red),
                 ),
                 onTap: () {
                   Navigator.pop(context);
@@ -383,13 +385,13 @@ class _ServerListScreenState extends State<ServerListScreen> {
           children: [
             const SizedBox(height: 4),
             Text(
-              isChecking ? 'Checking connection...' : server.baseUrl,
+              isChecking ? LocaleKeys.checkingConnection.tr() : server.baseUrl,
               style: const TextStyle(fontSize: 12),
             ),
             if (!isChecking && server.lastConnectedAt != null) ...[
               const SizedBox(height: 4),
               Text(
-                'Last connected: ${FormatUtils.formatDate(server.lastConnectedAt!)}',
+                '${LocaleKeys.lastConnected.tr()} ${FormatUtils.formatDate(server.lastConnectedAt!)}',
                 style: TextStyle(
                   fontSize: 11,
                   color: Theme.of(context).textTheme.bodySmall?.color,
@@ -399,7 +401,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
             if (!isChecking && server.qbittorrentVersion != null) ...[
               const SizedBox(height: 4),
               Text(
-                'qBittorrent ${server.qbittorrentVersion}',
+                '${LocaleKeys.qbittorrentVersion.tr()} ${server.qbittorrentVersion}',
                 style: TextStyle(
                   fontSize: 11,
                   color: Theme.of(context).textTheme.bodySmall?.color,
@@ -410,7 +412,10 @@ class _ServerListScreenState extends State<ServerListScreen> {
         ),
         trailing: isActive
             ? Chip(
-                label: const Text('Active', style: TextStyle(fontSize: 10)),
+                label: Text(
+                  LocaleKeys.active.tr(),
+                  style: const TextStyle(fontSize: 10),
+                ),
                 backgroundColor: Colors.green.withValues(alpha: 0.2),
                 side: BorderSide.none,
               )
@@ -431,7 +436,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
       bottom: Platform.isAndroid,
       top: false,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Servers')),
+        appBar: AppBar(title: Text(LocaleKeys.servers.tr())),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.push(
@@ -440,7 +445,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
             ).then((_) => _loadServers()); // Reload servers after returning
           },
           icon: const Icon(Icons.add),
-          label: const Text('Add Server'),
+          label: Text(LocaleKeys.addServer.tr()),
         ),
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -458,12 +463,12 @@ class _ServerListScreenState extends State<ServerListScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'No Servers',
+                        LocaleKeys.noServers.tr(),
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Tap "Add Server" below to connect to your first qBittorrent server.',
+                        LocaleKeys.tapAddServerBelowToConnect.tr(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Theme.of(context).textTheme.bodySmall?.color,
@@ -498,7 +503,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                'Tap to connect. Long press for options.',
+                                LocaleKeys.tapToConnectLongPressOptions.tr(),
                                 style: TextStyle(
                                   color: Theme.of(
                                     context,

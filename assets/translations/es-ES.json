@@ -179,5 +179,18 @@
   "downloadFirstLast": "Descargar primero y último fragmentos primero",
   "limitDownloadRate": "Limitar velocidad de descarga",
   "limitUploadRate": "Limitar velocidad de subida",
-  "saveFilesToLocation": "Guardar archivos en ubicación"
+  "saveFilesToLocation": "Guardar archivos en ubicación",
+  "areYouSureDeleteServer": "¿Estás seguro de que quieres eliminar",
+  "willRemoveServerConfig": "Esto eliminará la configuración del servidor y la contraseña guardada.",
+  "deleteLastServer": "Eliminar Último Servidor",
+  "lastServerNeedToAddNew": "Este es tu último servidor. Necesitarás agregar un nuevo servidor para continuar.",
+  "serverDeletedReplacementSet": "eliminado. establecido como auto-conectar",
+  "serverDeleted": "eliminado",
+  "failedToDeleteServerTryAgain": "Error al eliminar servidor. Por favor inténtalo de nuevo.",
+  "disconnectFirstToDelete": "Desconectar primero para eliminar",
+  "checkingConnection": "Verificando conexión...",
+  "lastConnected": "Última conexión:",
+  "qbittorrentVersion": "qBittorrent",
+  "tapToConnectLongPressOptions": "Toca para conectar. Mantén presionado para opciones.",
+  "tapAddServerBelowToConnect": "Toca \"Agregar Servidor\" abajo para conectarte a tu primer servidor qBittorrent."
 }

@@ -231,4 +231,21 @@ class LocaleKeys {
   static const String limitDownloadRate = 'limitDownloadRate';
   static const String limitUploadRate = 'limitUploadRate';
   static const String saveFilesToLocation = 'saveFilesToLocation';
+
+  // Server list screen specific keys
+  static const String areYouSureDeleteServer = 'areYouSureDeleteServer';
+  static const String willRemoveServerConfig = 'willRemoveServerConfig';
+  static const String lastServerNeedToAddNew = 'lastServerNeedToAddNew';
+  static const String serverDeletedReplacementSet =
+      'serverDeletedReplacementSet';
+  static const String serverDeleted = 'serverDeleted';
+  static const String failedToDeleteServerTryAgain =
+      'failedToDeleteServerTryAgain';
+  static const String disconnectFirstToDelete = 'disconnectFirstToDelete';
+  static const String checkingConnection = 'checkingConnection';
+  static const String lastConnected = 'lastConnected';
+  static const String qbittorrentVersion = 'qbittorrentVersion';
+  static const String tapToConnectLongPressOptions =
+      'tapToConnectLongPressOptions';
+  static const String tapAddServerBelowToConnect = 'tapAddServerBelowToConnect';
 }
