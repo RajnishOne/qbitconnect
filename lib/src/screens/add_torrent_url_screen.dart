@@ -302,8 +302,7 @@ class _AddTorrentUrlScreenState extends State<AddTorrentUrlScreen>
                             category != LocaleKeys.uncategorized.tr() &&
                             category != LocaleKeys.none.tr(),
                       )
-                      .toSet()
-                      .toList(),
+                      .toSet(),
                 ],
                 (value) => setState(
                   () => _categoryController.text = value == LocaleKeys.none.tr()

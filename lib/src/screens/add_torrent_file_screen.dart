@@ -390,8 +390,7 @@ class _AddTorrentFileScreenState extends State<AddTorrentFileScreen>
                             category != LocaleKeys.uncategorized.tr() &&
                             category != LocaleKeys.none.tr(),
                       )
-                      .toSet()
-                      .toList(),
+                      .toSet(),
                 ],
                 (value) => setState(
                   () => _categoryController.text = value == LocaleKeys.none.tr()
