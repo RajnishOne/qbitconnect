@@ -208,9 +208,79 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
     final totalPieces = widget.details.piecesNum;
     final downloadedPieces = widget.details.piecesHave;
 
+    // Handle edge case: no pieces available
+    if (totalPieces <= 0) {
+      return Container(
+        height: 240,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: theme.colorScheme.outline.withValues(alpha: 0.2),
+            width: 2,
+          ),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.info_outline,
+                size: 48,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'No pieces information available',
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     // Smart grouping: show max 300 blocks for performance
     final displayBlocks = min(300, totalPieces);
     final piecesPerBlock = totalPieces / displayBlocks;
+
+    // Validate piecesPerBlock to prevent NaN/Infinity
+    if (piecesPerBlock.isNaN || piecesPerBlock.isInfinite) {
+      return Container(
+        height: 240,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: theme.colorScheme.outline.withValues(alpha: 0.2),
+            width: 2,
+          ),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 48,
+                color: theme.colorScheme.error,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Invalid pieces data',
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     // Calculate grid columns (aim for roughly square grid)
     final columns = sqrt(displayBlocks).ceil();
@@ -239,14 +309,20 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
               spacing: 2,
               runSpacing: 2,
               children: List.generate(displayBlocks, (index) {
+                // Safe calculation with validation
                 final startPiece = (index * piecesPerBlock).floor();
                 final endPiece = ((index + 1) * piecesPerBlock).floor();
-                final isDownloaded = startPiece < downloadedPieces;
+                
+                // Additional validation to prevent any edge cases
+                final safeStartPiece = startPiece.isNaN || startPiece.isInfinite ? 0 : startPiece;
+                final safeEndPiece = endPiece.isNaN || endPiece.isInfinite ? 0 : endPiece;
+                
+                final isDownloaded = safeStartPiece < downloadedPieces;
                 final isPartiallyDownloaded =
-                    startPiece < downloadedPieces &&
-                    endPiece > downloadedPieces;
+                    safeStartPiece < downloadedPieces &&
+                    safeEndPiece > downloadedPieces;
                 final isRecentlyAdded = _recentlyAddedPieces.any(
-                  (piece) => piece >= startPiece && piece < endPiece,
+                  (piece) => piece >= safeStartPiece && piece < safeEndPiece,
                 );
 
                 return AnimatedBuilder(

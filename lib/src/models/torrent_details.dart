@@ -120,10 +120,10 @@ class TorrentDetails {
 
       seeds: map['seeds'] ?? 0,
       leeches: map['leeches'] ?? 0,
-      piecesHave: map['pieces_have'] ?? 0,
-      piecesNum: map['pieces_num'] ?? 0,
+      piecesHave: _safeIntConversion(map['pieces_have']),
+      piecesNum: _safeIntConversion(map['pieces_num']),
       pieceSize: map['piece_size'] ?? 0,
-      progress: (map['progress'] ?? 0.0).toDouble(),
+      progress: _safeDoubleConversion(map['progress']),
       state: (map['state'] ?? '').toString(),
       forceStart: map['force_start'] ?? false,
       autoTmm: map['auto_tmm'] ?? false,
@@ -162,6 +162,22 @@ class TorrentDetails {
       return intValue;
     } catch (e) {
       return 0;
+    }
+  }
+
+  static double _safeDoubleConversion(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) {
+      if (value.isNaN || value.isInfinite) return 0.0;
+      return value;
+    }
+    if (value is int) return value.toDouble();
+    try {
+      final doubleValue = double.parse(value.toString());
+      if (doubleValue.isNaN || doubleValue.isInfinite) return 0.0;
+      return doubleValue;
+    } catch (e) {
+      return 0.0;
     }
   }
 
