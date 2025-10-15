@@ -95,6 +95,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Header with title and stats
               _buildHeader(theme, progress),
@@ -119,6 +120,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
 
   Widget _buildHeader(ThemeData theme, double progress) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: const EdgeInsets.all(12),
@@ -147,6 +149,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         const SizedBox(width: 16),
         Expanded(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -154,6 +157,8 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               Text(
@@ -161,6 +166,8 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -190,6 +197,8 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
                     fontWeight: FontWeight.bold,
                     color: _getProgressColor(progress),
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             );
@@ -312,11 +321,15 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
                 // Safe calculation with validation
                 final startPiece = (index * piecesPerBlock).floor();
                 final endPiece = ((index + 1) * piecesPerBlock).floor();
-                
+
                 // Additional validation to prevent any edge cases
-                final safeStartPiece = startPiece.isNaN || startPiece.isInfinite ? 0 : startPiece;
-                final safeEndPiece = endPiece.isNaN || endPiece.isInfinite ? 0 : endPiece;
-                
+                final safeStartPiece = startPiece.isNaN || startPiece.isInfinite
+                    ? 0
+                    : startPiece;
+                final safeEndPiece = endPiece.isNaN || endPiece.isInfinite
+                    ? 0
+                    : endPiece;
+
                 final isDownloaded = safeStartPiece < downloadedPieces;
                 final isPartiallyDownloaded =
                     safeStartPiece < downloadedPieces &&
@@ -465,6 +478,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
 
   Widget _buildFooter(ThemeData theme) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
           child: _buildInfoChip(
@@ -514,6 +528,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
         border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 20, color: color),
           const SizedBox(height: 6),
@@ -525,6 +540,7 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 2),
           Text(
@@ -533,6 +549,9 @@ class _AnimatedPiecesWidgetState extends State<AnimatedPiecesWidget>
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 10,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
         ],
       ),
