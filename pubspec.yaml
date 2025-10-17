@@ -1,7 +1,7 @@
 name: qbitconnect
 description: "A Flutter app for managing qBittorrent remotely with a modern UI and real-time updates."
 publish_to: 'none'
-version: 1.6.3+28
+version: 1.6.4+30
 
 environment:
   sdk: ^3.8.1
