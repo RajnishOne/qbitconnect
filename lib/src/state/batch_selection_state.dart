@@ -154,11 +154,8 @@ class BatchSelectionState extends ChangeNotifier {
     _isSelectAllMode = false;
     _isInvertSelectionMode = false;
 
-    if (_selectedHashes.isEmpty) {
-      exitSelectionMode();
-    } else {
-      notifyListeners();
-    }
+    // Since we just cleared the selection, always exit selection mode
+    exitSelectionMode();
   }
 
   /// Invert current selection

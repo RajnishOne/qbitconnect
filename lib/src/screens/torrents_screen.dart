@@ -400,14 +400,8 @@ class _TorrentsScreenState extends State<TorrentsScreen>
                               onLongPress: () =>
                                   _showTorrentActions(context, torrent),
                               onSelectionToggle: () {
-                                // Update batch selection state when selection changes
-                                final batchState = context
-                                    .read<BatchSelectionState>();
-                                batchState.updateFilterState(
-                                  filter: appState.activeFilter,
-                                  category: appState.activeCategory,
-                                  searchQuery: _searchQuery,
-                                );
+                                // No need to update filter state on selection toggle
+                                // The selection state is already managed by the toggleSelection method
                               },
                             );
                           },

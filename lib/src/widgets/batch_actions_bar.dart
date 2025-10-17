@@ -115,11 +115,17 @@ class _BatchActionsBarState extends State<BatchActionsBar>
           Icon(Icons.check_circle, size: 20),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              batchState.getSelectionSummary(),
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+            child: Selector<BatchSelectionState, String>(
+              selector: (context, batchState) =>
+                  batchState.getSelectionSummary(),
+              builder: (context, selectionSummary, child) {
+                return Text(
+                  selectionSummary,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                );
+              },
             ),
           ),
           IconButton(
