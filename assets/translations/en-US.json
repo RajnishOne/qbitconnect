@@ -381,5 +381,21 @@
   "headerKeyHelperText": "The header name (case-insensitive)",
   "headerValueHint": "e.g., Bearer token123, MyApp/1.0",
   "headerValueHelperText": "The header value",
-  "refresh": "Refresh"
+  "refresh": "Refresh",
+  "contribute": "Contribute",
+  "contributeDescription": "Love qBitConnect? Help support its development and make it even better!",
+  "financialSupport": "Financial Support",
+  "supportOnPatreon": "Support on Patreon",
+  "supportOnPatreonDescription": "Become a patron and help fund ongoing development",
+  "supportOnKofi": "Support on Ko-fi",
+  "supportOnKofiDescription": "Buy me a coffee and support the project",
+  "openSourceContributions": "Open Source Contributions",
+  "starRepository": "Star Repository",
+  "starRepositoryDescription": "Show your support by starring the project on GitHub",
+  "createPullRequest": "Create Pull Request",
+  "createPullRequestDescription": "Contribute code improvements and new features",
+  "openIssue": "Open Issue",
+  "openIssueDescription": "Report bugs or suggest new features",
+  "couldNotOpenUrl": "Could not open URL",
+  "supportDevelopment": "Support development"
 }

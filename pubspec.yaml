@@ -30,6 +30,7 @@ dependencies:
   path_provider: ^2.1.4
   app_links: ^6.3.2
   fl_chart: ^1.1.1
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -43,3 +44,4 @@ flutter:
   
   assets:
     - assets/translations/
+    - assets/images/

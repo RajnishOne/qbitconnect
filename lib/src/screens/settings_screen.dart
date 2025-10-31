@@ -16,6 +16,7 @@ import 'language_selection_screen.dart';
 import 'webview_screen.dart';
 import 'torrent_card_display_settings_screen.dart';
 import 'server_list_screen.dart';
+import 'contribute_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -571,6 +572,26 @@ class _SettingsScreenState extends State<SettingsScreen>
                 leading: const Icon(Icons.network_check_rounded),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: context.showNetworkLogs,
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Contribute Section
+            Card(
+              child: ListTile(
+                title: Text(LocaleKeys.contribute.tr()),
+                subtitle: Text(LocaleKeys.supportDevelopment.tr()),
+                leading: const Icon(Icons.favorite),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ContributeScreen(),
+                    ),
+                  );
+                },
               ),
             ),
 

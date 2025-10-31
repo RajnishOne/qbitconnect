@@ -509,4 +509,22 @@ class LocaleKeys {
   static const String networkError = 'networkError';
   static const String cannotFindServer = 'cannotFindServer';
   static const String requestTimedOut = 'requestTimedOut';
+
+  // Contribute screen specific keys
+  static const String contribute = 'contribute';
+  static const String contributeDescription = 'contributeDescription';
+  static const String financialSupport = 'financialSupport';
+  static const String supportOnPatreon = 'supportOnPatreon';
+  static const String supportOnPatreonDescription = 'supportOnPatreonDescription';
+  static const String supportOnKofi = 'supportOnKofi';
+  static const String supportOnKofiDescription = 'supportOnKofiDescription';
+  static const String openSourceContributions = 'openSourceContributions';
+  static const String starRepository = 'starRepository';
+  static const String starRepositoryDescription = 'starRepositoryDescription';
+  static const String createPullRequest = 'createPullRequest';
+  static const String createPullRequestDescription = 'createPullRequestDescription';
+  static const String openIssue = 'openIssue';
+  static const String openIssueDescription = 'openIssueDescription';
+  static const String couldNotOpenUrl = 'couldNotOpenUrl';
+  static const String supportDevelopment = 'supportDevelopment';
 }
