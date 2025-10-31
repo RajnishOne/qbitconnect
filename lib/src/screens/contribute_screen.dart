@@ -205,49 +205,6 @@ class _ContributeScreenState extends State<ContributeScreen> {
 
             const SizedBox(height: 12),
 
-            // Create Pull Request
-            Card(
-              child: ListTile(
-                leading: Container(
-                  width: 40,
-                  height: 40,
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Theme.of(context).brightness == Brightness.dark
-                      ? Image.asset(
-                          'assets/images/github-mark-white.png',
-                          fit: BoxFit.contain,
-                        )
-                      : ColorFiltered(
-                          colorFilter: const ColorFilter.mode(
-                            Colors.black,
-                            BlendMode.srcIn,
-                          ),
-                          child: Image.asset(
-                            'assets/images/github-mark-white.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                ),
-                title: Text(LocaleKeys.createPullRequest.tr()),
-                subtitle: Text(LocaleKeys.createPullRequestDescription.tr()),
-                trailing: const Icon(Icons.open_in_new),
-                onTap: () {
-                  FirebaseService.instance.logEvent(
-                    name: 'contribute_pr_clicked',
-                  );
-                  _launchUrl(
-                    'https://github.com/RajnishOne/qbitconnect/compare',
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
             // Open Issue
             Card(
               child: ListTile(
@@ -283,7 +240,7 @@ class _ContributeScreenState extends State<ContributeScreen> {
                     name: 'contribute_issue_clicked',
                   );
                   _launchUrl(
-                    'https://github.com/RajnishOne/qbitconnect/issues/new',
+                    'https://github.com/RajnishOne/qbitconnect/issues',
                   );
                 },
               ),

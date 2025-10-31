@@ -392,8 +392,6 @@
   "openSourceContributions": "Open Source Contributions",
   "starRepository": "Star Repository",
   "starRepositoryDescription": "Show your support by starring the project on GitHub",
-  "createPullRequest": "Create Pull Request",
-  "createPullRequestDescription": "Contribute code improvements and new features",
   "openIssue": "Open Issue",
   "openIssueDescription": "Report bugs or suggest new features",
   "couldNotOpenUrl": "Could not open URL",
