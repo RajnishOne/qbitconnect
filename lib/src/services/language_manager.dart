@@ -62,6 +62,12 @@ class LanguageManager {
       nativeName: 'Deutsch',
       locale: Locale('de', 'DE'),
     ),
+    LanguageInfo(
+      code: 'pt',
+      name: 'Portuguese',
+      nativeName: 'Português',
+      locale: Locale('pt', 'BR'),
+    ),
   ];
 
   /// Get the current selected language
