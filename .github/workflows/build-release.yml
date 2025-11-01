@@ -8,9 +8,9 @@ on:
         required: true
         default: 'v1.0.0'
       release_notes:
-        description: 'Release notes'
+        description: 'Release notes (optional - will use RELEASE_NOTES.yaml if not provided)'
         required: false
-        default: 'Release build'
+        default: ''
 
 jobs:
   build-android:
@@ -49,6 +49,48 @@ jobs:
       - name: Install Flutter dependencies
         run: flutter pub get
 
+      - name: Install yq for YAML parsing
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
+
+      - name: Extract release notes from RELEASE_NOTES.yaml
+        id: extract_notes
+        run: |
+          # Extract version from tag (remove 'v' prefix if present)
+          VERSION=$(echo "${{ github.event.inputs.tag }}" | sed 's/^v//')
+          echo "Looking for release notes for version: $VERSION"
+          
+          # Extract notes from RELEASE_NOTES.yaml using yq
+          if [ -f "RELEASE_NOTES.yaml" ]; then
+            RELEASE_NOTES=$(yq eval ".releases.\"$VERSION\".notes // \"\"" RELEASE_NOTES.yaml 2>/dev/null || echo "")
+            RELEASE_NOTES=$(echo "$RELEASE_NOTES" | sed 's/^[[:space:]]*//')  # Trim leading whitespace
+          else
+            RELEASE_NOTES=""
+            echo "Warning: RELEASE_NOTES.yaml not found"
+          fi
+          
+          # If no notes found in file, use provided input or default
+          if [ -z "$RELEASE_NOTES" ] || [ "$RELEASE_NOTES" = "" ]; then
+            if [ -n "${{ github.event.inputs.release_notes }}" ] && [ "${{ github.event.inputs.release_notes }}" != "" ]; then
+              RELEASE_NOTES="${{ github.event.inputs.release_notes }}"
+              echo "Using provided release notes input"
+            else
+              RELEASE_NOTES="Release build ${{ github.event.inputs.tag }}"
+              echo "Using default release notes"
+            fi
+          else
+            echo "Found release notes in RELEASE_NOTES.yaml"
+          fi
+          
+          # Output notes using multiline format (don't escape newlines)
+          {
+            echo "notes<<EOF"
+            echo "$RELEASE_NOTES"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
       - name: Build Android APK
         run: flutter build apk --release
 
@@ -69,7 +111,7 @@ jobs:
           tag: ${{ github.event.inputs.tag }}
           release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
-          body: ${{ github.event.inputs.release_notes }}
+          body: ${{ steps.extract_notes.outputs.notes }}
 
       - name: Upload AAB to release
         uses: svenstaro/upload-release-action@v2
@@ -80,7 +122,7 @@ jobs:
           tag: ${{ github.event.inputs.tag }}
           release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
-          body: ${{ github.event.inputs.release_notes }}
+          body: ${{ steps.extract_notes.outputs.notes }}
 
   build-ios:
     name: 🍎 iOS Build
@@ -108,6 +150,46 @@ jobs:
 
       - name: Install Flutter dependencies
         run: flutter pub get
+
+      - name: Install yq for YAML parsing
+        run: |
+          brew install yq
+
+      - name: Extract release notes from RELEASE_NOTES.yaml
+        id: extract_notes
+        run: |
+          # Extract version from tag (remove 'v' prefix if present)
+          VERSION=$(echo "${{ github.event.inputs.tag }}" | sed 's/^v//')
+          echo "Looking for release notes for version: $VERSION"
+          
+          # Extract notes from RELEASE_NOTES.yaml using yq
+          if [ -f "RELEASE_NOTES.yaml" ]; then
+            RELEASE_NOTES=$(yq eval ".releases.\"$VERSION\".notes // \"\"" RELEASE_NOTES.yaml 2>/dev/null || echo "")
+            RELEASE_NOTES=$(echo "$RELEASE_NOTES" | sed 's/^[[:space:]]*//')  # Trim leading whitespace
+          else
+            RELEASE_NOTES=""
+            echo "Warning: RELEASE_NOTES.yaml not found"
+          fi
+          
+          # If no notes found in file, use provided input or default
+          if [ -z "$RELEASE_NOTES" ] || [ "$RELEASE_NOTES" = "" ]; then
+            if [ -n "${{ github.event.inputs.release_notes }}" ] && [ "${{ github.event.inputs.release_notes }}" != "" ]; then
+              RELEASE_NOTES="${{ github.event.inputs.release_notes }}"
+              echo "Using provided release notes input"
+            else
+              RELEASE_NOTES="Release build ${{ github.event.inputs.tag }}"
+              echo "Using default release notes"
+            fi
+          else
+            echo "Found release notes in RELEASE_NOTES.yaml"
+          fi
+          
+          # Output notes using multiline format (don't escape newlines)
+          {
+            echo "notes<<EOF"
+            echo "$RELEASE_NOTES"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Update CocoaPods repository
         run: pod repo update
@@ -187,6 +269,6 @@ jobs:
           release_name: qBitConnect ${{ github.event.inputs.tag }}
           overwrite: true
           body: |
-            ${{ github.event.inputs.release_notes }}
+            ${{ steps.extract_notes.outputs.notes }}
             
             **Note:** iOS build is unsigned IPA for AltStore/sideloading.

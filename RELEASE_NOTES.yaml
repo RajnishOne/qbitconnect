@@ -1,0 +1,36 @@
+# Release Notes for qBitConnect
+# 
+# This file contains release notes organized by version number.
+# 
+# USAGE:
+# - GitHub Workflow: The workflow automatically extracts release notes based on the version tag
+#   (e.g., tag "v1.6.5" will use the notes for version "1.6.5")
+# - App Integration: This file can be bundled with the app and parsed to display 
+#   a "What's New" section based on the current app version
+#
+# FORMAT:
+# - Version numbers should match the version in pubspec.yaml (without build number)
+# - Dates are optional but recommended for tracking
+# - Notes support markdown formatting and multiline text
+
+releases:
+  "1.6.6":
+    date: "Nov 2025"
+    notes: |
+      This release includes:
+      • Minor improvements and bug fixes
+      • UI Enhancements
+      
+  "1.6.5":
+    date: "Oct 31, 2025"
+    notes: |
+      This release includes:
+      • Minor improvements and bug fixes
+      • Portuguese language support
+      
+  "1.6.4":
+    date: "Oct 17, 2025"
+    notes: |
+      This release includes:
+      • Minor improvements and bug fixes
+
