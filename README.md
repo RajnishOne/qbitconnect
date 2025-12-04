@@ -16,11 +16,38 @@ Thank you for your support — you can still star ⭐ and follow this repo to st
 
 <a href="https://play.google.com/store/apps/details?id=com.bluematter.qbitconnect"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play Store" height="80"></a>
 
-## 🔗 Quick Links For AltStore
+### AltStore Classic
 
-### AltStore Sources
-- **For AltStore Classic**: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json`
-- **For AltStore PAL (EU)**: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json`
+<a href="altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json">
+  <img src="buttons/altstore.png" alt="Add to AltStore" width="200">
+</a>
+
+**Or manually add this source:**
+
+```
+https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json
+```
+
+### AltStore PAL
+
+<a href="altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json">
+  <img src="buttons/altstore-pal.png" alt="Add to AltStore PAL" width="200">
+</a>
+
+**Or manually add this source:**
+
+```
+https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json
+```
+
+### How to Add Source to AltStore
+
+1. Open **AltStore** on your iOS device
+2. Go to the **Browse** tab
+3. Tap the **+** icon in the top-right corner
+4. Paste one of the source URLs above (depending on your AltStore version)
+5. Tap **Add**
+6. Find **qBitConnect** in your sources and install it
 
 ---
 
