@@ -19,7 +19,7 @@ Thank you for your support — you can still star ⭐ and follow this repo to st
 ### AltStore Classic
 
 <a href="altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json">
-  <img src="buttons/altstore.png" alt="Add to AltStore" width="200">
+  <img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore.png" alt="Add to AltStore" width="200">
 </a>
 
 **Or manually add this source:**
@@ -31,7 +31,7 @@ https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.
 ### AltStore PAL
 
 <a href="altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json">
-  <img src="buttons/altstore-pal.png" alt="Add to AltStore PAL" width="200">
+  <img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore-pal.png" alt="Add to AltStore PAL" width="200">
 </a>
 
 **Or manually add this source:**
