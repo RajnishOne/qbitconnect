@@ -20,7 +20,7 @@ Thank you for your support — you can still star ⭐ and follow this repo to st
 
 ### AltStore Sources
 - **For AltStore Classic**: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json`
-- **For AltStore PAL (EU)**: Coming soon
+- **For AltStore PAL (EU)**: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json`
 
 ---
 
