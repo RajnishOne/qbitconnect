@@ -17,19 +17,19 @@ Thank you for your support — you can still star ⭐ and follow this repo to st
 <a href="https://play.google.com/store/apps/details?id=com.bluematter.qbitconnect"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play Store" height="80"></a>
 
 ### iOS - AltStore Installation
-
-&nbsp;&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore-pal.png" alt="Add to AltStore PAL" height="60"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json"><img src="https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/buttons/altstore.png" alt="Add to AltStore Classic" height="60"></a>
+altstore
+&nbsp;&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/altstore-pal.json"><img src="https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/buttons/altstore-pal.png" alt="Add to AltStore PAL" height="60"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://source?url=https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/altstore.json"><img src="https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/buttons/altstore.png" alt="Add to AltStore Classic" height="60"></a>
 
 ## 🔗 Quick Links For AltStore
 
 ### AltStore Sources
-- **For AltStore PAL**: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json`
-- **For AltStore Classic**: `https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore.json`
+- **For AltStore PAL**: `https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/altstore-pal.json`
+- **For AltStore Classic**: `https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/altstore.json`
 
 **Or manually add this source:**
 
 ```
-https://raw.githubusercontent.com/RajnishOne/qbitconnect-releases/main/altstore-pal.json
+https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/altstore-pal.json
 ```
 
 ### How to Add Source to AltStore
