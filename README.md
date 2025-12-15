@@ -25,12 +25,6 @@ Thank you for your support — you can still star ⭐ and follow this repo to st
 - **For AltStore PAL**: `https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/altstore-pal.json`
 - **For AltStore Classic**: `https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/altstore.json`
 
-**Or manually add this source:**
-
-```
-https://raw.githubusercontent.com/RajnishOne/altstore-releases/main/altstore-pal.json
-```
-
 ### How to Add Source to AltStore
 
 1. Open **AltStore** on your iOS device
